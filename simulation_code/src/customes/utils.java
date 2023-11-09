@@ -1,4 +1,4 @@
-package simulation_v2;
+package customes;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

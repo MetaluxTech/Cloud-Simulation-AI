@@ -1,4 +1,4 @@
-package simulation_v2;
+package server;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
