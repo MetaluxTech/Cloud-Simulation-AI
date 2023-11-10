@@ -47,7 +47,7 @@ public class Simulator {
             int num_users = 1;
             int num_dc=1;
             int num_vms=1;
-            int num_tasks=3;
+            int num_tasks=40;
             
             Calendar clndr = Calendar.getInstance();
             boolean trace_actions = false;

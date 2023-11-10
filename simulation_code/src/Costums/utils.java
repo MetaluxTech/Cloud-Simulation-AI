@@ -34,7 +34,7 @@ public class utils {
 				VmId=cloudlet.getVmId();
 				int cloudlet_id= cloudlet.getCloudletId();
 				GeoDatacenter geodatacenter=tests.getDatacenterById(DataCenterId, dcs_list);
-				double dis=perfomance.calculateDistance(cloudlet,geodatacenter);
+				double dis=tests.calculateDistance(cloudlet,geodatacenter);
 //						  
 				 
 				

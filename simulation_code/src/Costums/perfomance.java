@@ -1,45 +1,64 @@
 package Costums;
 
 import java.util.List;
+import java.util.Map;
 
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Datacenter;
+import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.Vm;
 
 public class perfomance {
 	
-	
+	public double calculateCET(GeoCloudlet cloudlet, Vm vm, double cpuCost, double ramCost, double storageCost, double bandwidthCost) 
+	{
+	    double exe = cloudlet.getActualCPUTime();
+	    double r = cloudlet.getCloudletFileSize();
+	    double st = cloudlet.getCloudletOutputSize();
+	    double f = cloudlet.getCloudletFileSize();
+	    double cet = (exe * cpuCost) + (r * ramCost) + (st * storageCost) + (f * bandwidthCost);
+	    return cet;
+	}
 
-    public static double calculateDistance(GeoCloudlet geotask,GeoDatacenter geoDC) {
-    	try {
-    	double lat1=geotask.getLatitude();
-    	double lon1=geotask.getLongitude();
-    	double lat2=geoDC.getLatitude();
-    	double lon2=geoDC.getLongitude();
-    	
-        // Convert degrees to radians
-        lat1 = Math.toRadians(lat1);
-        lon1 = Math.toRadians(lon1);
-        lat2 = Math.toRadians(lat2);
-        lon2 = Math.toRadians(lon2);
+	public double calculateNetworkDelay(GeoCloudlet cloudlet, Vm vm) {
+	    // Task length in MI
+	    double lt = cloudlet.getCloudletLength();
 
-        // Earth's radius in kilometers
-        double earthRadius = 6371.01;
+	    // VM bandwidth in bps
+	    double bv = vm.getBw();
 
-        // Haversine formula
-        double dlon = lon2 - lon1;
-        double dlat = lat2 - lat1;
-        double a = Math.pow(Math.sin(dlat / 2), 2)
-                + Math.cos(lat1) * Math.cos(lat2)
-                * Math.pow(Math.sin(dlon / 2),2);
+	    // Calculate and return the network delay
+	    double delayN = lt / bv;
+	    return delayN;
+	}
+	public double calculateHostLoad(List<GeoCloudlet> tasks, Vm vm) {
+	    double mipsUsed = 0;
+	    double mipsTotal = vm.getMips();
 
-        double c1 = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-       
-        return Math.floor( earthRadius * c1);
-    	}
-    	catch (Exception e) {
-			return -1;
-		}
-    }
+	    for (GeoCloudlet task : tasks) {
+	        mipsUsed += task.getCloudletLength();
+	    }
+
+	    double hostLoad = (mipsUsed / mipsTotal) / 100;
+	    return hostLoad;
+	}
+
+	public double calculateDataCenterLoad(List<Host> hosts, Map<Host, List<GeoCloudlet>> hostTasks, Vm vm) {
+	    double dcLoad = 0;
+
+	    for (Host host : hosts) {
+	        List<GeoCloudlet> tasks = hostTasks.get(host);
+	        dcLoad += calculateHostLoad(tasks, vm);
+	    }
+
+	    return dcLoad;
+	}
+
+	public double calculateObjectiveFunction(double cet, double networkDelay, double dcLoad) {
+	    double objectiveFunction = 0.4 * cet + 0.3 * networkDelay + 0.3 * dcLoad;
+	    return objectiveFunction;
+	}
+
 }
 
 

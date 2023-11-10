@@ -3,9 +3,9 @@ java -cp bin;jars_folder\cloudsim-3.0.3.jar;jars_folder\cloudsim-examples-3.0.3.
 
 what to do 
 
-1- add lang long to vm and user  (cloudlet)
-2- use them to caculate the latency
-3- build miss asmaa equations functions
+1- add lang long to vm and user  (cloudlet)    done
+2- use them to caculate the latency            done
+3- build miss sanaa equations functions
 4- build find best datacenter 
 4- add delay time based in distance on simulation in addition of processing delay it is popogation delay
 4- each data center one vm
