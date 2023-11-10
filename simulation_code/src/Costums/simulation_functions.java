@@ -38,7 +38,7 @@ public class simulation_functions {
 			double time_zone = 10.0; // time zone this resource located
 			double cost = 1; // the cost of using processing in this resource
 			double costPerMem = 0.1; // the cost of using memory in this resource
-			double costPerStorage = 0.1; // the cost of using storage in this // resource
+			double costPerStorage = 0.1; // the cost of using storage in this// resource
 			double costPerBw =0.1; // the cost of using bw in this resource
 			// we are not adding SAN
 														// devices by now

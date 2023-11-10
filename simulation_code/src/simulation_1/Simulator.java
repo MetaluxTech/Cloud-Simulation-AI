@@ -20,40 +20,41 @@ import org.cloudbus.cloudsim.core.CloudSim;
 
 import Costums.GeoCloudlet;
 import Costums.GeoDatacenter;
+import Costums.IO;
 import Costums.simulation_functions;
 import Costums.tests;
 import Costums.utils;
 public class Simulator {
 	
 	
-	private static List<GeoDatacenter> dcs_list;
+	private static List<GeoDatacenter> geoDataCentersList;
 	private static List<Host> hosts_list;
 	private static List<Vm> vms_List;
 	private static List<GeoCloudlet> tasks_List;
 	
-	@SuppressWarnings("unused")
-    public static void main(String[] args) {
-		
-		vms_List = new ArrayList<Vm>();
-    	tasks_List = new ArrayList<GeoCloudlet>();
-
-    	dcs_list = new ArrayList<GeoDatacenter>();
-		hosts_list = new ArrayList<Host>();
-		
+    public static void main(String[] args) {		
         try {
-        	
-    		Log.printLine("      Starting CloudSimulation   ");
-
-            int num_users = 1;
-            int num_dc=5;
-            int num_vms=5;
-            int num_tasks=40;
+        	vms_List = new ArrayList<Vm>();
+        	tasks_List = new ArrayList<GeoCloudlet>();
+        	geoDataCentersList = new ArrayList<GeoDatacenter>();
+    		hosts_list = new ArrayList<Host>();   	
+    		
+            int numUsers =		 	1;
+            int numDatacenters=		5;
+            int numVMs=				5;
+            int numCloudlets=		40;
             
+        
+            Log.printLine("      Starting CloudSimulation   ");
+
             Calendar clndr = Calendar.getInstance();
             boolean trace_actions = false;
-            CloudSim.init(num_users,clndr,trace_actions);
+            CloudSim.init(numUsers,clndr,trace_actions);
             
-          //DCs hosts specification
+            //create broker
+            DatacenterBroker   broker1=simulation_functions.createBroker("broker1");          
+
+            //create datacenters and thier hosts
             
 			double DcLatit=tests.generateRandomLatLon()[0];
 			double DcLongt=tests.generateRandomLatLon()[1];
@@ -62,43 +63,35 @@ public class Simulator {
 			long hostStorage = 1000000; //host storage in ( GB )
 			int hostBw = 10000;  //MBPs
 			
-			for (int i=1;i<=num_dc;i++)
+			for (int i=1;i<=numDatacenters;i++)
 			{	
 			GeoDatacenter dc=	simulation_functions.createDatacenter( "DC_"+Integer.toString(i),i, hostStorage, hostMips, hostRam, hostBw,DcLatit,DcLongt);
-			dcs_list.add(dc);
+			geoDataCentersList.add(dc);
 			hosts_list.add(dc.getHostList().get(0));
 			}
 			
-			// create broker
-            DatacenterBroker   broker1=simulation_functions.createBroker("broker1");          
           
-            
-            int vm_id=1;
-//            int vm_mips=1000; /// instructions per second 
+            int vm_mips=1000; /// instructions per second 
             long vm_size=10000;
             int vm_ram=512;
             int vm_bandwidth=1000;
             int vm_pesNum=1 ;  //num of cpus in the VM
             String vm_monitor="xen"; 
             Random rand1 = new Random();
-            double vmLatit=0.15345;
-            double vmlongi=0.4521;
-             
-           for (int i=1;i<=num_vms;i++)
+            for (int i=1;i<=numVMs;i++)
 			{   
-        	int vm_mips = rand1.nextInt(50) + 70;//between 1000 and 10000 
         	Vm vm=new Vm (i, broker1.getId(), vm_mips , vm_pesNum, vm_ram, vm_bandwidth, vm_size , vm_monitor , new CloudletSchedulerSpaceShared());
         	vms_List.add(vm);
             }
-            broker1.submitVmList(vms_List);
-            int task_id=0;
+
+            // create Cloudlets 
             int task_size = 300;
             int task_out_size=300;
              
             int task_pesNum=1 ;  //num of cpus in the VM
             UtilizationModel full_utl_model=new UtilizationModelFull();
             
-            for (int i=1;i<=num_tasks;i++)
+            for (int i=1;i<=numCloudlets;i++)
 			{ 
             	 double taskLatit=tests.generateRandomLatLon()[0];
                  double taskLong=tests.generateRandomLatLon()[1];
@@ -108,14 +101,33 @@ public class Simulator {
             tasks_List.add(task);
 			}
             
-           
-            broker1.submitCloudletList(tasks_List);            
+            
+            // submit Vms and cloudlets via broker
+            broker1.submitVmList(vms_List);
+            broker1.submitCloudletList(tasks_List); 
+            
+            //start simulation
             CloudSim.startSimulation();
-            Log.printLine("\n\n  beffor festroying every thing  \n\n");
             CloudSim.stopSimulation();
 
+            //get all cloudlet events
             List<GeoCloudlet> geoClouletsList = broker1.getCloudletReceivedList();
-            utils.PrintTasks(geoClouletsList,dcs_list);
+            
+             //print the simulation events
+            utils.DisplaySimulationEvents(geoClouletsList,geoDataCentersList);
+           
+            
+            //save the simulation reults
+             String txtFilePath="";
+             String datasetFilePath="";
+             
+             txtFilePath=IO.SaveSimulationEvents(geoClouletsList,geoDataCentersList);
+             datasetFilePath=IO.SaveEventsToCSV(geoClouletsList);
+             
+             Log.printLine("\n events saved successfully to text file path : "+txtFilePath);
+             Log.printLine("\n events saved successfully to CSV file path : "+datasetFilePath);
+             
+            
             
         } catch (Exception e) {
             e.printStackTrace();

@@ -16,7 +16,7 @@ import org.cloudbus.cloudsim.Vm;
 
 public class utils {
 
-	  public static void PrintTasks(List<GeoCloudlet> geoCloudletsList, List<GeoDatacenter> dcs_list) {
+	  public static void DisplaySimulationEvents(List<GeoCloudlet> geoCloudletsList, List<GeoDatacenter> dcs_list) {
 		  
 		  int size = geoCloudletsList.size();
 		  String status="SUCCESS";
@@ -81,75 +81,5 @@ public class utils {
 		    System.out.println("Cloudlet IDs: " + cloudletIds +"\n\n");
 		    
 		}
-      public static String write_to_csv(List<Cloudlet> tasks_list) {
-		    String csvFilePath = "src/simulation_v2/results.csv"; // Path to the CSV file
-		    String status = "SUCCESS";
-		    int DataCenterId = 0;
-		    int VmId = 0;
-
-		    try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFilePath))) {
-		        writer.write("Cloudlet ID,STATUS,Data centerID,VM ID,Tim,Start Time,Finish Time");
-		        writer.newLine();
-
-		        DecimalFormat dft = new DecimalFormat("###.##");
-		        for (Cloudlet cloudlet : tasks_list) {
-		            status = cloudlet.getCloudletStatusString().toUpperCase();
-		            DataCenterId = cloudlet.getResourceId();
-		            VmId = cloudlet.getVmId();
-		            int cloudlet_id = cloudlet.getCloudletId();
-
-		            writer.write(cloudlet_id + "," + status + "," + DataCenterId + "," + VmId + ","
-		                + dft.format(cloudlet.getActualCPUTime()) + "," + dft.format(cloudlet.getExecStartTime()) + ","
-		                + dft.format(cloudlet.getFinishTime()));
-		            writer.newLine();
-		        }
-		    } catch (IOException e) {
-		        e.printStackTrace();
-		    }
-
-		    return csvFilePath;
-		}  
-
-	  public static String write_resources_to_csv(Map<String, Object> data) {
-		    String csvFilePath = "src/simulation_v2/sim_data.csv";
-
-		    try (FileWriter writer = new FileWriter(csvFilePath)) {
-		        // Iterate over the data centers and write their information to the CSV file
-				Map<String, Object> dataCenters = (Map<String, Object>) data.get("DATA_CENTERS");
-		        for (String dataCenterId : dataCenters.keySet()) {
-		            Map<String, Object> dcData = (Map<String, Object>) dataCenters.get(dataCenterId);
-		            writer.write("DATA_CENTER," + dataCenterId + "\n");
-		            writer.write("longitude," + dcData.get("longitude") + "\n");
-		            writer.write("latitude," + dcData.get("latitude") + "\n");
-		            writer.write("hostMips," + dcData.get("hostMips") + "\n");
-		            writer.write("hostRam," + dcData.get("hostRam") + "\n");
-		            writer.write("hostStorage," + dcData.get("hostStorage") + "\n");
-		            writer.write("hostBw," + dcData.get("hostBw") + "\n");
-
-		            // Write VMs data
-		            Map<String, Object> vms = (Map<String, Object>) dcData.get("VMS");
-		            for (String vmId : vms.keySet()) {
-		                Map<String, Object> vmData = (Map<String, Object>) vms.get(vmId);
-		                writer.write("VM," + vmId + "\n");
-		                writer.write("vmMips," + vmData.get("vmMips") + "\n");
-		                writer.write("vmstorage," + vmData.get("vmstorage") + "\n");
-		                writer.write("vmRam," + vmData.get("vmRam") + "\n");
-		                writer.write("vmBw," + vmData.get("vmBw") + "\n");
-		            }
-		        }
-
-		        // Iterate over the tasks and write their information to the CSV file
-		        Map<String, Object> tasks = (Map<String, Object>) data.get("TASKS");
-		        for (String taskId : tasks.keySet()) {
-		            Map<String, Object> taskData = (Map<String, Object>) tasks.get(taskId);
-		            writer.write("TASK," + taskId + "\n");
-		            writer.write("longitude," + taskData.get("longitude") + "\n");
-		            writer.write("latitude," + taskData.get("latitude") + "\n");
-		        
-		        }
-		    } catch (IOException e) {
-		        e.printStackTrace();
-		    }
-		    return csvFilePath;
-		}
+    
 }
