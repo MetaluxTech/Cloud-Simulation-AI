@@ -1,4 +1,4 @@
-package customes;
+package Costums;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -16,25 +16,26 @@ import org.cloudbus.cloudsim.Vm;
 
 public class utils {
 
-	  public static void PrintTasks(List<GeoTask> tasksList) {
+	  public static void PrintTasks(List<GeoCloudlet> geoCloudletsList, List<GeoDatacenter> dcs_list) {
 		  
-		  int size = tasksList.size();
+		  int size = geoCloudletsList.size();
 		  String status="SUCCESS";
-		  int DataCenterId=0;
 		  int VmId=0;
 		  Log.printLine("\n recived cloudlets  size= "+size );
-			
-		
+		 
 			Log.printLine("	 ========== OUTPUT ==========");
 			//titles column
-			Log.printLine("Cloudlet ID\tSTATUS\tData centerID\tVM ID \t Tim \t Start Time\tFinish Time");
+			Log.printLine("Cloudlet ID\tSTATUS\tData centerID\tVM ID \t Tim \t Start Time\tFinish Time  distance(Km)");
 
 			DecimalFormat dft = new DecimalFormat("###.##");
-			for (Cloudlet cloudlet:tasksList) {
+			for (GeoCloudlet cloudlet:geoCloudletsList) {
 				status=cloudlet.getCloudletStatusString().toUpperCase();
-				DataCenterId=cloudlet.getResourceId();
+				int DataCenterId =cloudlet.getResourceId();
 				VmId=cloudlet.getVmId();
 				int cloudlet_id= cloudlet.getCloudletId();
+				GeoDatacenter geodatacenter=tests.getDatacenterById(DataCenterId, dcs_list);
+				double dis=perfomance.calculateDistance(cloudlet,geodatacenter);
+//						  
 				 
 				
 				Log.printLine("\t" +cloudlet_id +"\t"
@@ -44,7 +45,9 @@ public class utils {
 							
 								dft.format(cloudlet.getActualCPUTime()) +"\t\t"+
 								dft.format(cloudlet.getExecStartTime())+"\t"+
-								dft.format(cloudlet.getFinishTime()));
+								dft.format(cloudlet.getFinishTime())+"\t        "+
+								dis
+									);
 				}
 			
 			

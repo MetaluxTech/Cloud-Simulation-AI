@@ -1,4 +1,4 @@
-package customes;
+package Costums;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -20,7 +20,7 @@ import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
 public class simulation_functions {
 
 	
-	  public static Datacenter createDatacenter( String name, int hostId, Long hostStorage, int hostMips, int hostRam, int hostBw,double longitude,double latitude) {
+	  public static GeoDatacenter createDatacenter( String name, int hostId, Long hostStorage, int hostMips, int hostRam, int hostBw,double  DcLatit,double DcLongt) {
 
 			List<Host> hostList = new ArrayList<Host>();
 			List<Pe> peList = new ArrayList<Pe>();
@@ -49,11 +49,11 @@ public class simulation_functions {
 					costPerStorage, costPerBw);
 
 			// 6. Finally, we need to create a PowerDatacenter object.
-			Datacenter datacenter = null;
+			GeoDatacenter datacenter = null;
 //			CustomVmPolicy vmpolicy1 = new CustomVmPolicy(hostList);
 		      	
 			try {
-				datacenter = new Datacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0);
+				datacenter = new GeoDatacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0,DcLatit,DcLongt);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
