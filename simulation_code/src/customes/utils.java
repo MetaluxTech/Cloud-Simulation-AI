@@ -16,9 +16,9 @@ import org.cloudbus.cloudsim.Vm;
 
 public class utils {
 
-	  public static void PrintTasks(List<Cloudlet> tasks_list) {
+	  public static void PrintTasks(List<GeoTask> tasksList) {
 		  
-		  int size = tasks_list.size();
+		  int size = tasksList.size();
 		  String status="SUCCESS";
 		  int DataCenterId=0;
 		  int VmId=0;
@@ -30,7 +30,7 @@ public class utils {
 			Log.printLine("Cloudlet ID\tSTATUS\tData centerID\tVM ID \t Tim \t Start Time\tFinish Time");
 
 			DecimalFormat dft = new DecimalFormat("###.##");
-			for (Cloudlet cloudlet:tasks_list) {
+			for (Cloudlet cloudlet:tasksList) {
 				status=cloudlet.getCloudletStatusString().toUpperCase();
 				DataCenterId=cloudlet.getResourceId();
 				VmId=cloudlet.getVmId();
