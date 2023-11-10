@@ -8,7 +8,7 @@ what to do
 3- build fitness equations functions		   											done
 4- save optimal dataset with resources parameters                  						done
 5- find best datacenter based on it objective function                                 working on
-6-retrain lstm-ga on the new dataset
+6- retrain lstm-ga on the new dataset
 7- test and retrieve performance metrics from the new model
 8- deploy the project on server
 9- build lstm-snake algorithm

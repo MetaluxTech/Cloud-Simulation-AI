@@ -114,7 +114,7 @@ public class Simulator {
             List<GeoCloudlet> geoClouletsList = broker1.getCloudletReceivedList();
             
              //print the simulation events
-            utils.DisplaySimulationEvents(geoClouletsList,geoDataCentersList);
+//            utils.DisplaySimulationEvents(geoClouletsList,geoDataCentersList);
            
             
             //save the simulation reults
@@ -122,8 +122,8 @@ public class Simulator {
              String eventsCSVtFilePath="";
              String resourcesCSVFilePath="";
              
-             txtFilePath=IO.SaveSimulationEvents(geoClouletsList,geoDataCentersList);
-             eventsCSVtFilePath=IO.SaveEventsToCSV(geoClouletsList);
+//             txtFilePath=IO.SaveSimulationEvents(geoClouletsList,geoDataCentersList);
+//             eventsCSVtFilePath=IO.SaveEventsToCSV(geoClouletsList);
              resourcesCSVFilePath=IO.SaveResourcesToCSV(geoClouletsList,geoDataCentersList,vms_List);
              
              Log.printLine("\n events saved successfully to text file path : "+txtFilePath);
