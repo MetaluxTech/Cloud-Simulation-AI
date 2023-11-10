@@ -45,8 +45,8 @@ public class Simulator {
     		Log.printLine("      Starting CloudSimulation   ");
 
             int num_users = 1;
-            int num_dc=1;
-            int num_vms=1;
+            int num_dc=5;
+            int num_vms=5;
             int num_tasks=40;
             
             Calendar clndr = Calendar.getInstance();

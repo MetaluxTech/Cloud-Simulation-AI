@@ -21,7 +21,7 @@ public class simulation_functions {
 
 	
 	  public static GeoDatacenter createDatacenter( String name, int hostId, Long hostStorage, int hostMips, int hostRam, int hostBw,double  DcLatit,double DcLongt) {
-
+		  
 			List<Host> hostList = new ArrayList<Host>();
 			List<Pe> peList = new ArrayList<Pe>();
 			LinkedList<Storage> storageList = new LinkedList<Storage>(); 
@@ -31,16 +31,15 @@ public class simulation_functions {
 			
 			Host host1=new Host(hostId,new RamProvisionerSimple(hostRam),new BwProvisionerSimple(hostBw),hostStorage,peList,new VmSchedulerSpaceShared (peList));
 			hostList.add(host1);
-
+//			cost of bandwidth , the cost of storage, the cost of memory, and the processing per second
 			String arch = "x86"; // system architecture
 			String os = "Linux"; // operating system
 			String vmm = "Xen";
 			double time_zone = 10.0; // time zone this resource located
-			double cost = 3.0; // the cost of using processing in this resource
-			double costPerMem = 0.05; // the cost of using memory in this resource
-			double costPerStorage = 0.001; // the cost of using storage in this
-											// resource
-			double costPerBw = 0.0; // the cost of using bw in this resource
+			double cost = 1; // the cost of using processing in this resource
+			double costPerMem = 0.1; // the cost of using memory in this resource
+			double costPerStorage = 0.1; // the cost of using storage in this // resource
+			double costPerBw =0.1; // the cost of using bw in this resource
 			// we are not adding SAN
 														// devices by now
 
