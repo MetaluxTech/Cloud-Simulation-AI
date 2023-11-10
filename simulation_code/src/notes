@@ -3,10 +3,13 @@ java -cp bin;jars_folder\cloudsim-3.0.3.jar;jars_folder\cloudsim-examples-3.0.3.
 
 what to do 
 
-1- add lang long to vm and user  (cloudlet)    done
-2- use them to caculate the latency            done
-3- build miss sanaa equations functions
-4- build find best datacenter 
-4- add delay time based in distance on simulation in addition of processing delay it is popogation delay
-4- each data center one vm
-5- create datasetes for the datacenters allocation hisotry
+1- add lang long to vm and user  (cloudlet)   											done
+2- use them to caculate the latency            											done
+3- build fitness equations functions		   											done
+4- save optimal dataset with resources parameters                  						done
+5- find best datacenter based on it objective function                                 working on
+6-retrain lstm-ga on the new dataset
+7- test and retrieve performance metrics from the new model
+8- deploy the project on server
+9- build lstm-snake algorithm
+10- compare the results from two models

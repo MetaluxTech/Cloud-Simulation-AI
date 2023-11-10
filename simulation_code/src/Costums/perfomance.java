@@ -10,7 +10,7 @@ import org.cloudbus.cloudsim.Vm;
 
 public class perfomance {
 	
-	public double calculateCET(GeoCloudlet cloudlet, Vm vm, double cpuCost, double ramCost, double storageCost, double bandwidthCost) 
+	public static double calculateCET(GeoCloudlet cloudlet, Vm vm, double cpuCost, double ramCost, double storageCost, double bandwidthCost) 
 	{
 	    double exe = cloudlet.getActualCPUTime();
 	    double r = cloudlet.getCloudletFileSize();
@@ -20,7 +20,7 @@ public class perfomance {
 	    return cet;
 	}
 
-	public double calculateNetworkDelay(GeoCloudlet cloudlet, Vm vm) {
+	public static double calculateNetworkDelay(GeoCloudlet cloudlet, Vm vm) {
 	    // Task length in MI
 	    double lt = cloudlet.getCloudletLength();
 
@@ -31,7 +31,7 @@ public class perfomance {
 	    double delayN = lt / bv;
 	    return delayN;
 	}
-	public double calculateHostLoad(List<GeoCloudlet> tasks, Vm vm) {
+	public static double calculateHostLoad(List<GeoCloudlet> tasks, Vm vm) {
 	    double mipsUsed = 0;
 	    double mipsTotal = vm.getMips();
 
@@ -43,7 +43,7 @@ public class perfomance {
 	    return hostLoad;
 	}
 
-	public double calculateDataCenterLoad(List<Host> hosts, Map<Host, List<GeoCloudlet>> hostTasks, Vm vm) {
+	public static double calculateDataCenterLoad(List<Host> hosts, Map<Host, List<GeoCloudlet>> hostTasks, Vm vm) {
 	    double dcLoad = 0;
 
 	    for (Host host : hosts) {
@@ -54,7 +54,7 @@ public class perfomance {
 	    return dcLoad;
 	}
 
-	public double calculateObjectiveFunction(double cet, double networkDelay, double dcLoad) {
+	public static double calculateObjectiveFunction(double cet, double networkDelay, double dcLoad) {
 	    double objectiveFunction = 0.4 * cet + 0.3 * networkDelay + 0.3 * dcLoad;
 	    return objectiveFunction;
 	}

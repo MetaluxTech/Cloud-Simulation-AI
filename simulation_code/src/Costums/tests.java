@@ -26,7 +26,7 @@ public class tests {
 
 
 
-	public static GeoDatacenter getDatacenterById(int  dataCenterId, List<GeoDatacenter> datacentersList) {
+public static GeoDatacenter getDatacenterById(int  dataCenterId, List<GeoDatacenter> datacentersList) {
 		
 	    for (GeoDatacenter dc : datacentersList) {
 	        if (dc.getId() == dataCenterId) {
@@ -35,6 +35,16 @@ public class tests {
 	    }
 	    return null;
 	}
+
+public static Vm getVMById(int  VmId, List<Vm> datacentersList) {
+	
+    for (Vm v : datacentersList) {
+        if (v.getId() == VmId) {
+        	return v;
+        }
+    }
+    return null;
+}
 
 
     public static double calculateDistance(GeoCloudlet geotask,GeoDatacenter geoDC) {

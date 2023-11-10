@@ -20,7 +20,10 @@ public class GeoDatacenter extends Datacenter {
         return latitude;
     }
 
-    public double getLongitude() {
+    public DatacenterCharacteristics getPublicCharacteristics() {
+		return getCharacteristics();
+	}
+  public double getLongitude() {
         return longitude;
     }
 }

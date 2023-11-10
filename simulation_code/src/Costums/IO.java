@@ -9,10 +9,63 @@ import java.util.List;
 import java.util.Map;
 
 import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.Datacenter;
+import org.cloudbus.cloudsim.DatacenterCharacteristics;
+import org.cloudbus.cloudsim.Vm;
 
 public class IO {
-
 	
+	public static String SaveResourcesToCSV(List<GeoCloudlet> geoCloudletsList, List<GeoDatacenter> dcs_list, List<Vm> vms_list) {
+	    File file = new File("resources.csv"); // Path to the CSV file
+
+	    try {
+	        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+
+	        // Write the header
+	        writer.write("TaskID,TaskFileSize,TaskOutputFileSize,TaskFileLength,DistanceFromDataCenter,DataCenterCpuCost,DataCenterRamCost,DataCenterStorageCost,DataCenterBwCost,DataCenterTotalLoad,NetworkDelay,CET,ObjectiveFunction,DataCenterID");
+	        writer.newLine();
+
+	        // Write the data
+	        for (GeoCloudlet cloudlet : geoCloudletsList) {
+	        	int DataCenterId = cloudlet.getResourceId();
+	        	int VmId = cloudlet.getVmId();
+	            GeoDatacenter geodatacenter = tests.getDatacenterById(DataCenterId, dcs_list);
+	            Vm vm = tests.getVMById(VmId, vms_list);
+	            double dis = tests.calculateDistance(cloudlet, geodatacenter);
+	            DatacenterCharacteristics characteristics = geodatacenter.getPublicCharacteristics();
+	            double dataCenterLoad=0.1;
+	            double networkDelay=perfomance.calculateNetworkDelay(cloudlet,vm);
+	            double CET=perfomance.calculateCET(cloudlet, vm, VmId, dis, dataCenterLoad, networkDelay);
+	            double ObjectiveFunction=perfomance.calculateObjectiveFunction(CET, networkDelay, dataCenterLoad);
+	            String data = cloudlet.getCloudletId() + "," +
+	                         
+	                          cloudlet.getCloudletFileSize() + "," +
+	                          cloudlet.getCloudletOutputSize() + "," +
+	                          cloudlet.getCloudletLength() + "," +
+	                          dis + "," +
+	                          characteristics.getCostPerSecond() + "," +
+	                          characteristics.getCostPerMem() + "," +
+	                          characteristics.getCostPerStorage() + "," +
+	                          characteristics.getCostPerBw() + "," +
+	                          dataCenterLoad + "," + 
+	                          networkDelay + "," + 
+	                          CET+"," +
+	                          ObjectiveFunction + "," +
+	                          DataCenterId ; 
+	            writer.write(data);
+	            writer.newLine();
+	        }
+
+	        writer.close();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+
+	    // Return the absolute path of the file
+	    return file.getAbsolutePath();
+	}
+
+
 	public static String SaveSimulationEvents(List<GeoCloudlet> geoCloudletsList, List<GeoDatacenter> dcs_list) {
 		File file = new File("events.txt");
 	    try {

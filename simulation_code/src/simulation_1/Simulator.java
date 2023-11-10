@@ -119,13 +119,16 @@ public class Simulator {
             
             //save the simulation reults
              String txtFilePath="";
-             String datasetFilePath="";
+             String eventsCSVtFilePath="";
+             String resourcesCSVFilePath="";
              
              txtFilePath=IO.SaveSimulationEvents(geoClouletsList,geoDataCentersList);
-             datasetFilePath=IO.SaveEventsToCSV(geoClouletsList);
+             eventsCSVtFilePath=IO.SaveEventsToCSV(geoClouletsList);
+             resourcesCSVFilePath=IO.SaveResourcesToCSV(geoClouletsList,geoDataCentersList,vms_List);
              
              Log.printLine("\n events saved successfully to text file path : "+txtFilePath);
-             Log.printLine("\n events saved successfully to CSV file path : "+datasetFilePath);
+             Log.printLine("\n events saved successfully to CSV file path : "+eventsCSVtFilePath);
+             Log.printLine("\n events saved successfully to CSV file path : "+resourcesCSVFilePath);
              
             
             
