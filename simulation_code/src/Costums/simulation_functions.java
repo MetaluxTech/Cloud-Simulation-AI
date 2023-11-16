@@ -8,6 +8,7 @@ import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterBroker;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Pe;
 import org.cloudbus.cloudsim.Storage;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
@@ -29,7 +30,9 @@ public class simulation_functions {
 			
 			peList.add(new Pe(0, new PeProvisionerSimple(hostMips))); // need to store Pe id and MIPS Rating
 			
-			Host host1=new Host(hostId,new RamProvisionerSimple(hostRam),new BwProvisionerSimple(hostBw),hostStorage,peList,new VmSchedulerSpaceShared (peList));
+			Host host1=new Host(hostId,new RamProvisionerSimple(hostRam),new BwProvisionerSimple(hostBw),hostStorage,peList,new VmSchedulerTimeShared (peList));
+            Log.printLine("host MIPS: " + host1.getTotalMips());
+
 			hostList.add(host1);
 //			cost of bandwidth , the cost of storage, the cost of memory, and the processing per second
 			String arch = "x86"; // system architecture
@@ -37,9 +40,9 @@ public class simulation_functions {
 			String vmm = "Xen";
 			double time_zone = 10.0; // time zone this resource located
 			double cost = 1; // the cost of using processing in this resource
-			double costPerMem = 0.1; // the cost of using memory in this resource
+			double costPerMem = 0.2; // the cost of using memory in this resource
 			double costPerStorage = 0.1; // the cost of using storage in this// resource
-			double costPerBw =0.1; // the cost of using bw in this resource
+			double costPerBw =0.3; // the cost of using bw in this resource
 			// we are not adding SAN
 														// devices by now
 
@@ -52,19 +55,19 @@ public class simulation_functions {
 //			CustomVmPolicy vmpolicy1 = new CustomVmPolicy(hostList);
 		      	
 			try {
-				datacenter = new GeoDatacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0,DcLatit,DcLongt);
+				datacenter = new GeoDatacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList, 0,DcLatit,DcLongt,0.0);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 			return datacenter;
 		}
-public static DatacenterBroker createBroker(String broker_name) {
+public static MyBroker createBroker(String broker_name) {
 	
 	
-	DatacenterBroker broker = null;
+	MyBroker broker = null;
 	try {
-		broker = new DatacenterBroker(broker_name);
+		broker = new MyBroker(broker_name);
 	} catch (Exception e) {
 		e.printStackTrace();
 		return null;

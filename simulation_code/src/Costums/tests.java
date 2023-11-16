@@ -1,6 +1,8 @@
 package Costums;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.cloudbus.cloudsim.Cloudlet;
@@ -24,7 +26,12 @@ public class tests {
 	    return new double[]{latitude, longitude};
 	}
 
+	   public static int getNextRandom(int min, int max) {
+	       Random random = new Random();
+	       return random.nextInt(max - min + 1) + min;
+	   }
 
+	
 
 public static GeoDatacenter getDatacenterById(int  dataCenterId, List<GeoDatacenter> datacentersList) {
 		
@@ -35,10 +42,18 @@ public static GeoDatacenter getDatacenterById(int  dataCenterId, List<GeoDatacen
 	    }
 	    return null;
 	}
+public static PerVm getVmWithLowestLoad(List<PerVm> vms) {
+		PerVm LowestLoadVm=  vms.stream()
+	             .min(Comparator.comparing(PerVm::getLoad))
+	             .orElse(null);
+		
+		return LowestLoadVm;
+	 
+	}
 
-public static Vm getVMById(int  VmId, List<Vm> datacentersList) {
+public static PerVm getVMById(int  VmId, List<PerVm> vms) {
 	
-    for (Vm v : datacentersList) {
+    for (PerVm v : vms) {
         if (v.getId() == VmId) {
         	return v;
         }
@@ -78,4 +93,11 @@ public static Vm getVMById(int  VmId, List<Vm> datacentersList) {
 			return -1;
 		}
     }
+    
+    public static double calculateDataCenterLoad(Map<GeoDatacenter, List<PerVm>>  datacenter_vms) {
+	    double dcLoad = 0;
+
+
+	    return dcLoad;
+	}
 }

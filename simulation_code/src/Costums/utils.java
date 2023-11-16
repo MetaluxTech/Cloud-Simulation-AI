@@ -52,13 +52,13 @@ public class utils {
 			
 			
 		}
-	  public static void printResourcesList(List<Datacenter> dcs_list, List<Host> hosts_list, List<Vm> vms_List,List<Cloudlet> tasks_List)  {
+	  public static void printResourcesList(List<GeoDatacenter> geoDataCentersList, List<Host> hosts_list, List<PerVm> vms_List,List<GeoCloudlet> tasks_List)  {
 		    List<Integer> datacenterIds = new ArrayList<>();
 		    List<Integer> hostIds = new ArrayList<>();
 		    List<Integer> vmIds = new ArrayList<>();
 		    List<Integer> cloudletIds = new ArrayList<>();
 
-		    for (Datacenter dc : dcs_list) {
+		    for (Datacenter dc : geoDataCentersList) {
 		        datacenterIds.add(dc.getId());
 		        
 		    }

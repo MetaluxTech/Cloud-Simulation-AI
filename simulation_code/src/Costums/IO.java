@@ -15,7 +15,7 @@ import org.cloudbus.cloudsim.Vm;
 
 public class IO {
 	
-	public static String SaveResourcesToCSV(List<GeoCloudlet> geoCloudletsList, List<GeoDatacenter> dcs_list, List<Vm> vms_list) {
+	public static String SaveResourcesToCSV(List<GeoCloudlet> geoCloudletsList, List<GeoDatacenter> dcs_list, List<PerVm> vms) {
 	    File file = new File("resources.csv"); // Path to the CSV file
 
 	    try {
@@ -30,7 +30,7 @@ public class IO {
 	        	int DataCenterId = cloudlet.getResourceId();
 	        	int VmId = cloudlet.getVmId();
 	            GeoDatacenter geodatacenter = tests.getDatacenterById(DataCenterId, dcs_list);
-	            Vm vm = tests.getVMById(VmId, vms_list);
+	            PerVm vm = tests.getVMById(VmId, vms);
 	            double dis = tests.calculateDistance(cloudlet, geodatacenter);
 	            DatacenterCharacteristics characteristics = geodatacenter.getPublicCharacteristics();
 	            double dataCenterLoad=0.1;
