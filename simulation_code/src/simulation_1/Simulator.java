@@ -25,6 +25,7 @@ public class Simulator {
 
 	private static List<GeoDatacenter> geoDataCentersList;
 	private static List<Host> hosts_list;
+	public static List<Double> dcs_load;
 	public static List<String> string_dcsOF;
 	public static List<String> string_dc_Load;
 	
@@ -41,13 +42,13 @@ public class Simulator {
         	tasks_List = new ArrayList<GeoCloudlet>();
         	geoDataCentersList = new ArrayList<GeoDatacenter>();
     		hosts_list = new ArrayList<Host>();   	
-    		List<String> string_dc_Load=new ArrayList<String>();
-    		List<String> string_dcsOF=new ArrayList<String>();
+    		dcs_load =new ArrayList<Double>();
+    		
         	
             int numUsers =		 	1;
             int numDatacenters=		3;
             int numVMs=				9;
-            int numCloudlets=		80;
+            int numCloudlets=		600;
 
             Log.printLine("      Starting CloudSimulation   ");
 
@@ -110,20 +111,7 @@ public class Simulator {
 					
 					bestVm.setLoad(bestVm.getLoad()+task_length);
 					best_dc.setLoad(best_dc.getLoad()+ task_length);
-				
-					string_dc_Load.add("("+
-							geoDataCentersList.get(0).getLoad()+","+
-							geoDataCentersList.get(1).getLoad()+","+
-							geoDataCentersList.get(2).getLoad()+
-							
-							")");
-					string_dcsOF.add("("+
-			perfomance.caculateOFToPrint(geoDataCentersList.get(0), task, vms_List)+","+
-			perfomance.caculateOFToPrint(geoDataCentersList.get(1), task, vms_List)+","+
-			perfomance.caculateOFToPrint(geoDataCentersList.get(2), task, vms_List)+
-							
-							")");
-					
+					dcs_load.add( best_dc.getLoad());
 					task.setVmId(bestVm.getId());//here is the best vm is lowest load on the vm
 				
 			}
@@ -152,7 +140,6 @@ public class Simulator {
             Log.printLine("\n events saved successfully to CSV file path : "+eventsCSVtFilePath);
             Log.printLine("\n events saved successfully to CSV file path : "+resourcesCSVFilePath);
 //             
-            
             
         } catch (Exception e) {
             e.printStackTrace();

@@ -33,7 +33,7 @@ public class IO {
 	            MyVm vm = tests.getVMById(VmId, vms);
 	            double dis = tests.calculateDistance(cloudlet, geodatacenter);
 	            DatacenterCharacteristics characteristics = geodatacenter.getPublicCharacteristics();
-	            double dataCenterLoad=0.1;
+	            double dataCenterLoad=geodatacenter.getLoad();
 	            double networkDelay=perfomance.calculateNetworkDelay(cloudlet,vm);
 	            double CET=perfomance.calculateCET(cloudlet, geodatacenter);
 	            double ObjectiveFunction=perfomance.calculateObjectiveFunction(CET, networkDelay, dataCenterLoad);
