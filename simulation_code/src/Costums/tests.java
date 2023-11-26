@@ -1,5 +1,6 @@
 package Costums;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -42,18 +43,31 @@ public static GeoDatacenter getDatacenterById(int  dataCenterId, List<GeoDatacen
 	    }
 	    return null;
 	}
-public static PerVm getVmWithLowestLoad(List<PerVm> vms) {
-		PerVm LowestLoadVm=  vms.stream()
-	             .min(Comparator.comparing(PerVm::getLoad))
+public static MyVm getVmWithLowestLoad(List<MyVm> vms) {
+	
+	MyVm LowestLoadVm=  vms.stream()
+	             .min(Comparator.comparing(MyVm::getLoad))
 	             .orElse(null);
 		
+	
 		return LowestLoadVm;
 	 
 	}
 
-public static PerVm getVMById(int  VmId, List<PerVm> vms) {
+public static GeoDatacenter getDataCenterWithLowestLoad(List<GeoDatacenter> dcs) {
 	
-    for (PerVm v : vms) {
+	GeoDatacenter LowestLoadDc=  dcs.stream()
+	             .min(Comparator.comparing(GeoDatacenter::getLoad))
+	             .orElse(null);
+		
+	
+		return LowestLoadDc;
+	 
+	}
+
+public static MyVm getVMById(int  VmId, List<MyVm> vms) {
+	
+    for (MyVm v : vms) {
         if (v.getId() == VmId) {
         	return v;
         }
@@ -94,10 +108,25 @@ public static PerVm getVMById(int  VmId, List<PerVm> vms) {
 		}
     }
     
-    public static double calculateDataCenterLoad(Map<GeoDatacenter, List<PerVm>>  datacenter_vms) {
-	    double dcLoad = 0;
+  
+    public static List<MyVm> extractDataCenterVms(List<MyVm> allVMs, Integer DataCenterId) {
+        List<MyVm> selectedVMs = new ArrayList<>();
+        List<Integer> dc_vms_ids=perfomance.DCsVmsMap.get(DataCenterId);
+        for (MyVm vm : allVMs) {
+            if (dc_vms_ids.contains(vm.getId())) {
+                selectedVMs.add(vm);
+            }
+        }
 
-
-	    return dcLoad;
-	}
+        return selectedVMs;
+    }
+    
+    public static int findDatacenterIdForVm(int vmId) {
+        for (Map.Entry<Integer, List<Integer>> entry : perfomance.DCsVmsMap.entrySet()) {
+            if (entry.getValue().contains(vmId)) {
+                return entry.getKey();
+            }
+        }
+        return -1; // Default value if VM ID is not found
+    }
 }

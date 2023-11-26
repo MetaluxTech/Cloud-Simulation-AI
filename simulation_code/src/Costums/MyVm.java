@@ -12,10 +12,10 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.lists.VmList;
 
-public class PerVm extends Vm {
+public class MyVm extends Vm {
 	  private double load;
 
-	  public PerVm(int id, int userId, double mips, int numberOfPes, int ram, long bw, long size, String vmm, CloudletScheduler cloudletScheduler, double load) {
+	  public MyVm(int id, int userId, double mips, int numberOfPes, int ram, long bw, long size, String vmm, CloudletScheduler cloudletScheduler, double load) {
 	      super(id, userId, mips, numberOfPes, ram, bw, size, vmm, cloudletScheduler);
 	      this.load = load;
 	  }
@@ -25,6 +25,5 @@ public class PerVm extends Vm {
 	  }
 
 	  public void setLoad(double load) {
-	      this.load = load;
-	  }
+	      this.load = Math.round(load * 100.0) / 100.0;	  }
 	}

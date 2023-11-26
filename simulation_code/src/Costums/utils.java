@@ -14,10 +14,12 @@ import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
 
+import simulation_1.Simulator;
+
 public class utils {
 
 	  public static void DisplaySimulationEvents(List<GeoCloudlet> geoCloudletsList, List<GeoDatacenter> dcs_list) {
-		  
+		
 		  int size = geoCloudletsList.size();
 		  String status="SUCCESS";
 		  int VmId=0;
@@ -25,7 +27,7 @@ public class utils {
 		 
 			Log.printLine("	 ========== OUTPUT ==========");
 			//titles column
-			Log.printLine("Cloudlet ID\tSTATUS\tData centerID\tVM ID \t Tim \t Start Time\tFinish Time  distance(Km)");
+			Log.printLine("Cloudlet ID\tSTATUS\tData centerID\t VM ID \t Tim \t Start Time\tFinish Time  distance(Km)   DcLoad");
 
 			DecimalFormat dft = new DecimalFormat("###.##");
 			for (GeoCloudlet cloudlet:geoCloudletsList) {
@@ -34,10 +36,9 @@ public class utils {
 				VmId=cloudlet.getVmId();
 				int cloudlet_id= cloudlet.getCloudletId();
 				GeoDatacenter geodatacenter=tests.getDatacenterById(DataCenterId, dcs_list);
-				double dis=tests.calculateDistance(cloudlet,geodatacenter);
-//						  
-				 
-				
+				double dis=tests.calculateDistance(cloudlet,geodatacenter);				 
+				double load=geodatacenter.getLoad();				 
+							 
 				Log.printLine("\t" +cloudlet_id +"\t"
 								+status+"\t\t"						
 								+DataCenterId+"\t "
@@ -46,18 +47,19 @@ public class utils {
 								dft.format(cloudlet.getActualCPUTime()) +"\t\t"+
 								dft.format(cloudlet.getExecStartTime())+"\t"+
 								dft.format(cloudlet.getFinishTime())+"\t        "+
-								dis
+								dis+"     "+
+								load
+								
+							
 									);
-				}
-			
-			
+				}			
 		}
-	  public static void printResourcesList(List<GeoDatacenter> geoDataCentersList, List<Host> hosts_list, List<PerVm> vms_List,List<GeoCloudlet> tasks_List)  {
+	  public static void printResourcesList(List<GeoDatacenter> geoDataCentersList, List<Host> hosts_list, List<MyVm> vms_List,List<GeoCloudlet> tasks_List)  {
 		    List<Integer> datacenterIds = new ArrayList<>();
 		    List<Integer> hostIds = new ArrayList<>();
 		    List<Integer> vmIds = new ArrayList<>();
 		    List<Integer> cloudletIds = new ArrayList<>();
-
+		   
 		    for (Datacenter dc : geoDataCentersList) {
 		        datacenterIds.add(dc.getId());
 		        
@@ -81,5 +83,6 @@ public class utils {
 		    System.out.println("Cloudlet IDs: " + cloudletIds +"\n\n");
 		    
 		}
+	  
     
 }
