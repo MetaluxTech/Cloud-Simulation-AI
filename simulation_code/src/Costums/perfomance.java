@@ -38,6 +38,8 @@ public class perfomance {
 	    double cet = (exe * cpuCost) + (r * ramCost) + (st * storageCost) + (f * bandwidthCost);
 	    
 	    return Math.round(cet * 100.0) / 100.0;
+	    
+	    //8000
 	}
 
 	public static double calculateNetworkDelay(GeoCloudlet cloudlet, MyVm vm) {  // task delay
@@ -47,6 +49,8 @@ public class perfomance {
 	    double bw=vm.getBw();
 	    double delayN = lt /bw;
 	    return Math.round(delayN * 100.0) / 100.0;
+	    
+	    //2
 	}
 	public static double calculateLatency(GeoCloudlet cloudlet, GeoDatacenter dataCenter) {  // task latency
 		
@@ -54,11 +58,13 @@ public class perfomance {
 		double distance=tests.calculateDistance(cloudlet, dataCenter);
 		double latency=distance*n*2+cloudlet.getActualCPUTime();// Propagation time +processing time
 		return Math.round(latency * 100.0) / 100.0;
+		
+		//15
 	}
 
 	public static double calculateObjectiveFunction(double cet, double networkDelay, double dcLoad) {
-		
-	        double objectiveFunction = 0.4 * cet + 0.3 * networkDelay + 0.3 * dcLoad;
+		//50      of=0.4*8000/1000+0.3*5+0.7*15+distance delay
+	        double objectiveFunction = 0.4 * cet + 0.3 * networkDelay + 0.7 * dcLoad;
 	        objectiveFunction= Math.round(objectiveFunction * 100.0) / 100.0;
 		 return objectiveFunction;
 	}
@@ -67,7 +73,6 @@ public class perfomance {
 	    double MaxObjFunction = Double.MIN_VALUE;
 	    List<MyVm> dc_vms=null;
 	    for (GeoDatacenter dataCenter : dataCenters) {
-	        // Retrieve the costs from the data center
 	            double cet = calculateCET(cloudlet, dataCenter);
 	            dc_vms =tests.extractDataCenterVms(vms_list, dataCenter.getId());
 	            MyVm vm=tests.getVmWithLowestLoad(dc_vms);
@@ -82,7 +87,7 @@ public class perfomance {
 	            }
 	        }
 
-	      
+	  //the oblective function is the biggest    
 	    
 	    return tests.getDataCenterWithLowestLoad(dataCenters);
 //	    return bestDataCenter;//with lowest objective function

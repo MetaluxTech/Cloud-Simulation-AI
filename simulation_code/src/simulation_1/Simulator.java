@@ -44,11 +44,11 @@ public class Simulator {
     		hosts_list = new ArrayList<Host>();   	
     		dcs_load =new ArrayList<Double>();
     		
-        	
+        
             int numUsers =		 	1;
             int numDatacenters=		3;
             int numVMs=				9;
-            int numCloudlets=		600;
+            int numCloudlets=		900;
 
             Log.printLine("      Starting CloudSimulation   ");
 
@@ -86,13 +86,13 @@ public class Simulator {
 	             
 //	              
             }
+        
+            //create vms here   +++ create balance between tasks and DCs      
            
-
-            // create Cloudlets     
             for (int i=1;i<=numCloudlets;i++)
 			{ 	
             		int task_size = 					tests.getNextRandom(10, 100);
-					int task_out_size=					tests.getNextRandom(10, 100);
+					int task_out_size=					tests.getNextRandom(10, 20);
 					int task_length = 					tests.getNextRandom(10, 100);	
 					double taskLatit=					tests.generateRandomLatLon()[0];
 					double taskLong=					tests.generateRandomLatLon()[1];				
@@ -100,6 +100,7 @@ public class Simulator {
 					int task_pesNum=					1 ; 
 					
 					GeoCloudlet task= new GeoCloudlet(i, task_length, task_pesNum, task_size, task_out_size, full_utl_model, full_utl_model, full_utl_model, taskLatit, taskLong);
+					
 					task.setUserId(broker1.getId());							
 					tasks_List.add(task);
 					
@@ -108,12 +109,12 @@ public class Simulator {
 					
 					targetVms=tests.extractDataCenterVms(vms_List, best_dc.getId());
 					MyVm bestVm=tests.getVmWithLowestLoad(targetVms);
-					
 					bestVm.setLoad(bestVm.getLoad()+task_length);
 					best_dc.setLoad(best_dc.getLoad()+ task_length);
 					dcs_load.add( best_dc.getLoad());
+					
 					task.setVmId(bestVm.getId());//here is the best vm is lowest load on the vm
-				
+					
 			}
            
             broker1.submitVmList(vms_List);
@@ -123,7 +124,7 @@ public class Simulator {
             CloudSim.startSimulation();
             
             CloudSim.stopSimulation();
-             List<GeoCloudlet> geoClouletsList = broker1.getCloudletReceivedList();
+            List<GeoCloudlet> geoClouletsList = broker1.getCloudletReceivedList();
             utils.DisplaySimulationEvents(geoClouletsList,geoDataCentersList);
 
             
@@ -138,7 +139,7 @@ public class Simulator {
 //            
             Log.printLine("\n events saved successfully to text file path : "+txtFilePath);
             Log.printLine("\n events saved successfully to CSV file path : "+eventsCSVtFilePath);
-            Log.printLine("\n events saved successfully to CSV file path : "+resourcesCSVFilePath);
+            Log.printLine("\n resources saved successfully to CSV file path : "+resourcesCSVFilePath);
 //             
             
         } catch (Exception e) {

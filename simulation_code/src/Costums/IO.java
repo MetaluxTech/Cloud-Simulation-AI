@@ -22,7 +22,7 @@ public class IO {
 	        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 
 	        // Write the header
-	        writer.write("TaskID,TaskFileSize,TaskOutputFileSize,TaskFileLength,DistanceFromDataCenter,DataCenterCpuCost,DataCenterRamCost,DataCenterStorageCost,DataCenterBwCost,DataCenterTotalLoad,NetworkDelay,CET,ObjectiveFunction,DataCenterID");
+	        writer.write("TaskID,StartTime,TaskFileSize,TaskOutputFileSize,TaskFileLength,DistanceFromDataCenter,DataCenterCpuCost,DataCenterRamCost,DataCenterStorageCost,DataCenterBwCost,DataCenterTotalLoad,NetworkDelay,CET,ObjectiveFunction,DataCenterID");
 	        writer.newLine();
 
 	        // Write the data
@@ -37,8 +37,10 @@ public class IO {
 	            double networkDelay=perfomance.calculateNetworkDelay(cloudlet,vm);
 	            double CET=perfomance.calculateCET(cloudlet, geodatacenter);
 	            double ObjectiveFunction=perfomance.calculateObjectiveFunction(CET, networkDelay, dataCenterLoad);
-	            String data = cloudlet.getCloudletId() + "," +
-	                         
+	            String data =
+	            			  
+	            		      cloudlet.getCloudletId() + "," +
+                              cloudlet.getExecStartTime() + "," +
 	                          cloudlet.getCloudletFileSize() + "," +
 	                          cloudlet.getCloudletOutputSize() + "," +
 	                          cloudlet.getCloudletLength() + "," +
