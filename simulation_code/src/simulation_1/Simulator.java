@@ -3,6 +3,8 @@ package simulation_1;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+
 import org.cloudbus.cloudsim.CloudletScheduler;
 import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.CloudletSchedulerTimeShared;
@@ -32,7 +34,7 @@ public class Simulator {
 	private static List<MyVm> vms_List;
 	private static List<MyVm> targetVms;
 	private static List<GeoCloudlet> tasks_List;
-	
+
     public static void main(String[] args) {	
     	
         try {
@@ -48,10 +50,9 @@ public class Simulator {
             int numUsers =		 	1;
             int numDatacenters=		3;
             int numVMs=				9;
-            int numCloudlets=		900;
+            int numCloudlets=		200;
 
             Log.printLine("      Starting CloudSimulation   ");
-
             Calendar clndr = Calendar.getInstance();
             boolean trace_actions = false;
             CloudSim.init(numUsers,clndr,trace_actions);
@@ -63,8 +64,7 @@ public class Simulator {
 			for (int i=1;i<=numDatacenters;i++)
 			{	
 				GeoDatacenter dc=	simulation_functions.createDatacenter( "DC_"+Integer.toString(i),i);
-				geoDataCentersList.add(dc);
-				
+				geoDataCentersList.add(dc);	
 			
 				hosts_list.add(dc.getHostList().get(0));
 				
@@ -128,20 +128,18 @@ public class Simulator {
             utils.DisplaySimulationEvents(geoClouletsList,geoDataCentersList);
 
             
-            String txtFilePath="null";
-            String eventsCSVtFilePath="null";
-            String resourcesCSVFilePath="null";
+            String dataset1path="null";
+            String dataset2path="null";
+             
+           Map<GeoCloudlet, List<Double>> datasetObject =perfomance.getDatasetObject();
+           utils.printDatasetObject(datasetObject);
+           dataset2path=IO.saveDatasetObjectToCSV(datasetObject);
+           dataset1path=IO.SaveResourcesToCSV(geoClouletsList,geoDataCentersList,vms_List);
+//           resourcesCSVFilePath=IO.saveNewDatabase(geoClouletsList,geoDataCentersList,vms_List);
+           Log.printLine("\n new dataset saved successfully to CSV file path : "+dataset2path);
             
-            
-            txtFilePath=IO.SaveSimulationEvents(geoClouletsList,geoDataCentersList);
-            eventsCSVtFilePath=IO.SaveEventsToCSV(geoClouletsList);
-            resourcesCSVFilePath=IO.SaveResourcesToCSV(geoClouletsList,geoDataCentersList,vms_List);
-//            
-            Log.printLine("\n events saved successfully to text file path : "+txtFilePath);
-            Log.printLine("\n events saved successfully to CSV file path : "+eventsCSVtFilePath);
-            Log.printLine("\n resources saved successfully to CSV file path : "+resourcesCSVFilePath);
-//             
-            
+           
+           
         } catch (Exception e) {
             e.printStackTrace();
         }

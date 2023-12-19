@@ -12,16 +12,24 @@ import org.cloudbus.cloudsim.Vm;
 
 import simulation_1.Simulator;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 
 public class perfomance {
+	private static Map<GeoCloudlet, List<Double>> datasetObject = new HashMap<>();
 	 public static Map<Integer, List<Integer>> DCsVmsMap = Map.of(
               3, List.of(1, 2, 3 ),
               4, List.of(4, 5,6),
               5, List.of(7, 8, 9 )
-            
+              
                );
-          	
+       
+	 public static Map<GeoCloudlet, List<Double>> getDatasetObject(){	 
+		 return datasetObject;
+	 } 
+
+		
 	public static double calculateCET(GeoCloudlet cloudlet,GeoDatacenter dataCenter) // cost execution task
 	{
 		double cpuCost = dataCenter.getPublicCharacteristics().getCostPerMi();
@@ -72,6 +80,8 @@ public class perfomance {
 	    GeoDatacenter bestDataCenter = null;
 	    double MaxObjFunction = Double.MIN_VALUE;
 	    List<MyVm> dc_vms=null;
+	    List<Double> DCs_Load=new ArrayList<Double>();
+
 	    for (GeoDatacenter dataCenter : dataCenters) {
 	            double cet = calculateCET(cloudlet, dataCenter);
 	            dc_vms =tests.extractDataCenterVms(vms_list, dataCenter.getId());
@@ -79,15 +89,23 @@ public class perfomance {
 	            double networkDelay = calculateNetworkDelay(cloudlet, vm);
 	            double dcLoad = dataCenter.getLoad();
 	            double OF = calculateObjectiveFunction(cet, networkDelay, dcLoad);
-	           
+	            DCs_Load.add(dataCenter.getLoad());
 	            if (OF > MaxObjFunction) {
 	            	MaxObjFunction = OF;
-	                bestDataCenter = dataCenter;
+	            	bestDataCenter = dataCenter;
 
 	            }
 	        }
+	 
+	    DCs_Load.add( (double)  tests.getDataCenterWithLowestLoad(dataCenters).getId()-2);
+	    
+	    datasetObject.put(cloudlet, DCs_Load);
+	    
+	    DCs_Load=null;
+	    
+	    
 
-	  //the oblective function is the biggest    
+	  //the objective function is the biggest    
 	    
 	    return tests.getDataCenterWithLowestLoad(dataCenters);
 //	    return bestDataCenter;//with lowest objective function

@@ -84,5 +84,22 @@ public class utils {
 		    
 		}
 	  
-    
+		 public static void printDatasetObject(Map<GeoCloudlet, List<Double>> datasetObject) {
+		        System.out.printf("%-15s%-15s%-15s%-15s%-15s%n", "Cloudlet_ID", "DC1_OF", "DC2_OF", "DC3_OF","DataCenterId");
+
+		        for (Map.Entry<GeoCloudlet, List<Double>> entry : datasetObject.entrySet()) {
+		            GeoCloudlet cloudlet = entry.getKey();
+		            List<Double> dcOfList = entry.getValue();
+
+		            System.out.printf("%-15s", cloudlet.getCloudletId());
+
+		            for (Double dcOf : dcOfList) {
+		                System.out.printf("%-15s", dcOf);
+		            }
+
+		            System.out.println();
+		        }
+		    }
+
+		 
 }
