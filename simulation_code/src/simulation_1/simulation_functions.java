@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Datacenter;
@@ -148,18 +149,17 @@ public class simulation_functions {
 		    
 		}
   
-	  public static void printDatasetObject(Map<GeoCloudlet, List<Double>> datasetObject) {
-		        System.out.printf("%-15s%-15s%-15s%-15s%-15s%n", "Cloudlet_ID", "DC1_OF", "DC2_OF", "DC3_OF","DataCenterId");
+	  public static void printOFunctions(Map<GeoCloudlet, String> DCsOFunctions) {
+		  Log.printLine("of printer");    
+		  System.out.printf("%-15s%-15s%-15s%-15s%-15s%n", "Cloudlet_ID", "DCA_OF", "DCB_OF", "DCC_OF","DataCenterId");
 
-		        for (Map.Entry<GeoCloudlet, List<Double>> entry : datasetObject.entrySet()) {
+		        for (Entry<GeoCloudlet, String> entry : DCsOFunctions.entrySet()) {
 		            GeoCloudlet cloudlet = entry.getKey();
-		            List<Double> dcOfList = entry.getValue();
+		            String Ofunc_string = entry.getValue();
 
 		            System.out.printf("%-15s", cloudlet.getCloudletId());
-
-		            for (Double dcOf : dcOfList) {
-		                System.out.printf("%-15s", dcOf);
-		            }
+		            System.out.printf("%-15s", Ofunc_string);
+		            
 
 		            System.out.println();
 		        }

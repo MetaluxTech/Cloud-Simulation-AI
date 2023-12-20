@@ -20,19 +20,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 public class Results {
-	private static Map<GeoCloudlet, List<Double>> datasetObject = new HashMap<>();
+	 public static Map<GeoCloudlet,String > DCsOFunctions = new HashMap<>();
 	 public static Map<Integer, List<Integer>> DCsVmsMap = Map.of(
               3, List.of(1, 2, 3 ),
               4, List.of(4, 5,6),
               5, List.of(7, 8, 9 )
               
                );
-       
-	 public static Map<GeoCloudlet, List<Double>> getDatasetObject(){	 
-		 return datasetObject;
-	 } 
-
-		
+       	
 	public static double calculateCET(GeoCloudlet cloudlet,GeoDatacenter dataCenter) // cost execution task
 	{
 		double cpuCost = dataCenter.getPublicCharacteristics().getCostPerMi();
@@ -40,14 +35,12 @@ public class Results {
         double storageCost = dataCenter.getPublicCharacteristics().getCostPerStorage();
         double bandwidthCost = dataCenter.getPublicCharacteristics().getCostPerBw();
        
-		
-		
 	    double exe = cloudlet.getActualCPUTime();
 	    double r = cloudlet.getCloudletFileSize();
 	    double st = cloudlet.getCloudletOutputSize();
 	    double f = cloudlet.getCloudletFileSize();
 	    double cet = (exe * cpuCost) + (r * ramCost) + (st * storageCost) + (f * bandwidthCost);
-	    
+	    	cet=cet/100;
 	    return Math.round(cet * 100.0) / 100.0;
 	    
 	    //8000
@@ -59,11 +52,12 @@ public class Results {
 	    double lt = cloudlet.getCloudletLength();
 	    double bw=vm.getBw();
 	    double delayN = lt /bw;
+	    delayN=delayN*1.5;
 	    return Math.round(delayN * 100.0) / 100.0;
-	    
 	    //2
 	}
-	public static double calculateLatency(GeoCloudlet cloudlet, GeoDatacenter dataCenter) {  // task latency
+	
+	private static double calculateLatency(GeoCloudlet cloudlet, GeoDatacenter dataCenter) {  // task latency
 		
 		double n=5;// propogation time km per s
 		double distance=Tools.calculateDistance(cloudlet, dataCenter);
@@ -79,60 +73,39 @@ public class Results {
 	        objectiveFunction= Math.round(objectiveFunction * 100.0) / 100.0;
 		 return objectiveFunction;
 	}
-	public static GeoDatacenter getBestDataCenter(GeoCloudlet cloudlet, List<GeoDatacenter> dataCenters,List<MyVm> vms_list) {
-	    GeoDatacenter bestDataCenter = null;
-	    double MaxObjFunction = Double.MIN_VALUE;
+	
+	public static GeoDatacenter getBestDataCenter(GeoCloudlet cloudlet, List<GeoDatacenter> data_centers_list,List<MyVm> vms_list) {
+	    double MaxObjFunction = 99999999999999.0;
 	    List<MyVm> dc_vms=null;
-	    List<Double> DCs_Load=new ArrayList<Double>();
-
-	    for (GeoDatacenter dataCenter : dataCenters) {
-	            double cet = calculateCET(cloudlet, dataCenter);
-	            dc_vms =Tools.extractDataCenterVms(vms_list, dataCenter.getId());
-	            MyVm vm=Tools.getVmWithLowestLoad(dc_vms);
-	            double networkDelay = calculateNetworkDelay(cloudlet, vm);
-	            double dcLoad = dataCenter.getLoad();
-	            double OF = calculateObjectiveFunction(cet, networkDelay, dcLoad);
-	            DCs_Load.add(dataCenter.getLoad());
-	            if (OF > MaxObjFunction) {
-	            	MaxObjFunction = OF;
-	            	bestDataCenter = dataCenter;
+	    List<Double> OFunctions_array=new ArrayList<Double>();
+	    GeoDatacenter best_dc=null;
+	    String Ofunction_string="";
+	    for (GeoDatacenter dc : data_centers_list) {
+	    	double cet = calculateCET(cloudlet, dc);
+	        dc_vms =Tools.extractDataCenterVms(vms_list, dc.getId());
+	        MyVm vm=Tools.getVmWithLowestLoad(dc_vms);
+	        double networkDelay = calculateNetworkDelay(cloudlet, vm);
+	        double dcLoad = dc.getLoad();
+	        double OF = calculateObjectiveFunction(cet, networkDelay, dcLoad);
+	        Ofunction_string=Ofunction_string+cet+"+ "+networkDelay+"+ "+dcLoad+"= "+OF+"        ";
+	            if (OF < MaxObjFunction) {
+					best_dc=dc;
+					MaxObjFunction = OF;
 
 	            }
 	        }
-	 
-	    DCs_Load.add( (double)  Tools.getDataCenterWithLowestLoad(dataCenters).getId()-2);
-	    
-	    datasetObject.put(cloudlet, DCs_Load);
-	    
-	    DCs_Load=null;
+	    OFunctions_array.add((double) best_dc.getId());
+	    DCsOFunctions.put(cloudlet, Ofunction_string);
+	    OFunctions_array=null;
 	    
 	    
 
 	  //the objective function is the biggest    
 	    
-	    return Tools.getDataCenterWithLowestLoad(dataCenters);
-//	    return bestDataCenter;//with lowest objective function
+//	    return Tools.getDataCenterWithLowestLoad(data_centers_list);
+	    return best_dc;//with lowest objective function
 	}
 	
-	  public static double caculateOFToPrint(GeoDatacenter dataCenter, GeoCloudlet cloudlet, List<MyVm> vms_list) {
-	        // Retrieve the costs from the data center
-	        double cet = calculateCET(cloudlet, dataCenter);
-	        List<MyVm> dc_vms = Tools.extractDataCenterVms(vms_list, dataCenter.getId());
-	        MyVm vm = Tools.getVmWithLowestLoad(dc_vms);
-	        double networkDelay = calculateNetworkDelay(cloudlet, vm);
-	        double dcLoad = dataCenter.getLoad();
-
-	        // Customize this formula based on your specific requirements
-	        
-	        double objectiveFunction = 0.4 * cet + 0.3 * networkDelay + 0.3 * dcLoad;
-	        return Math.round(objectiveFunction * 100.0) / 100.0;
-	    }
-	    private static double normalize(double value, double minValue, double maxValue) {
-	        double num= (value - minValue) / (maxValue - minValue);
-	        
-	        return Math.round(num * 100.0) / 100.0;
-	    }
-
 
 	}
 	

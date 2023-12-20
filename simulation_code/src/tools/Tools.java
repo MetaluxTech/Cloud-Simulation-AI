@@ -26,65 +26,55 @@ public class Tools {
 
 	public static  double[] generateRandomLatLon() {
 	    Random random = new Random();
-
-	    // Generate random latitude (-90 to 90)
 	    double latitude = -90.0 + (90.0 - (-90.0)) * random.nextDouble();
-
-	    // Generate random longitude (-180 to 180)
 	    double longitude = -180.0 + (180.0 - (-180.0)) * random.nextDouble();
-
 	    return new double[]{latitude, longitude};
 	}
-
-	   public static int getNextRandom(int min, int max) {
+ 
+	public static int getNextRandom(int min, int max) {
 	       Random random = new Random();
 	       return random.nextInt(max - min + 1) + min;
 	   }
 
+	public static GeoDatacenter getDatacenterById(int  dataCenterId, List<GeoDatacenter> datacentersList) {
+		    for (GeoDatacenter dc : datacentersList) {
+		        if (dc.getId() == dataCenterId) {
+		        	return dc;
+		        }
+		    }
+		    return null;
+		}
 	
-
-public static GeoDatacenter getDatacenterById(int  dataCenterId, List<GeoDatacenter> datacentersList) {
+	public static MyVm getVmWithLowestLoad(List<MyVm> vms) {
+		MyVm LowestLoadVm=  vms.stream()
+		             .min(Comparator.comparing(MyVm::getLoad))
+		             .orElse(null);	
+			
+		return LowestLoadVm;
+		 
+		}
+	
+	public static GeoDatacenter getDataCenterWithLowestLoad(List<GeoDatacenter> dcs) {
 		
-	    for (GeoDatacenter dc : datacentersList) {
-	        if (dc.getId() == dataCenterId) {
-	        	return dc;
+		GeoDatacenter LowestLoadDc=  dcs.stream()
+		             .min(Comparator.comparing(GeoDatacenter::getLoad))
+		             .orElse(null);
+			
+		
+			return LowestLoadDc;
+		 
+		}
+	
+	public static MyVm getVMById(int  VmId, List<MyVm> vms) {
+		
+	    for (MyVm v : vms) {
+	        if (v.getId() == VmId) {
+	        	return v;
 	        }
 	    }
 	    return null;
 	}
-public static MyVm getVmWithLowestLoad(List<MyVm> vms) {
 	
-	MyVm LowestLoadVm=  vms.stream()
-	             .min(Comparator.comparing(MyVm::getLoad))
-	             .orElse(null);
-		
-	
-		return LowestLoadVm;
-	 
-	}
-
-public static GeoDatacenter getDataCenterWithLowestLoad(List<GeoDatacenter> dcs) {
-	
-	GeoDatacenter LowestLoadDc=  dcs.stream()
-	             .min(Comparator.comparing(GeoDatacenter::getLoad))
-	             .orElse(null);
-		
-	
-		return LowestLoadDc;
-	 
-	}
-
-public static MyVm getVMById(int  VmId, List<MyVm> vms) {
-	
-    for (MyVm v : vms) {
-        if (v.getId() == VmId) {
-        	return v;
-        }
-    }
-    return null;
-}
-
-
     public static double calculateDistance(GeoCloudlet geotask,GeoDatacenter geoDC) {
     	try {
     	double lat1=geotask.getLatitude();
@@ -117,7 +107,6 @@ public static MyVm getVMById(int  VmId, List<MyVm> vms) {
 		}
     }
     
-  
     public static List<MyVm> extractDataCenterVms(List<MyVm> allVMs, Integer DataCenterId) {
         List<MyVm> selectedVMs = new ArrayList<>();
         List<Integer> dc_vms_ids=Results.DCsVmsMap.get(DataCenterId);
@@ -138,5 +127,14 @@ public static MyVm getVMById(int  VmId, List<MyVm> vms) {
         }
         return -1; // Default value if VM ID is not found
     }
-		 
+	
+    public static double normalize(double value, double minValue, double maxValue) {
+        double num= (value - minValue) / (maxValue - minValue);
+        
+        return Math.round(num * 100.0) / 100.0;
+    }
+	
+  
+
+
 }

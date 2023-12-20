@@ -47,7 +47,7 @@ public class Simulator {
             int numUsers =		 	1;
             int numDatacenters=		3;
             int numVMs=				9;
-            int numCloudlets=		4;
+            int numCloudlets=		1000;
 
             Calendar clndr = Calendar.getInstance();
             boolean trace_actions = false;
@@ -67,9 +67,8 @@ public class Simulator {
             
             
             simulation_functions.DisplaySimulationEvents(broker1.getCloudletReceivedList(),geoDataCentersList);
-             
-            String   file_path=Excel.SaveResourcesToExcel("ss.csv",broker1.getCloudletReceivedList(),geoDataCentersList,vms_List); 
-            Log.printLine("\n dataset events saved successfully to :"+file_path);
+             simulation_functions.printOFunctions(Results.DCsOFunctions);  
+//            String   file_path=Excel.SaveResourcesToExcel("ss.csv",broker1.getCloudletReceivedList(),geoDataCentersList,vms_List); Log.printLine("\n dataset events saved successfully to :"+file_path);
              
            
            
@@ -91,17 +90,15 @@ public class Simulator {
 				int task_pesNum=					1 ; 
 				
 				GeoCloudlet task= new GeoCloudlet(i, task_length, task_pesNum, task_size, task_out_size, full_utl_model, full_utl_model, full_utl_model, taskLatit, taskLong);
-				
 				task.setUserId(broker1.getId());							
 				tasks_List.add(task);
 				
 				
 				GeoDatacenter best_dc =Results.getBestDataCenter(task, geoDataCentersList, vms_List);
-				
 				targetVms=Tools.extractDataCenterVms(vms_List, best_dc.getId());
 				MyVm bestVm=Tools.getVmWithLowestLoad(targetVms);
-				bestVm.setLoad(bestVm.getLoad()+task_length);
-				best_dc.setLoad(best_dc.getLoad()+ task_length);
+				bestVm.setLoad(bestVm.getLoad()+task_length/10);
+				best_dc.setLoad(best_dc.getLoad()+ task_length/10);
 				dcs_load.add( best_dc.getLoad());
 				
 				task.setVmId(bestVm.getId());//here is the best vm is lowest load on the vm
