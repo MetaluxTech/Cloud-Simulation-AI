@@ -50,13 +50,13 @@ public class IO {
 	    }
 	
 	public static String SaveResourcesToCSV(List<GeoCloudlet> geoCloudletsList, List<GeoDatacenter> dcs_list, List<MyVm> vms) {
-	    File file = new File("resources.csv"); // Path to the CSV file
+	    File file = new File("new_dataset1.csv"); // Path to the CSV file
 
 	    try {
 	        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 
 	        // Write the header
-	        writer.write("TaskID,StartTime,TaskFileSize,TaskOutputFileSize,TaskFileLength,DistanceFromDataCenter,DataCenterCpuCost,DataCenterRamCost,DataCenterStorageCost,DataCenterBwCost,DataCenterTotalLoad,NetworkDelay,CET,ObjectiveFunction,DataCenterID");
+	        writer.write("TaskID,StartTime,TaskFileSize,TaskOutputFileSize,TaskFileLength,UserLatitude,UserLongitude,DistanceFromDataCenter,DataCenterCpuCost,DataCenterRamCost,DataCenterStorageCost,DataCenterBwCost,DataCenterTotalLoad,NetworkDelay,CET,ObjectiveFunction,DataCenterID");
 	        writer.newLine();
 
 	        // Write the data
@@ -78,6 +78,8 @@ public class IO {
 	                          cloudlet.getCloudletFileSize() + "," +
 	                          cloudlet.getCloudletOutputSize() + "," +
 	                          cloudlet.getCloudletLength() + "," +
+	                          cloudlet.getLatitude() + "," +
+	                          cloudlet.getLongitude() + "," +
 	                          dis + "," +
 	                          characteristics.getCostPerSecond() + "," +
 	                          characteristics.getCostPerMem() + "," +

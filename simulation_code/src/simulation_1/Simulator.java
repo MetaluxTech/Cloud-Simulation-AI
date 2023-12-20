@@ -50,7 +50,7 @@ public class Simulator {
             int numUsers =		 	1;
             int numDatacenters=		3;
             int numVMs=				9;
-            int numCloudlets=		200;
+            int numCloudlets=		1000;
 
             Log.printLine("      Starting CloudSimulation   ");
             Calendar clndr = Calendar.getInstance();
@@ -128,16 +128,17 @@ public class Simulator {
             utils.DisplaySimulationEvents(geoClouletsList,geoDataCentersList);
 
             
-            String dataset1path="null";
-            String dataset2path="null";
+            String dataset_OF_path="null";
+            String dataset_tasks_path="null";
              
            Map<GeoCloudlet, List<Double>> datasetObject =perfomance.getDatasetObject();
            utils.printDatasetObject(datasetObject);
-           dataset2path=IO.saveDatasetObjectToCSV(datasetObject);
-           dataset1path=IO.SaveResourcesToCSV(geoClouletsList,geoDataCentersList,vms_List);
+           dataset_OF_path=IO.saveDatasetObjectToCSV(datasetObject);
+           dataset_tasks_path=IO.SaveResourcesToCSV(geoClouletsList,geoDataCentersList,vms_List);
 //           resourcesCSVFilePath=IO.saveNewDatabase(geoClouletsList,geoDataCentersList,vms_List);
-           Log.printLine("\n new dataset saved successfully to CSV file path : "+dataset2path);
-            
+           Log.printLine("\n tasks  DS saved successfully to CSV file path : "+dataset_OF_path);
+           Log.printLine("\n ObjFun DS saved successfully to CSV file path : "+dataset_tasks_path);
+             
            
            
         } catch (Exception e) {
