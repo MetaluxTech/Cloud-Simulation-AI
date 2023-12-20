@@ -1,5 +1,9 @@
-package Costums;
+package tools;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -12,8 +16,13 @@ import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
 
-public class tests {
-	
+import Costums.GeoCloudlet;
+import Costums.GeoDatacenter;
+import Costums.MyVm;
+import simulation_1.Simulator;
+
+public class Tools {
+
 
 	public static  double[] generateRandomLatLon() {
 	    Random random = new Random();
@@ -111,7 +120,7 @@ public static MyVm getVMById(int  VmId, List<MyVm> vms) {
   
     public static List<MyVm> extractDataCenterVms(List<MyVm> allVMs, Integer DataCenterId) {
         List<MyVm> selectedVMs = new ArrayList<>();
-        List<Integer> dc_vms_ids=perfomance.DCsVmsMap.get(DataCenterId);
+        List<Integer> dc_vms_ids=Results.DCsVmsMap.get(DataCenterId);
         for (MyVm vm : allVMs) {
             if (dc_vms_ids.contains(vm.getId())) {
                 selectedVMs.add(vm);
@@ -122,11 +131,12 @@ public static MyVm getVMById(int  VmId, List<MyVm> vms) {
     }
     
     public static int findDatacenterIdForVm(int vmId) {
-        for (Map.Entry<Integer, List<Integer>> entry : perfomance.DCsVmsMap.entrySet()) {
+        for (Map.Entry<Integer, List<Integer>> entry : Results.DCsVmsMap.entrySet()) {
             if (entry.getValue().contains(vmId)) {
                 return entry.getKey();
             }
         }
         return -1; // Default value if VM ID is not found
     }
+		 
 }

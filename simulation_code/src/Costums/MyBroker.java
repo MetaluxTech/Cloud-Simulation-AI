@@ -14,6 +14,8 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.lists.VmList;
+
+import tools.Tools;
 public class MyBroker extends DatacenterBroker {
 
     public MyBroker(String name) throws Exception {
@@ -77,7 +79,7 @@ public void createVmsInDatacenter(int datacenterId) {
 	
 	String datacenterName = CloudSim.getEntityName(datacenterId);
 	for (Vm vm : getVmList()) {
-		datacenterId=tests.findDatacenterIdForVm(vm.getId());
+		datacenterId=Tools.findDatacenterIdForVm(vm.getId());
 		if (!getVmsToDatacentersMap().containsKey(vm.getId())) {
 			Log.printLine(CloudSim.clock() + ": " + getName() + ": Trying to Create VM #" + vm.getId()
 					+ " in " + datacenterName);

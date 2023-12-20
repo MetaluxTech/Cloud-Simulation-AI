@@ -1,4 +1,4 @@
-package Costums;
+package tools;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,44 +13,16 @@ import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Vm;
 
-public class IO {
+import Costums.GeoCloudlet;
+import Costums.GeoDatacenter;
+import Costums.MyVm;
+
+public class Excel {
 	
 	
-	 public static String saveDatasetObjectToCSV(Map<GeoCloudlet, List<Double>> datasetObject) {
-	        File file = new File("newDataSet.csv");
-
-	        try {
-	            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-
-	            // Write the header
-	            writer.write("Cloudlet_ID,DC1_OF,DC2_OF,DC3_OF,DataCenterId");
-	            writer.newLine();
-
-	            // Write the data
-	            for (Map.Entry<GeoCloudlet, List<Double>> entry : datasetObject.entrySet()) {
-	                GeoCloudlet cloudlet = entry.getKey();
-	                List<Double> dcOfList = entry.getValue();
-
-	                StringBuilder data = new StringBuilder(cloudlet.getCloudletId());
-
-	                for (Double dcOf : dcOfList) {
-	                    data.append(",").append(dcOf);
-	                }
-
-	                writer.write(data.toString());
-	                writer.newLine();
-	            }
-
-	            writer.close();
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
-		    return file.getAbsolutePath();
-
-	    }
 	
-	public static String SaveResourcesToCSV(List<GeoCloudlet> geoCloudletsList, List<GeoDatacenter> dcs_list, List<MyVm> vms) {
-	    File file = new File("new_dataset1.csv"); // Path to the CSV file
+	public static String SaveResourcesToExcel(String dataset_name,List<GeoCloudlet> geoCloudletsList, List<GeoDatacenter> dcs_list, List<MyVm> vms) {
+	    File file = new File(dataset_name); // Path to the CSV file
 
 	    try {
 	        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
@@ -63,14 +35,14 @@ public class IO {
 	        for (GeoCloudlet cloudlet : geoCloudletsList) {
 	        	int DataCenterId = cloudlet.getResourceId();
 	        	int VmId = cloudlet.getVmId();
-	            GeoDatacenter geodatacenter = tests.getDatacenterById(DataCenterId, dcs_list);
-	            MyVm vm = tests.getVMById(VmId, vms);
-	            double dis = tests.calculateDistance(cloudlet, geodatacenter);
+	            GeoDatacenter geodatacenter = Tools.getDatacenterById(DataCenterId, dcs_list);
+	            MyVm vm = Tools.getVMById(VmId, vms);
+	            double dis =Tools.calculateDistance(cloudlet, geodatacenter);
 	            DatacenterCharacteristics characteristics = geodatacenter.getPublicCharacteristics();
 	            double dataCenterLoad=geodatacenter.getLoad();
-	            double networkDelay=perfomance.calculateNetworkDelay(cloudlet,vm);
-	            double CET=perfomance.calculateCET(cloudlet, geodatacenter);
-	            double ObjectiveFunction=perfomance.calculateObjectiveFunction(CET, networkDelay, dataCenterLoad);
+	            double networkDelay=Results.calculateNetworkDelay(cloudlet,vm);
+	            double CET=Results.calculateCET(cloudlet, geodatacenter);
+	            double ObjectiveFunction=Results.calculateObjectiveFunction(CET, networkDelay, dataCenterLoad);
 	            String data =
 	            			  
 	            		      cloudlet.getCloudletId() + "," +

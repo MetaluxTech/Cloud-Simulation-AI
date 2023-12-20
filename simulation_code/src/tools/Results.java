@@ -1,4 +1,4 @@
-package Costums;
+package tools;
 
 import java.util.List;
 import java.util.Map;
@@ -10,13 +10,16 @@ import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
 
+import Costums.GeoCloudlet;
+import Costums.GeoDatacenter;
+import Costums.MyVm;
 import simulation_1.Simulator;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 
-public class perfomance {
+public class Results {
 	private static Map<GeoCloudlet, List<Double>> datasetObject = new HashMap<>();
 	 public static Map<Integer, List<Integer>> DCsVmsMap = Map.of(
               3, List.of(1, 2, 3 ),
@@ -63,7 +66,7 @@ public class perfomance {
 	public static double calculateLatency(GeoCloudlet cloudlet, GeoDatacenter dataCenter) {  // task latency
 		
 		double n=5;// propogation time km per s
-		double distance=tests.calculateDistance(cloudlet, dataCenter);
+		double distance=Tools.calculateDistance(cloudlet, dataCenter);
 		double latency=distance*n*2+cloudlet.getActualCPUTime();// Propagation time +processing time
 		return Math.round(latency * 100.0) / 100.0;
 		
@@ -84,8 +87,8 @@ public class perfomance {
 
 	    for (GeoDatacenter dataCenter : dataCenters) {
 	            double cet = calculateCET(cloudlet, dataCenter);
-	            dc_vms =tests.extractDataCenterVms(vms_list, dataCenter.getId());
-	            MyVm vm=tests.getVmWithLowestLoad(dc_vms);
+	            dc_vms =Tools.extractDataCenterVms(vms_list, dataCenter.getId());
+	            MyVm vm=Tools.getVmWithLowestLoad(dc_vms);
 	            double networkDelay = calculateNetworkDelay(cloudlet, vm);
 	            double dcLoad = dataCenter.getLoad();
 	            double OF = calculateObjectiveFunction(cet, networkDelay, dcLoad);
@@ -97,7 +100,7 @@ public class perfomance {
 	            }
 	        }
 	 
-	    DCs_Load.add( (double)  tests.getDataCenterWithLowestLoad(dataCenters).getId()-2);
+	    DCs_Load.add( (double)  Tools.getDataCenterWithLowestLoad(dataCenters).getId()-2);
 	    
 	    datasetObject.put(cloudlet, DCs_Load);
 	    
@@ -107,15 +110,15 @@ public class perfomance {
 
 	  //the objective function is the biggest    
 	    
-	    return tests.getDataCenterWithLowestLoad(dataCenters);
+	    return Tools.getDataCenterWithLowestLoad(dataCenters);
 //	    return bestDataCenter;//with lowest objective function
 	}
 	
 	  public static double caculateOFToPrint(GeoDatacenter dataCenter, GeoCloudlet cloudlet, List<MyVm> vms_list) {
 	        // Retrieve the costs from the data center
 	        double cet = calculateCET(cloudlet, dataCenter);
-	        List<MyVm> dc_vms = tests.extractDataCenterVms(vms_list, dataCenter.getId());
-	        MyVm vm = tests.getVmWithLowestLoad(dc_vms);
+	        List<MyVm> dc_vms = Tools.extractDataCenterVms(vms_list, dataCenter.getId());
+	        MyVm vm = Tools.getVmWithLowestLoad(dc_vms);
 	        double networkDelay = calculateNetworkDelay(cloudlet, vm);
 	        double dcLoad = dataCenter.getLoad();
 
