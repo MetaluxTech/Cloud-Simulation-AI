@@ -13,3 +13,14 @@ what to do
 8- deploy the project on server
 9- build lstm-snake algorithm
 10- compare the results from two models
+
+
+
+
+Results Needed: 
+
+1- throughput                     * working
+2- Average Complete Time
+3- average Waiting Time
+4- SLA Violation Rate
+5- Negotiation Time

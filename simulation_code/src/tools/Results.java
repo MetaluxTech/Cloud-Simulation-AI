@@ -1,116 +1,58 @@
 package tools;
 
 import java.util.List;
-import java.util.Map;
-
 
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Vm;
 
 import Costums.GeoCloudlet;
-import Costums.GeoDatacenter;
-import Costums.MyVm;
-import simulation_1.Simulator;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 
 public class Results {
-	 public static Map<GeoCloudlet,String > DCsOFunctions = new HashMap<>();
-	 public static Map<Integer, List<Integer>> DCsVmsMap = Map.of(
-              3, List.of(1, 2, 3 ),
-              4, List.of(4, 5,6),
-              5, List.of(7, 8, 9 )
-              
-               );
-       	
-	public static double calculateCET(GeoCloudlet cloudlet,GeoDatacenter dataCenter) // cost execution task
-	{
-		double cpuCost = dataCenter.getPublicCharacteristics().getCostPerMi();
-        double ramCost = dataCenter.getPublicCharacteristics().getCostPerMem();
-        double storageCost = dataCenter.getPublicCharacteristics().getCostPerStorage();
-        double bandwidthCost = dataCenter.getPublicCharacteristics().getCostPerBw();
-       
-	    double exe = cloudlet.getActualCPUTime();
-	    double r = cloudlet.getCloudletFileSize();
-	    double st = cloudlet.getCloudletOutputSize();
-	    double f = cloudlet.getCloudletFileSize();
-	    double cet = (exe * cpuCost) + (r * ramCost) + (st * storageCost) + (f * bandwidthCost);
-	    	cet=cet/100;
-	    return Math.round(cet * 100.0) / 100.0;
-	    
-	    //8000
-	}
 
-	public static double calculateNetworkDelay(GeoCloudlet cloudlet, MyVm vm) {  // task delay
-	    // Task length in MI
-		
-	    double lt = cloudlet.getCloudletLength();
-	    double bw=vm.getBw();
-	    double delayN = lt /bw;
-	    delayN=delayN*1.5;
-	    return Math.round(delayN * 100.0) / 100.0;
-	    //2
-	}
-	
-	private static double calculateLatency(GeoCloudlet cloudlet, GeoDatacenter dataCenter) {  // task latency
-		
-		double n=5;// propogation time km per s
-		double distance=Tools.calculateDistance(cloudlet, dataCenter);
-		double latency=distance*n*2+cloudlet.getActualCPUTime();// Propagation time +processing time
-		return Math.round(latency * 100.0) / 100.0;
-		
-		//15
-	}
+    public static double calculateWaitingTime(List<GeoCloudlet> tasksList) {
+        // Calculate the average waiting time for all cloudlets
+        double totalWaitingTime = 0.0;
+        for (GeoCloudlet cloudlet : tasksList) {
+            totalWaitingTime += cloudlet.getWaitingTime();
+        }
+        return roun3DecimalValues(totalWaitingTime / tasksList.size());
+    }
 
-	public static double calculateObjectiveFunction(double cet, double networkDelay, double dcLoad) {
-		//50      of=0.4*8000/1000+0.3*5+0.7*15+distance delay
-	        double objectiveFunction = 0.4 * cet + 0.3 * networkDelay + 0.7 * dcLoad;
-	        objectiveFunction= Math.round(objectiveFunction * 100.0) / 100.0;
-		 return objectiveFunction;
-	}
-	
-	public static GeoDatacenter getBestDataCenter(GeoCloudlet cloudlet, List<GeoDatacenter> data_centers_list,List<MyVm> vms_list) {
-	    double MaxObjFunction = 99999999999999.0;
-	    List<MyVm> dc_vms=null;
-	    List<Double> OFunctions_array=new ArrayList<Double>();
-	    GeoDatacenter best_dc=null;
-	    String Ofunction_string="";
-	    for (GeoDatacenter dc : data_centers_list) {
-	    	double cet = calculateCET(cloudlet, dc);
-	        dc_vms =Tools.extractDataCenterVms(vms_list, dc.getId());
-	        MyVm vm=Tools.getVmWithLowestLoad(dc_vms);
-	        double networkDelay = calculateNetworkDelay(cloudlet, vm);
-	        double dcLoad = dc.getLoad();
-	        double OF = calculateObjectiveFunction(cet, networkDelay, dcLoad);
-	        Ofunction_string=Ofunction_string+cet+"+ "+networkDelay+"+ "+dcLoad+"= "+OF+"        ";
-	            if (OF < MaxObjFunction) {
-					best_dc=dc;
-					MaxObjFunction = OF;
+    public static double calculateAverageCompleteTime(List<GeoCloudlet> tasksList) {
+        // Calculate the average completion time for all cloudlets
+        double totalCompleteTime = 0.0;
+        for (GeoCloudlet cloudlet : tasksList) {
+            totalCompleteTime += cloudlet.getFinishTime() - cloudlet.getSubmissionTime();
+        }
+        return roun3DecimalValues(totalCompleteTime / tasksList.size());
+    }
 
-	            }
-	        }
-	    OFunctions_array.add((double) best_dc.getId());
-	    DCsOFunctions.put(cloudlet, Ofunction_string);
-	    OFunctions_array=null;
-	    
-	    
+    public static double calculateThroughput(List<GeoCloudlet> tasksList, double simulationDuration) {
+        // Calculate the throughput for all cloudlets
+        double totalTasks = tasksList.size();
+        return roun3DecimalValues(totalTasks / simulationDuration);
+    }
 
-	  //the objective function is the biggest    
-	    
-//	    return Tools.getDataCenterWithLowestLoad(data_centers_list);
-	    return best_dc;//with lowest objective function
-	}
-	
+    public static double calculateSlaViolationRate(List<GeoCloudlet> tasksList) {
+        // Calculate the SLA violation rate for all cloudlets
+        int violatedCount = 0;
+        for (GeoCloudlet cloudlet : tasksList) {
+            if (cloudlet.getCloudletStatus() != Cloudlet.SUCCESS) {
+                violatedCount++;
+            }
+        }
+        return roun3DecimalValues((double) violatedCount / tasksList.size());
+    }
 
-	}
-	
+    public static double calculateNegotiationTime(List<GeoCloudlet> tasksList) {
+        // Implement negotiation time calculation based on your simulation logic
+        // You might need additional information or logic specific to your application
+        // For example, you may need to check cloudlet status or timestamps.
+        // Implement the logic based on the requirements of your simulation.
+        // Return the result.
+        return roun3DecimalValues(0.0); // Replace with the actual result
+    }
 
-
-
-
-
+    private static double roun3DecimalValues(double value) {
+        return Math.round(value * 1000.0) / 1000.0;
+    }
+}

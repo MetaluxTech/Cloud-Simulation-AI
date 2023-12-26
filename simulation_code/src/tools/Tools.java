@@ -23,7 +23,9 @@ import simulation_1.Simulator;
 
 public class Tools {
 
-
+	public  void  print(String message) {
+		Log.printLine(message);
+	}
 	public static  double[] generateRandomLatLon() {
 	    Random random = new Random();
 	    double latitude = -90.0 + (90.0 - (-90.0)) * random.nextDouble();
@@ -109,7 +111,7 @@ public class Tools {
     
     public static List<MyVm> extractDataCenterVms(List<MyVm> allVMs, Integer DataCenterId) {
         List<MyVm> selectedVMs = new ArrayList<>();
-        List<Integer> dc_vms_ids=Results.DCsVmsMap.get(DataCenterId);
+        List<Integer> dc_vms_ids=Statistics.DCsVmsMap.get(DataCenterId);
         for (MyVm vm : allVMs) {
             if (dc_vms_ids.contains(vm.getId())) {
                 selectedVMs.add(vm);
@@ -120,7 +122,7 @@ public class Tools {
     }
     
     public static int findDatacenterIdForVm(int vmId) {
-        for (Map.Entry<Integer, List<Integer>> entry : Results.DCsVmsMap.entrySet()) {
+        for (Map.Entry<Integer, List<Integer>> entry : Statistics.DCsVmsMap.entrySet()) {
             if (entry.getValue().contains(vmId)) {
                 return entry.getKey();
             }
@@ -134,6 +136,19 @@ public class Tools {
         return Math.round(num * 100.0) / 100.0;
     }
 	
+    public static double getSimulationTime(List<GeoCloudlet> tasksList) {
+      
+        double latestFinishTime = Double.MIN_VALUE; // Initialize with the smallest possible value
+
+        for (GeoCloudlet cloudlet : tasksList) {
+            double finishTime = cloudlet.getFinishTime();
+            if (finishTime > latestFinishTime) {
+                latestFinishTime = finishTime;
+            }
+        }
+        return Math.round(latestFinishTime * 1000.0) / 1000.0;
+    }
+
   
 
 

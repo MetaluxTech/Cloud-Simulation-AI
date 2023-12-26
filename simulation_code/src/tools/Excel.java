@@ -40,9 +40,9 @@ public class Excel {
 	            double dis =Tools.calculateDistance(cloudlet, geodatacenter);
 	            DatacenterCharacteristics characteristics = geodatacenter.getPublicCharacteristics();
 	            double dataCenterLoad=geodatacenter.getLoad();
-	            double networkDelay=Results.calculateNetworkDelay(cloudlet,vm);
-	            double CET=Results.calculateCET(cloudlet, geodatacenter);
-	            double ObjectiveFunction=Results.calculateObjectiveFunction(CET, networkDelay, dataCenterLoad);
+	            double networkDelay=Statistics.calculateNetworkDelay(cloudlet,vm);
+	            double CET=Statistics.calculateCET(cloudlet, geodatacenter);
+	            double ObjectiveFunction=Statistics.calculateObjectiveFunction(CET, networkDelay, dataCenterLoad);
 	            String data =
 	            			  
 	            		      cloudlet.getCloudletId() + "," +
