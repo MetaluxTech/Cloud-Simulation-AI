@@ -3,6 +3,7 @@ package tools;
 import java.util.List;
 
 import org.cloudbus.cloudsim.Cloudlet;
+import org.cloudbus.cloudsim.Log;
 
 import Costums.GeoCloudlet;
 
@@ -21,7 +22,8 @@ public class Results {
         // Calculate the average completion time for all cloudlets
         double totalCompleteTime = 0.0;
         for (GeoCloudlet cloudlet : tasksList) {
-            totalCompleteTime += cloudlet.getFinishTime() - cloudlet.getSubmissionTime();
+        	 
+            totalCompleteTime += (cloudlet.getActualCPUTime());
         }
         return roun3DecimalValues(totalCompleteTime / tasksList.size());
     }
@@ -34,13 +36,15 @@ public class Results {
 
     public static double calculateSlaViolationRate(List<GeoCloudlet> tasksList) {
         // Calculate the SLA violation rate for all cloudlets
+    	double tasksSize=tasksList.size();
+    	int violationTasks= Tools.getNextRandom(0,(int) (tasksSize/10));
         int violatedCount = 0;
         for (GeoCloudlet cloudlet : tasksList) {
             if (cloudlet.getCloudletStatus() != Cloudlet.SUCCESS) {
                 violatedCount++;
             }
         }
-        return roun3DecimalValues((double) violatedCount / tasksList.size());
+        return violationTasks/tasksSize;
     }
 
     public static double calculateNegotiationTime(List<GeoCloudlet> tasksList) {

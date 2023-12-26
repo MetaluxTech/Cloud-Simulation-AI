@@ -91,7 +91,7 @@ public class simulation_functions {
 		 
 			Log.printLine("	 ========== OUTPUT ==========");
 			//titles column
-			Log.printLine("Cloudlet ID\tSTATUS\tData centerID\t VM ID \t Tim \t Start Time\tFinish Time  distance(Km)   DcLoad");
+			Log.printLine("Cloudlet ID\tSTATUS\tData centerID\t VM ID \t Time \t Start Time\tFinish Time  distance(Km)   DcLoad");
 
 			DecimalFormat dft = new DecimalFormat("###.##");
 			for (GeoCloudlet cloudlet:geoCloudletsList) {

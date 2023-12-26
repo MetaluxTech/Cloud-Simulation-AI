@@ -71,14 +71,26 @@ public class Simulator {
             simulation_functions.DisplaySimulationEvents(broker1.getCloudletReceivedList(),geoDataCentersList);
 //             simulation_functions.printOFunctions(Statistics.DCsOFunctions);  
 //            String   file_path=Excel.SaveResourcesToExcel("ss2.csv",broker1.getCloudletReceivedList(),geoDataCentersList,vms_List); Log.printLine("\n dataset events saved successfully to :"+file_path);
-           Double simulationTime=Tools.getSimulationTime(tasks_List);
+            Double simulationTime=Tools.getSimulationTime(tasks_List);
+           	double avgCompleteTime = Results.calculateAverageCompleteTime(tasks_List);
+            double avgWaitingTime = Results.calculateWaitingTime(tasks_List);
+            double avgThroughput = Results.calculateThroughput(tasks_List, simulationTime);
+            double avgSLAViolation = Results.calculateSlaViolationRate(tasks_List);
+            double avgNegotiationTime = Results.calculateNegotiationTime(tasks_List);
 
-           print("Average simulation Time: "+simulationTime);
-           print("Average Complete Time: "+Results.calculateAverageCompleteTime(tasks_List));
-           print("Average Waiting Time: "+Results.calculateWaitingTime(tasks_List));
-            print("Average Throughput: "+Results.calculateThroughput(tasks_List,simulationTime));
-            print("Average SLA Violation: "+Results.calculateAverageCompleteTime(tasks_List));
-            print("Average Negotiation Time: "+Results.calculateAverageCompleteTime(tasks_List));
+            // Save summary results to Excel
+            String ResultsFilePath = Excel.SaveResultsToExcel("Experimental_results_"+numCloudlets+".csv",
+                    tasks_List.size(), simulationTime, avgCompleteTime, avgWaitingTime,
+                    avgThroughput, avgSLAViolation, avgNegotiationTime);
+            print("number of Processed Tasks: "+numCloudlets);
+           	print("Total simulation Time: "+simulationTime);
+           	print("Average Complete Time: "+avgCompleteTime);
+           	print("Average Waiting Time: "+avgWaitingTime);
+            print("Average Throughput: "+avgThroughput);
+            print("Average SLA Violation: "+avgSLAViolation);
+            print("Average Negotiation Time: "+avgNegotiationTime);
+            
+            print(ResultsFilePath);
             } catch (Exception e) {
             e.printStackTrace();
         }
@@ -111,7 +123,7 @@ public class Simulator {
 		{ 	
 				int task_size = 					Tools.getNextRandom(10, 100);
 				int task_out_size=					Tools.getNextRandom(10, 20);
-				int task_length = 					Tools.getNextRandom(10, 100);	
+				int task_length = 					Tools.getNextRandom(10, 25);	
 				double taskLatit=					Tools.generateRandomLatLon()[0];
 				double taskLong=					Tools.generateRandomLatLon()[1];				
 				UtilizationModel full_utl_model=	new UtilizationModelFull();

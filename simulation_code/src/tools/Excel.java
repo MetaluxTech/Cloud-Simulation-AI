@@ -75,5 +75,24 @@ public class Excel {
 	    return file.getAbsolutePath();
 	}
 
+	public static String SaveResultsToExcel(String dataset_name, int numProcessedTasks, double simulationTime,
+	        double avgCompleteTime, double avgWaitingTime, double avgThroughput, double avgSLAViolation,
+	        double avgNegotiationTime) {
+	    File file = new File(dataset_name);
+
+	    try {
+	        BufferedWriter writer = new BufferedWriter(new FileWriter(file)); 
+	        writer.write("Number of Processed Tasks,Total Simulation Time,Average Completion Time,Average Waiting Time, Average Throughput,Average SLA Violation,  Average Negotiation Time\n");
+            writer.write(String.format("%d,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n",
+                                    numProcessedTasks, simulationTime, avgCompleteTime, avgWaitingTime, avgThroughput, avgSLAViolation, avgNegotiationTime));
+     
+	        writer.close();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+
+	    return file.getAbsolutePath();
+	}
+
 
 }
