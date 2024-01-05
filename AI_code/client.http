@@ -6,12 +6,11 @@ POST http://127.0.0.1:5000/process_data
 Content-Type: application/json
 
 {
-  "client_name": "Thanoon",
+  "client_name": "essam",
   "data": {
     "TaskID": 11,
     "TaskFileSize": 20,
     "TaskOutputFileSize": 11,
     "TaskFileLength": 29
-
   }
 }

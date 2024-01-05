@@ -1,4 +1,5 @@
 # %%
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -11,18 +12,15 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from keras.models import save_model, load_model
 
-
 from gaft import GAEngine
 from gaft.components import BinaryIndividual, Population
 from gaft.operators import RouletteWheelSelection, UniformCrossover, FlipBitMutation
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import EarlyStopping,Callback
-
+from keras.models import Sequential
+from keras.optimizers import Adam
+from keras.callbacks import EarlyStopping,Callback
 
 # %%
 df = pd.read_csv('dataset\Task_DataSet.csv')
-
 
 X = df.drop(columns=['DataCenterID'])
 y = df['DataCenterID']
@@ -30,12 +28,9 @@ y = df['DataCenterID']
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-
-
 # Split data into training and validation sets
 X_train, X_val, y_train, y_val = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 print(df.columns)
-
 
 # %%
 
@@ -49,6 +44,7 @@ X_train_lstm = X_train.reshape(X_train.shape[0], 1, X_train.shape[1])
 X_val_lstm = X_val.reshape(X_val.shape[0], 1, X_val.shape[1])
 
 #this params values from GA algorithm
+
 model = Sequential()
 model.add(LSTM(units=int(54), input_shape=(1, X_train.shape[1]), return_sequences=True))
 model.add(LSTM(units=int(62)))
@@ -62,7 +58,6 @@ history=model.fit(X_train_lstm, y_train, epochs=120, batch_size=18, validation_d
 # %%
 
 X_test_lstm = X_val.reshape(X_val.shape[0], 1, X_val.shape[1])
-
 loss, accuracy = model.evaluate(X_test_lstm, y_val)
 print(f'Test Loss: {loss:.4f}')
 print(f'Test Accuracy: {accuracy*100:.2f}%')
