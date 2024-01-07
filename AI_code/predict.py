@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
-import tensorflow as tf
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 
 def predict_datacenter_id(task_info, model_name="models/lstm87.keras"):
     expected_feature_count = 4
@@ -41,5 +40,4 @@ def GetDatacenterCharacterestic(taskInfo,datacenter_id):
     except Exception as e:
         raise Exception(f"Error reading CSV file: {str(e)}")
 
-    # If the given datacenter_id is not found in the CSV file
     raise Exception(f"DataCenterID {datacenter_id} not found in the dataset")
