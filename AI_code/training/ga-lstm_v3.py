@@ -1,4 +1,4 @@
-# %%
+
 
 import pandas as pd
 import numpy as np
@@ -9,19 +9,18 @@ from keras.models import Sequential
 from keras.layers import LSTM, Dense , Dropout
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-from keras.models import save_model, load_model
-
+from sklearn.metrics import classification_report, confusion_matrix
+from keras.models import load_model
 from gaft import GAEngine
 from gaft.components import BinaryIndividual, Population
 from gaft.operators import RouletteWheelSelection, UniformCrossover, FlipBitMutation
 from keras.models import Sequential
 from keras.optimizers import Adam
-from keras.callbacks import EarlyStopping,Callback
+from keras.callbacks import EarlyStopping
 
-# %%
-df = pd.read_csv('dataset\Task_DataSet.csv')
 
+df = pd.read_csv('dataset\Task_DataSet.csv'
+new_df=df.to_csv("ss.csv")
 X = df.drop(columns=['DataCenterID'])
 y = df['DataCenterID']
 
@@ -30,19 +29,19 @@ X_scaled = scaler.fit_transform(X)
 
 # Split data into training and validation sets
 X_train, X_val, y_train, y_val = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
-print(df.columns)
+print(df.colu
+      mns)
 
-# %%
-
+# write function to ge                                                                                                              
+                                
 label_encoder = LabelEncoder()
 y_train_encoded = label_encoder.fit_transform(y_train)
 y_val_encoded = label_encoder.transform(y_val)
 
-# %%
+
 # Reshape data for LSTM input (assuming a time series sequence length of 1)
 X_train_lstm = X_train.reshape(X_train.shape[0], 1, X_train.shape[1])
 X_val_lstm = X_val.reshape(X_val.shape[0], 1, X_val.shape[1])
-
 #this params values from GA algorithm
 
 model = Sequential()
@@ -55,7 +54,7 @@ early_stopping = EarlyStopping(monitor='accuracy', patience=10, restore_best_wei
 history=model.fit(X_train_lstm, y_train, epochs=120, batch_size=18, validation_data=(X_val_lstm, y_val), callbacks=[early_stopping])
 
 
-# %%
+
 
 X_test_lstm = X_val.reshape(X_val.shape[0], 1, X_val.shape[1])
 loss, accuracy = model.evaluate(X_test_lstm, y_val)
@@ -66,7 +65,7 @@ y_pred = model.predict(X_test_lstm)
 y_pred_classes = np.argmax(y_pred, axis=1)
 
 
-# %%
+
 print("\nClassification Report:")
 print(classification_report(y_val, y_pred_classes))
 
@@ -83,10 +82,10 @@ plt.show()
 
 
 
-# %%
+
 # model.save('models\lstm87.keras')
 
-# %%
+
 def predict_datacenter_id(requested_array,model_name):
     data_dict = {
         "TaskID": requested_array[0],
@@ -114,7 +113,7 @@ predicted_datacenter_id = predict_datacenter_id(requested_array,"models\lstm87.k
 print(f"Predicted DataCenterID: {predicted_datacenter_id}")
 
 
-# %%
+
 # Define the LSTM model
 def create_and_train_model(units1, units2, dropout_rate, learning_rate, epochs, batch_size):
     print("\n\nNew generation training start. Parameters:")
@@ -164,7 +163,7 @@ def fitness(indv):
 engine.run(ng=50)
 
 
-# %%
+
 # ipynb-py-convert ga_lstm_v3.ipynb ga_lstm_v3_pyconverted.py
 
-# %%
+
