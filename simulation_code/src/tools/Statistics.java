@@ -57,19 +57,20 @@ public class Statistics {
 	    //2
 	}
 	
-	private static double calculateLatency(GeoCloudlet cloudlet, GeoDatacenter dataCenter) {  // task latency
+	public static double calculateLatency(GeoCloudlet cloudlet, GeoDatacenter dataCenter) {  // task latency
 		
 		double n=5;// propogation time km per s
 		double distance=Tools.calculateDistance(cloudlet, dataCenter);
 		double latency=distance*n*2+cloudlet.getActualCPUTime();// Propagation time +processing time
-		return Math.round(latency * 100.0) / 100.0;
+		latency= Math.round(latency * 100.0) / 100.0;
+		return latency/10000;
 		
 		//15
 	}
 
-	public static double calculateObjectiveFunction(double cet, double networkDelay, double dcLoad) {
+	public static double calculateObjectiveFunction(double cet, double networkDelay, double dcLoad,double latency) {
 		//50      of=0.4*8000/1000+0.3*5+0.7*15+distance delay
-	        double objectiveFunction = 0.4 * cet + 0.3 * networkDelay + 0.7 * dcLoad;
+	        double objectiveFunction = 0.4 * cet + 0.3 * networkDelay + 0.7 * dcLoad+latency;
 	        objectiveFunction= Math.round(objectiveFunction * 100.0) / 100.0;
 		 return objectiveFunction;
 	}
@@ -85,10 +86,10 @@ public class Statistics {
 	        dc_vms =Tools.extractDataCenterVms(vms_list, dc.getId());
 	        MyVm vm=Tools.getVmWithLowestLoad(dc_vms);
 	        double networkDelay = calculateNetworkDelay(cloudlet, vm);
+	        double networkLatency=calculateLatency(cloudlet, dc);
 	        double dcLoad = dc.getLoad();
-	        double OF = calculateObjectiveFunction(cet, networkDelay, dcLoad);
-	        Ofunction_string=Ofunction_string+cet+"+ "+networkDelay+"+ "+dcLoad+"= "+OF+"        ";
-	            if (OF < MaxObjFunction) {
+	        double OF = calculateObjectiveFunction(cet, networkDelay, dcLoad,networkLatency);
+	        Ofunction_string=Ofunction_string+cet+"+ "+networkDelay+"+ "+dcLoad+"+ "+networkLatency+"= "+OF+"        ";	            if (OF < MaxObjFunction) {
 					best_dc=dc;
 					MaxObjFunction = OF;
 

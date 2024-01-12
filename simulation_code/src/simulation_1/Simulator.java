@@ -50,7 +50,7 @@ public class Simulator {
             int numUsers =		 	1;
             int numDatacenters=		3;
             int numVMs=				9;
-            int numCloudlets=		50;
+            int numCloudlets=		2000;
 
             Calendar clndr = Calendar.getInstance();
             boolean trace_actions = false;
@@ -59,8 +59,31 @@ public class Simulator {
             MyBroker   broker1=new MyBroker("broker1");          
 			createDataCenters(numDatacenters);
             createVms(numVMs, broker1);
-            createCloudlets(numCloudlets, broker1);
-           
+        	for (int i=1;i<=numCloudlets;i++)
+    		{ 	
+    				int task_size = 					Tools.getNextRandom(10, 100);
+    				int task_out_size=					Tools.getNextRandom(10, 20);
+    				int task_length = 					Tools.getNextRandom(10, 25);	
+    				double taskLatit=					Tools.generateRandomLatLon()[0];
+    				double taskLong=					Tools.generateRandomLatLon()[1];				
+    				UtilizationModel full_utl_model=	new UtilizationModelFull();
+    				int task_pesNum=					1 ; 
+    				
+    				GeoCloudlet task= new GeoCloudlet(i, task_length, task_pesNum, task_size, task_out_size, full_utl_model, full_utl_model, full_utl_model, taskLatit, taskLong);
+    				task.setUserId(broker1.getId());							
+    				tasks_List.add(task);
+    				
+    				
+    				GeoDatacenter best_dc =Statistics.getBestDataCenter(task, geoDataCentersList, vms_List);
+    				targetVms=Tools.extractDataCenterVms(vms_List, best_dc.getId());
+    				MyVm bestVm=Tools.getVmWithLowestLoad(targetVms);
+    				bestVm.setLoad(bestVm.getLoad()+task_length/10);
+    				best_dc.setLoad(best_dc.getLoad()+ task_length/10);
+    				dcs_load.add( best_dc.getLoad());
+    				
+    				task.setVmId(bestVm.getId());//here is the best vm is lowest load on the vm
+    				
+    		}
             broker1.submitVmList(vms_List);
             broker1.submitCloudletList(tasks_List); 
 
@@ -69,28 +92,11 @@ public class Simulator {
              CloudSim.stopSimulation();
            
             simulation_functions.DisplaySimulationEvents(broker1.getCloudletReceivedList(),geoDataCentersList);
-//             simulation_functions.printOFunctions(Statistics.DCsOFunctions);  
-//            String   file_path=Excel.SaveResourcesToExcel("ss2.csv",broker1.getCloudletReceivedList(),geoDataCentersList,vms_List); Log.printLine("\n dataset events saved successfully to :"+file_path);
-            Double simulationTime=Tools.getSimulationTime(tasks_List);
-           	double avgCompleteTime = Results.calculateAverageCompleteTime(tasks_List);
-            double avgWaitingTime = Results.calculateWaitingTime(tasks_List);
-            double avgThroughput = Results.calculateThroughput(tasks_List, simulationTime);
-            double avgSLAViolation = Results.calculateSlaViolationRate(tasks_List);
-            double avgNegotiationTime = Results.calculateNegotiationTime(tasks_List);
-
-            // Save summary results to Excel
-            String ResultsFilePath = Excel.SaveResultsToExcel("Experimental_results_"+numCloudlets+".csv",
-                    tasks_List.size(), simulationTime, avgCompleteTime, avgWaitingTime,
-                    avgThroughput, avgSLAViolation, avgNegotiationTime);
-            print("number of Processed Tasks: "+numCloudlets);
-           	print("Total simulation Time: "+simulationTime);
-           	print("Average Complete Time: "+avgCompleteTime);
-           	print("Average Waiting Time: "+avgWaitingTime);
-            print("Average Throughput: "+avgThroughput);
-            print("Average SLA Violation: "+avgSLAViolation);
-            print("Average Negotiation Time: "+avgNegotiationTime);
-            
-            print(ResultsFilePath);
+             simulation_functions.printOFunctions(Statistics.DCsOFunctions);  
+             String path=Excel.SaveResourcesToExcel("a.csv",tasks_List,geoDataCentersList,vms_List);
+             print("path: "+path);
+             // Save summary results to Excel
+           
             } catch (Exception e) {
             e.printStackTrace();
         }
@@ -118,33 +124,6 @@ public class Simulator {
  * %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  */
     
-	private static void createCloudlets(int numCloudlets, MyBroker broker1) {
-		for (int i=1;i<=numCloudlets;i++)
-		{ 	
-				int task_size = 					Tools.getNextRandom(10, 100);
-				int task_out_size=					Tools.getNextRandom(10, 20);
-				int task_length = 					Tools.getNextRandom(10, 25);	
-				double taskLatit=					Tools.generateRandomLatLon()[0];
-				double taskLong=					Tools.generateRandomLatLon()[1];				
-				UtilizationModel full_utl_model=	new UtilizationModelFull();
-				int task_pesNum=					1 ; 
-				
-				GeoCloudlet task= new GeoCloudlet(i, task_length, task_pesNum, task_size, task_out_size, full_utl_model, full_utl_model, full_utl_model, taskLatit, taskLong);
-				task.setUserId(broker1.getId());							
-				tasks_List.add(task);
-				
-				
-				GeoDatacenter best_dc =Statistics.getBestDataCenter(task, geoDataCentersList, vms_List);
-				targetVms=Tools.extractDataCenterVms(vms_List, best_dc.getId());
-				MyVm bestVm=Tools.getVmWithLowestLoad(targetVms);
-				bestVm.setLoad(bestVm.getLoad()+task_length/10);
-				best_dc.setLoad(best_dc.getLoad()+ task_length/10);
-				dcs_load.add( best_dc.getLoad());
-				
-				task.setVmId(bestVm.getId());//here is the best vm is lowest load on the vm
-				
-		}
-	}
 
 	private static void createDataCenters(int numDatacenters) {
 		for (int i=1;i<=numDatacenters;i++)

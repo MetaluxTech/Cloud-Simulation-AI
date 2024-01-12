@@ -41,8 +41,9 @@ public class Excel {
 	            DatacenterCharacteristics characteristics = geodatacenter.getPublicCharacteristics();
 	            double dataCenterLoad=geodatacenter.getLoad();
 	            double networkDelay=Statistics.calculateNetworkDelay(cloudlet,vm);
+	            double networkLatency=Statistics.calculateLatency(cloudlet,geodatacenter);
 	            double CET=Statistics.calculateCET(cloudlet, geodatacenter);
-	            double ObjectiveFunction=Statistics.calculateObjectiveFunction(CET, networkDelay, dataCenterLoad);
+	            double ObjectiveFunction=Statistics.calculateObjectiveFunction(CET, networkDelay, dataCenterLoad,networkLatency);
 	            String data =
 	            			  
 	            		      cloudlet.getCloudletId() + "," +

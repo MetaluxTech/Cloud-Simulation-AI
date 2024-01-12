@@ -150,15 +150,15 @@ public class simulation_functions {
 		}
   
 	  public static void printOFunctions(Map<GeoCloudlet, String> DCsOFunctions) {
-		  Log.printLine("of printer");    
-		  System.out.printf("%-15s%-15s%-15s%-15s%-15s%n", "Cloudlet_ID", "DCA_OF", "DCB_OF", "DCC_OF","DataCenterId");
+		  System.out.printf("\n\n\n%-10s%-1s%-10s%-10s%-1s%n", "Cld_ID", "DC #3", "DC #4", "DC #5","DC #");
 
 		        for (Entry<GeoCloudlet, String> entry : DCsOFunctions.entrySet()) {
 		            GeoCloudlet cloudlet = entry.getKey();
 		            String Ofunc_string = entry.getValue();
 
-		            System.out.printf("%-15s", cloudlet.getCloudletId());
-		            System.out.printf("%-15s", Ofunc_string);
+		            System.out.printf("%-1s", cloudlet.getCloudletId());
+		            System.out.printf("%-1s", Ofunc_string);
+		            System.out.printf("        %-15s", entry.getKey().getResourceId());
 		            
 
 		            System.out.println();

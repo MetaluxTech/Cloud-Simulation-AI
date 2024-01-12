@@ -1,5 +1,5 @@
 
-## create by rest apideactivate
+## create by rest api
 
 from flask import Flask, request, jsonify
 from datetime import datetime
