@@ -18,6 +18,7 @@ import Costums.GeoCloudlet;
 import Costums.GeoDatacenter;
 import Costums.MyBroker;
 import Costums.MyVm;
+import tools.AI;
 import tools.Excel;
 import tools.Statistics;
 import tools.Results;
@@ -34,23 +35,25 @@ public class Simulator {
 	private static List<MyVm> targetVms;
 	private static List<GeoCloudlet> tasks_List;
 
-    public static void main(String[] args) {	
+    @SuppressWarnings("unused")
+	public static void main(String[] args) {	
     	
         try {
         	
         	Log.printLine("hi");
+        	boolean useIAToPredictDataCenter=false;
             vms_List = new ArrayList<MyVm>();
         	targetVms = new ArrayList<MyVm>();
         	tasks_List = new ArrayList<GeoCloudlet>();
         	geoDataCentersList = new ArrayList<GeoDatacenter>();
     		hosts_list = new ArrayList<Host>();   	
     		dcs_load =new ArrayList<Double>();
-    		
+    		GeoDatacenter best_dc=null;
         
             int numUsers =		 	1;
             int numDatacenters=		3;
             int numVMs=				9;
-            int numCloudlets=		2000;
+            int numCloudlets=		10;
 
             Calendar clndr = Calendar.getInstance();
             boolean trace_actions = false;
@@ -73,10 +76,16 @@ public class Simulator {
     				task.setUserId(broker1.getId());							
     				tasks_List.add(task);
     				
-    				
-    				GeoDatacenter best_dc =Statistics.getBestDataCenter(task, geoDataCentersList, vms_List);
-    				targetVms=Tools.extractDataCenterVms(vms_List, best_dc.getId());
-    				MyVm bestVm=Tools.getVmWithLowestLoad(targetVms);
+    				if(useIAToPredictDataCenter)
+    				{
+    					best_dc =AI.PredictBestDataCenter(task=task,modelName"snake_lstm90.keras");
+    					best_dc =AI.PredictBestDataCenter(task=task,modelName"ga_lstm90.keras");
+        				}
+    				else {
+    					best_dc =Statistics.getBestDataCenter(task, geoDataCentersList, vms_List);
+        				
+    				}
+    				MyVm bestVm=Tools.getVmWithLowestLoad(Tools.extractDataCenterVms(vms_List, best_dc.getId()));
     				bestVm.setLoad(bestVm.getLoad()+task_length/10);
     				best_dc.setLoad(best_dc.getLoad()+ task_length/10);
     				dcs_load.add( best_dc.getLoad());
@@ -92,9 +101,6 @@ public class Simulator {
              CloudSim.stopSimulation();
            
             simulation_functions.DisplaySimulationEvents(broker1.getCloudletReceivedList(),geoDataCentersList);
-             simulation_functions.printOFunctions(Statistics.DCsOFunctions);  
-             String path=Excel.SaveResourcesToExcel("a.csv",tasks_List,geoDataCentersList,vms_List);
-             print("path: "+path);
              // Save summary results to Excel
            
             } catch (Exception e) {

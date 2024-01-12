@@ -2,15 +2,16 @@
 
 
 
-POST http://127.0.0.1:5000/process_data
+POST http://127.0.0.1:5000/get_dataCenterId
 Content-Type: application/json
 
 {
-  "client_name": "essam",
+  "client_name": "thanoon",
   "data": {
-    "TaskID": 11,
-    "TaskFileSize": 20,
+    "TaskFileSize": 152,
     "TaskOutputFileSize": 11,
-    "TaskFileLength": 29
+    "TaskFileLength": 424,
+    "UserLatitude": 11,
+    "UserLongitude": 11
   }
 }
