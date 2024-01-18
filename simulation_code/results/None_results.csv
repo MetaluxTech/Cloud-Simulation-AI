@@ -1,0 +1,9 @@
+Number of Processed Tasks,Total Simulation Time,Average Completion Time,Average Waiting Time, Average Throughput,Average SLA Violation,  Average Negotiation Time
+50,0.98,0.11,0.26,51.02,0.08,0.0
+100,1.53,0.11,0.57,65.45,0.04,0.0
+150,2.08,0.11,0.86,72.12,0.05,0.0
+200,3.17,0.11,1.2,63.01,0.03,0.0
+250,3.4,0.11,1.48,73.53,0.04,0.0
+300,4.17,0.11,1.79,71.94,0.06,0.0
+350,5.04,0.11,2.1,69.39,0.08,0.0
+400,5.37,0.11,2.41,74.43,0.09,0.0
