@@ -2,6 +2,7 @@ package simulation_1;
 
 import java.awt.print.Printable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -24,13 +25,13 @@ import tools.Statistics;
 import tools.Results;
 import server.API;
 import tools.Tools;
+
 public class Simulator {
 	private static List<GeoDatacenter> geoDataCentersList;
 	private static List<Host> hosts_list;
 	public static List<Double> dcs_load;
 	public static List<String> string_dcsOF;
 	public static List<String> string_dc_Load;
-	
 	private static List<MyVm> vms_List;
 	private static List<MyVm> targetVms;
 	private static List<GeoCloudlet> tasks_List;
@@ -40,9 +41,9 @@ public class Simulator {
     	
         try {
         	
-        	Log.printLine("hi");
-        	boolean useIAToPredictDataCenter=false;
-            vms_List = new ArrayList<MyVm>();
+        	boolean useIAToPredictDataCenter=true;
+        	List<Integer> taskinfo = new ArrayList<Integer>();
+        	vms_List = new ArrayList<MyVm>();
         	targetVms = new ArrayList<MyVm>();
         	tasks_List = new ArrayList<GeoCloudlet>();
         	geoDataCentersList = new ArrayList<GeoDatacenter>();
@@ -75,16 +76,22 @@ public class Simulator {
     				GeoCloudlet task= new GeoCloudlet(i, task_length, task_pesNum, task_size, task_out_size, full_utl_model, full_utl_model, full_utl_model, taskLatit, taskLong);
     				task.setUserId(broker1.getId());							
     				tasks_List.add(task);
-    				
+    				if (i==numCloudlets-1) {
+    					
+    				print("last task: "+ task.getCloudletId()+" size: "+task.getCloudletOutputSize()+ " var size: "+task_out_size);	
+    				}
     				if(useIAToPredictDataCenter)
     				{
-    					best_dc =AI.PredictBestDataCenter(task=task,modelName"snake_lstm90.keras");
-    					best_dc =AI.PredictBestDataCenter(task=task,modelName"ga_lstm90.keras");
+    					List<Integer> task_info = Arrays.asList(5, 6, 7, 8);  // Create a temporary list
+//    					int best_dc_id =AI.GA_PredictDataCenter(task_info,"snake_lstm90.keras");
+//    					int best_dc_id =AI.PredictBestDataCenter(task_info,"ga_lstm90.keras");
+    					
+//    					best_dc=Tools.getDatacenterById(best_dc_id, geoDataCentersList);
         				}
     				else {
     					best_dc =Statistics.getBestDataCenter(task, geoDataCentersList, vms_List);
         				
-    				}
+    					}
     				MyVm bestVm=Tools.getVmWithLowestLoad(Tools.extractDataCenterVms(vms_List, best_dc.getId()));
     				bestVm.setLoad(bestVm.getLoad()+task_length/10);
     				best_dc.setLoad(best_dc.getLoad()+ task_length/10);
@@ -96,6 +103,7 @@ public class Simulator {
             broker1.submitVmList(vms_List);
             broker1.submitCloudletList(tasks_List); 
 
+            
             CloudSim.startSimulation();
             
              CloudSim.stopSimulation();

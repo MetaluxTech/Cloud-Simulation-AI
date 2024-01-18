@@ -1,16 +1,13 @@
 package tools;
 
-import Costums.GeoCloudlet;
+import java.util.List;
 
 public class AI {
 
-	
-	public static int PredictBestDataCenter(GeoCloudlet task, String modelName) {
-		int predictedId=2;
-
-	    // Assuming task_info is a numerical array
-	   
-	   
-	    return predictedId + 3;
-	  }
+	public static void GA_PredictDataCenter(List<Integer> task_info) {
+		
+	}
+	public static void SNAKE_PredictDataCenter() {
+		
+	}
 }
