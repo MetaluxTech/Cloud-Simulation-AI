@@ -39,15 +39,14 @@ public class simulation_functions {
 			List<Host> hostList = new ArrayList<Host>();
 			List<Pe> peList = new ArrayList<Pe>();
 			LinkedList<Storage> storageList = new LinkedList<Storage>(); 
+		
 			
-			
-			double DcLatit=			Tools.generateRandomLatLon()[0];
-			double DcLongt=			Tools.generateRandomLatLon()[1];
-			int hostMips =			Tools.getNextRandom(5000, 15000); //miiliion instruction per sec
-			int hostRam = 			Tools.getNextRandom(128, 256);         //host memory (MB)
-			long hostStorage = 		Tools.getNextRandom(1024, 64000);; //host storage in ( GB )
-			int hostBw = 			Tools.getNextRandom(250, 1000);;  //MBPs
-			
+			double DcLatit=			67.22677605837688;
+			double DcLongt=			76.5628888295758;
+			int hostMips =			8000; //miiliion instruction per sec
+			int hostRam = 			164;         //host memory (MB)
+			long hostStorage = 		50000; //host storage in ( GB )
+			int hostBw = 			800;  //MBPs
 			peList.add(new Pe(0, new PeProvisionerSimple(hostMips))); // need to store Pe id and MIPS Rating
 			VmScheduler schudler=			new VmSchedulerTimeShared(peList);
 			
@@ -60,10 +59,10 @@ public class simulation_functions {
 			String os = 				"Linux"; // operating system
 			String vmm = 				"Xen";
 			double time_zone = 			10.0; // time zone this resource located
-			double cost = 				Tools.getNextRandom(10, 50);; // the cost of using processing in this resource
-			double costPerMem = 		Tools.getNextRandom(1, 10);; // the cost of using memory in this resource
-			double costPerStorage = 	Tools.getNextRandom(1, 10);; // the cost of using storage in this// resource
-			double costPerBw =			Tools.getNextRandom(1, 10);; // the cost of using bw in this resource
+			double cost = 				40; // the cost of using processing in this resource
+			double costPerMem = 		5; // the cost of using memory in this resource
+			double costPerStorage = 	7; // the cost of using storage in this// resource
+			double costPerBw =			10; // the cost of using bw in this resource
 			DatacenterCharacteristics characteristics = new DatacenterCharacteristics( arch, os, vmm, hostList, time_zone, cost, costPerMem,costPerStorage, costPerBw);			
 			
 			
