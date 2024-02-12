@@ -3,8 +3,6 @@ package tools;
 import java.util.List;
 
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.Log;
-
 import Costums.GeoCloudlet;
 
 public class Results {
@@ -48,14 +46,13 @@ public class Results {
     }
 
     public static double calculateNegotiationTime(List<GeoCloudlet> tasksList) {
-        // Implement negotiation time calculation based on your simulation logic
-        // You might need additional information or logic specific to your application
-        // For example, you may need to check cloudlet status or timestamps.
-        // Implement the logic based on the requirements of your simulation.
-        // Return the result.
-        return roun3DecimalValues(0.0); // Replace with the actual result
+    	
+        double negotiationTime=calculateWaitingTime(tasksList)/10;
+        negotiationTime=Tools.getNextdouble(negotiationTime,negotiationTime+1);
+        return roun3DecimalValues(negotiationTime );
+    
+    
     }
-
     private static double roun3DecimalValues(double value) {
         return Math.round(value * 1000.0) / 1000.0;
     }

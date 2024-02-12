@@ -43,6 +43,8 @@ public class AI {
 	                    Predicted_DC_ID = Integer.parseInt(rowData[6]);  //GA predicted DataCenter
 	                } else if (modelName.equals("SNAKE")) {
 	                    Predicted_DC_ID = Integer.parseInt(rowData[7]);  //SNAKE predicted DataCenter
+	                } else if (modelName.equals("New_Model")) {
+	                    Predicted_DC_ID = Integer.parseInt(rowData[8]);  //New Model predicted DataCenter
 	                }
 	                GeoDatacenter dc = Tools.getDatacenterById(Predicted_DC_ID, DCList);
 	                return dc;

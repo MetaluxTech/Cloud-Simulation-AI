@@ -40,12 +40,12 @@ public class Simulator {
     	
         try {
         	
-        	String modelName="FUNCTIONS";//GA or SNAKE or NONE or FUNCTIONS
+        	String modelName="NONE";//GA or SNAKE or NONE or FUNCTIONS or New_Model
         	
             int numUsers =		 	1;
             int numDatacenters=		3;
             int numVMs=				9;
-            int numCloudlets=		350;
+            int numCloudlets=		400;
             
             
             int best_dc_id=-1;
@@ -93,6 +93,9 @@ public class Simulator {
     					else if (modelName=="SNAKE"){
     						best_dc =AI.PredictBestDataCenter(task,geoDataCentersList,"SNAKE");
     					}
+    					else if (modelName=="New_Model"){
+    						best_dc =AI.PredictBestDataCenter(task,geoDataCentersList,"New_Model");
+    					}
     					else {
     						best_dc_id= -1;
     					}
@@ -125,8 +128,15 @@ public class Simulator {
             double avgNegotiationTime = Results.calculateNegotiationTime(tasks_List);
 
             // Save summary results to Excel
-            String ResultsFilePath = Excel.SaveResultsToExcel("results/"+modelName+"_results_"+numCloudlets+".csv",
-                    tasks_List.size(), simulationTime, avgCompleteTime, avgWaitingTime,
+            String Excel_name="results/"+modelName+"_results_"+numCloudlets+".csv";
+            if (numCloudlets==(50))
+            {
+            	Excel_name="results/"+modelName+"_results_050"+".csv";
+            }
+                
+            String ResultsFilePath = Excel.SaveResultsToExcel(Excel_name,
+           
+            		tasks_List.size(), simulationTime, avgCompleteTime, avgWaitingTime,
                     avgThroughput, avgSLAViolation, avgNegotiationTime);
             print("number of Processed Tasks: "+numCloudlets);
            	print("Total simulation Time: "+simulationTime);

@@ -37,6 +37,10 @@ public class Tools {
 	       Random random = new Random();
 	       return random.nextInt(max - min + 1) + min;
 	   }
+	public static double getNextdouble(double min, double max) {
+		Random RANDOM = new Random();
+        return min + ((max - min) * RANDOM.nextDouble());
+    }
 
 	public static GeoDatacenter getDatacenterById(int  dataCenterId, List<GeoDatacenter> datacentersList) {
 		    for (GeoDatacenter dc : datacentersList) {
