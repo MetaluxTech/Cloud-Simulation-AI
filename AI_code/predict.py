@@ -1,15 +1,25 @@
 import pandas as pd
+import seaborn as sns
 import numpy as np
-import tensorflow as tf
-from keras.models import load_model
+import matplotlib.pyplot as plt
 
+from sklearn.preprocessing import StandardScaler,LabelEncoder
+from sklearn.preprocessing import StandardScaler,LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from keras.models import Sequential,load_model
+from keras.layers import LSTM, Dense,Dropout,Bidirectional
+from keras.utils import to_categorical
+from keras.optimizers import Adam
+from keras.callbacks import EarlyStopping
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning, module="tensorflow")
+warnings.resetwarnings()
 df_path                 ="AI_code/dataset/distance_dataset.csv"
 predicted_df_path       =("AI_code/dataset/predictedDataBase.csv")
 ga_model           =load_model("AI_code/models/ga_model_86.keras")
 snake_model        =load_model("AI_code/models/snake_model_91.keras")
 new_model        =load_model("AI_code/models/model2.keras")
-
-
 
 df = pd.read_csv(df_path)  
 
@@ -29,9 +39,6 @@ def SavePredictedDataBase(df, features_cols, ):
     ga_predicted_ids = np.argmax(ga_predictions, axis=1) + 3  # Get predicted IDs and adjust
     snake_predicted_ids = np.argmax(snake_prediction, axis=1) + 3  # Get predicted IDs and adjust
     new_model_predicted_ids = np.argmax(new_model_prediction, axis=1) + 3  # Get predicted IDs and adjust
-    pip install notebook
-pip install notebook
-pip install notebook
 
     df['GA_predicted_DC'] = ga_predicted_ids  # Add predictions to the DataFrame
     df['SNAKE_predicted_DC'] = snake_predicted_ids  # Add predictions to the DataFrame
