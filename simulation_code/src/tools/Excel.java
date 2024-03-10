@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +24,10 @@ import Costums.MyVm;
 
 public class Excel {
 	
-	public static String[] LoadTaskData(int rowID) {
-
-		String datasetpath="C:/Users/mohsal/Desktop/app/metalux/cloudsim/ga_lstm/AI_code/dataset/predictedDataBase.csv";
+	public static String[] LoadTaskData(String prepredicted_dataset_path,int rowID) {
+        Path projectpath = Paths.get(System.getProperty("user.dir")).getParent();
+		
+        String datasetpath = projectpath + prepredicted_dataset_path;
 		
 	    try (BufferedReader br = new BufferedReader(new FileReader(datasetpath))) {
 	        String line;
@@ -45,7 +48,7 @@ public class Excel {
 	
 	
 	
-	public static String saveSimulationTasks(List<GeoCloudlet> taskList,String dataset_name ) {
+	public static String SaveSupressedTrainingDataSet(List<GeoCloudlet> taskList,String dataset_name ) {
 		   File file = new File(dataset_name);
 
 		    try {
@@ -75,7 +78,7 @@ public class Excel {
 		}
 		
 	
-	public static String SaveResourcesToExcel(String dataset_name,List<GeoCloudlet> geoCloudletsList, List<GeoDatacenter> dcs_list, List<MyVm> vms) {
+	public static String SaveTrainingDataSet(String dataset_name,List<GeoCloudlet> geoCloudletsList, List<GeoDatacenter> dcs_list, List<MyVm> vms) {
 	    File file = new File(dataset_name); // Path to the CSV file
 
 	    try {
@@ -94,10 +97,10 @@ public class Excel {
 	            double dis =Tools.calculateDistance(cloudlet, geodatacenter);
 	            DatacenterCharacteristics characteristics = geodatacenter.getPublicCharacteristics();
 	            double dataCenterLoad=geodatacenter.getLoad();
-	            double networkDelay=Statistics.calculateNetworkDelay(cloudlet,vm);
-	            double networkLatency=Statistics.calculateLatency(cloudlet,geodatacenter);
-	            double CET=Statistics.calculateCET(cloudlet, geodatacenter);
-	            double ObjectiveFunction=Statistics.calculateObjectiveFunction(CET, networkDelay, dataCenterLoad,networkLatency);
+	            double networkDelay=DCs_Caculations.calculateNetworkDelay(cloudlet,vm);
+	            double networkLatency=DCs_Caculations.calculateLatency(cloudlet,geodatacenter);
+	            double CET=DCs_Caculations.calculateCET(cloudlet, geodatacenter);
+	            double ObjectiveFunction=DCs_Caculations.calculateObjectiveFunction(CET, networkDelay, dataCenterLoad,networkLatency);
 	            String data =
 	            			  
 	            		      cloudlet.getCloudletId() + "," +
@@ -130,7 +133,7 @@ public class Excel {
 	    return file.getAbsolutePath();
 	}
 
-	public static String SaveResultsToExcel(String dataset_name, int numProcessedTasks, double simulationTime,
+	public static String SaveExperimentDataSet(String dataset_name, int numProcessedTasks, double simulationTime,
 	        double avgCompleteTime, double avgWaitingTime, double avgThroughput, double avgSLAViolation,
 	        double avgNegotiationTime) {
 	    File file = new File(dataset_name);

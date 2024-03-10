@@ -1,0 +1,68 @@
+{
+    "todohighlight.isEnable": true,
+    "todohighlight.isCaseSensitive": true,
+    "todohighlight.keywords": [
+        {
+            "text": "TODO", 
+            "before": {
+                "contentText": "👻" // adds text before the highlight
+            }, 
+            "color": "green",
+            "backgroundColor": "#fff", // INFO: setting the last parameter to zero (alpha channel) disables the background colour
+            "border": "none",
+            "isWholeLine": false,
+        },
+        {
+            "text": "DONE", 
+            "before": {
+                "contentText": "🤖" // adds text before the highlight
+            }, 
+            "color": "white",
+            "backgroundColor": "green", // INFO: setting the last parameter to zero (alpha channel) disables the background colour
+            "border": "none",
+            "isWholeLine": false,
+        },
+        {
+            "text": "WORKING", 
+            "before": {
+                "contentText": "😀" // adds text before the highlight
+            }, 
+            "color": "green",
+            "backgroundColor": "yellow", // INFO: setting the last parameter to zero (alpha channel) disables the background colour
+            "border": "none",
+            "isWholeLine": false
+        },
+        {
+            "text": "NEEDEDIT", 
+            "before": {
+                "contentText": "⚠️" // adds text before the highlight
+            }, 
+          
+            "color": "red",
+            "border": "1px solid red",
+            "borderRadius": "2px", // NOTE: use borderRadius along with `border` or you will see nothing change
+            "backgroundColor": "rgba(0,0,0,.2)",
+            "diagnosticSeverity": "warning" // Set diagnostic severity to `none`, `information`, `warning` or `error`
+        },
+     
+     
+    ],
+    "todohighlight.defaultStyle": {
+        "color": "red",
+        "backgroundColor": "#ffab00",
+        "overviewRulerColor": "#ffab00",
+        "cursor": "pointer",
+        "border": "1px solid #eee",
+        "borderRadius": "2px",
+        "isWholeLine": false,
+    },
+
+    "todohighlight.maxFilesForSearch": 5120,
+    "todohighlight.toggleURI": false,
+    "todohighlight.exclude": [
+        "**/settings.json/**",
+        "**/json/**",
+    ]
+
+}
+

@@ -34,19 +34,38 @@ import tools.Tools;
 public class simulation_functions {
 
 	
-	  public static GeoDatacenter createDatacenter( String name, int hostId) {
+	  public static GeoDatacenter createDatacenter( String name, int hostId, boolean use_randome_values) {
 		  
 			List<Host> hostList = new ArrayList<Host>();
 			List<Pe> peList = new ArrayList<Pe>();
 			LinkedList<Storage> storageList = new LinkedList<Storage>(); 
-		
+				double DcLatit, DcLongt;
+				int hostMips,hostRam;
+				long hostStorage,hostBw;
 			
-			double DcLatit=			67.22677605837688;
-			double DcLongt=			76.5628888295758;
-			int hostMips =			8000; //miiliion instruction per sec
-			int hostRam = 			164;         //host memory (MB)
-			long hostStorage = 		50000; //host storage in ( GB )
-			int hostBw = 			800;  //MBPs
+				if (use_randome_values) 
+			{
+
+				 DcLatit=			Tools.generateRandomLatLon()[0];
+				 DcLongt=			Tools.generateRandomLatLon()[1];
+				 hostMips =			Tools.getNextRandom(5000, 15000); //miiliion instruction per sec
+				 hostRam = 			Tools.getNextRandom(128, 256);         //host memory (MB)
+				 hostStorage = 		Tools.getNextRandom(1024, 64000);; //host storage in ( GB )
+				 hostBw = 			Tools.getNextRandom(250, 1000);;  //MBPs
+				
+				
+				Log.printLine("dsad");
+			}else {
+				
+				 DcLatit=			67.22677605837688;
+				 DcLongt=			76.5628888295758;
+				 hostMips =			8000; 
+				 hostRam = 			164;        
+				 hostStorage = 		50000; 
+				 hostBw = 			800;  
+				
+			}
+	  
 			peList.add(new Pe(0, new PeProvisionerSimple(hostMips))); // need to store Pe id and MIPS Rating
 			VmScheduler schudler=			new VmSchedulerTimeShared(peList);
 			
