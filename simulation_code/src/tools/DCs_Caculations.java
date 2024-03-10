@@ -10,9 +10,9 @@ import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
 
-import Costums.CustomCloudlet;
-import Costums.CustomDataCenter;
-import Costums.CustomVM;
+import Costums_elements.CustomCloudlet;
+import Costums_elements.CustomDataCenter;
+import Costums_elements.CustomVM;
 import simulation_1.Simulator;
 
 import java.util.ArrayList;
@@ -75,7 +75,7 @@ public class DCs_Caculations {
 		 return objectiveFunction;
 	}
 	
-	public static CustomDataCenter getBestDataCenter(CustomCloudlet cloudlet, List<CustomDataCenter> data_centers_list,List<CustomVM> vms_list) {
+	public static CustomDataCenter getBestDataCenterByFunctions(CustomCloudlet cloudlet, List<CustomDataCenter> data_centers_list,List<CustomVM> vms_list) {
 	    double MaxObjFunction = 99999999999999.0;
 	    List<CustomVM> dc_vms=null;
 	    List<Double> OFunctions_array=new ArrayList<Double>();

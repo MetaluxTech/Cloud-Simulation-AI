@@ -8,10 +8,10 @@ import java.util.Map;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.core.CloudSim;
 
-import Costums.CustomCloudlet;
-import Costums.CustomDataCenter;
-import Costums.CustomBroker;
-import Costums.CustomVM;
+import Costums_elements.CustomBroker;
+import Costums_elements.CustomCloudlet;
+import Costums_elements.CustomDataCenter;
+import Costums_elements.CustomVM;
 import tools.FileManager;
 import tools.Results;
 
@@ -28,18 +28,17 @@ public class Simulator {
 
 //		  create	simulation variables
 			boolean use_randome_values = false;
-			boolean save_trining = true;
+			boolean save_trining = false;
 			boolean save_cloudlets_specifications = false;
 			boolean save_expereiment = false;
 			boolean print_model_quality = false;
 			boolean display_simulation_timing_spesifications = true;
-			
-			String modelName = "NONE";
 
+        	String modelName="FUNCTIONS";//GA or SNAKE or NONE or FUNCTIONS or New_Model
 			int numUsers = 1;
 			int numDatacenters = 3;
 			int numVMs = 9;
-			int numCloudlets = 5;
+			int numCloudlets = 500;
 
 //			create simulation arrays
 			vmsList = new ArrayList<CustomVM>();
@@ -56,7 +55,9 @@ public class Simulator {
 			broker = ElementsCreation.createBroker("broker1");
 			datacentersList = ElementsCreation.createDatacenters(numDatacenters, use_randome_values);
 			vmsList = ElementsCreation.createVms(numVMs, broker, use_randome_values);
-			tasksList = ElementsCreation.createCloudlets(numCloudlets, broker, use_randome_values);
+			
+			
+			tasksList = ElementsCreation.createCloudlets(numCloudlets, broker,modelName,datacentersList,vmsList, use_randome_values);
 
 //			submit tasks and vms .....
 			broker.submitVmList(vmsList);
@@ -81,7 +82,6 @@ public class Simulator {
 			if (save_expereiment) {
 				FileManager.SaveExperimentDataSet("experiement_result/" + modelName + "_results_" + numCloudlets + ".csv", tasksList);
 			}
-			Log.printLine("datacetertasks: "+ datacentersList.get(0).getVmList());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

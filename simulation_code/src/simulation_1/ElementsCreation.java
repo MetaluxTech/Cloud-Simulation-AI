@@ -9,7 +9,6 @@ import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Pe;
 import org.cloudbus.cloudsim.Storage;
 import org.cloudbus.cloudsim.VmAllocationPolicy;
@@ -19,24 +18,32 @@ import org.cloudbus.cloudsim.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
+
+import Costums_elements.CustomBroker;
+import Costums_elements.CustomCloudlet;
+import Costums_elements.CustomDataCenter;
+import Costums_elements.CustomVM;
+
 import org.cloudbus.cloudsim.UtilizationModel;
 import org.cloudbus.cloudsim.UtilizationModelFull;
 
-import Costums.CustomCloudlet;
-import Costums.CustomDataCenter;
-import Costums.CustomBroker;
-import Costums.CustomVM;
+import tools.AI;
+import tools.DCs_Caculations;
 import tools.FileManager;
 import tools.Utils;
+import tools.VMS_Caculations;
 
 public class ElementsCreation {
-	public static List<CustomCloudlet> createCloudlets(int numCloudlets, CustomBroker broker, boolean use_random_values) {
+	public static List<CustomCloudlet> createCloudlets(int numCloudlets, CustomBroker broker, String modelName, List<CustomDataCenter> datacentersList, List<CustomVM> vmsList, boolean use_random_values) {
 		// Initialize tasksList with an empty ArrayList
 		List<CustomCloudlet> tasksList = new ArrayList<>();
 		int task_id,task_size, task_out_size, task_length;
 		double taskLatit, taskLong;
-
+		CustomDataCenter best_dc=null;
+		CustomVM best_vm=null;
+		List <CustomVM> datacenterVms=new ArrayList<CustomVM>();
 		for (int i = 1; i <= numCloudlets; i++) {
+			
 			if (use_random_values) {
 				task_id=i;
 				task_size = Utils.getNextRandom(10, 100);
@@ -61,9 +68,40 @@ public class ElementsCreation {
 			CustomCloudlet task = new CustomCloudlet(task_id, task_length, task_pesNum, task_size, task_out_size, full_utl_model,
 					full_utl_model, full_utl_model, taskLatit, taskLong);
 			task.setUserId(broker.getId());
+			
+			
+			
+			if(modelName=="FUNCTIONS"){
+				best_dc =DCs_Caculations.getBestDataCenterByFunctions(task, datacentersList, vmsList);
+}
+				else if (modelName=="NONE"){
+				best_dc=Utils.getDatacenterById(Utils.getNextRandom(3, datacentersList.size()+2), datacentersList);
+				}
+				else if (modelName=="GA"){
+					best_dc =AI.PredictBestDataCenter(task,datacentersList,"GA");
+				}
+				else if (modelName=="SNAKE"){
+					best_dc =AI.PredictBestDataCenter(task,datacentersList,"SNAKE");
+				}
+				else if (modelName=="New_Model"){
+					best_dc =AI.PredictBestDataCenter(task,datacentersList,"New_Model");
+				}
+				else {
+					best_dc= null;
+				}
+			
+			
+			datacenterVms=Utils.extractDataCenterVms(vmsList,best_dc.getId());
+//			best_vm=VMS_Caculations.getBestVMByRank(task, datacentersList, datacenterVms);
+			best_vm=Utils.getVmWithLowestLoad(datacenterVms);
+			task.setVmId(best_vm.getId());
+			
+			best_vm.setLoad(best_vm.getLoad()+task_length/10);
+			best_dc.setLoad(best_dc.getLoad()+ task_length/10);
+			
+			
 			tasksList.add(task);
 			
-
 		}
 		return tasksList;
 	}

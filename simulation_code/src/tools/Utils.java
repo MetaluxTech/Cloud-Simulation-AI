@@ -7,9 +7,10 @@ import java.util.Map;
 import java.util.Random;
 
 import org.cloudbus.cloudsim.Log;
-import Costums.CustomCloudlet;
-import Costums.CustomDataCenter;
-import Costums.CustomVM;
+
+import Costums_elements.CustomCloudlet;
+import Costums_elements.CustomDataCenter;
+import Costums_elements.CustomVM;
 
 public class Utils {
 

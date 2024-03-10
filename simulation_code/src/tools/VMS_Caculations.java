@@ -10,9 +10,9 @@ import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
 
-import Costums.CustomCloudlet;
-import Costums.CustomDataCenter;
-import Costums.CustomVM;
+import Costums_elements.CustomCloudlet;
+import Costums_elements.CustomDataCenter;
+import Costums_elements.CustomVM;
 import simulation_1.Simulator;
 
 import java.util.ArrayList;
@@ -65,22 +65,26 @@ public class VMS_Caculations {
 	 }
 	 public static double calculateHostCapacity(List<CustomCloudlet> host_tasks,CustomDataCenter dataCenter)
 	 {
-		 	return 1.0;
+		 	return 5;
 		 
 	 }
 	 
-	 public static double FindRank(double tet, double tec, double dtt, double dtc, double hc) {
+	 public static double FindRank(CustomVM vm,CustomCloudlet cloudlet, double tet, double tec, double dtt, double dtc, double hc)
+	 {
 		  // Create an array of the values
 		  double[] values = {tet, tec, dtt, dtc, hc};
 		  Arrays.sort(values);
 		  double f1 = values[0];
 		  double f2 = tet + tec + dtt + dtc + hc;
 		  double rank = (f1 * 0.5 + f2 * 0.5);
+//		  Log.printLine(" task#"+cloudlet.getCloudletId()+" VM#"+vm.getId()+"  f1: "+f1+"    f2: "+f2 +"    RANK: "+rank);
+
 		  return rank;
+
 		}
 
 
-	public static CustomVM getBestVM(CustomCloudlet cloudlet, List<CustomDataCenter> data_centers_list,List<CustomVM> vms_list) 
+	public static CustomVM getBestVMByRank(CustomCloudlet cloudlet, List<CustomDataCenter> data_centers_list,List<CustomVM> vms_list) 
 	{
 		List<CustomVM>bestVmsList=new ArrayList<CustomVM>();
 		List<Double>Ranks_Array=new ArrayList<Double>();
@@ -95,7 +99,7 @@ public class VMS_Caculations {
 	    	double dtt = calculateDataTransfareTime(cloudlet, vm);
 	    	double dtc = calculateDataTransfareCost(cloudlet,dc, vm);
 	    	double hc = calculateHostCapacity(null,dc);
-	        double RANK = FindRank(tet, tec, dtt,dtc,hc);
+	        double RANK = FindRank(vm,cloudlet,tet, tec, dtt,dtc,hc);
 	        bestVmsList.add(vm);
 	        Ranks_Array.add(RANK);
 	        
@@ -106,6 +110,8 @@ public class VMS_Caculations {
 	    	    .orElse(-1);
 
 		best_vm=bestVmsList.get(indexOfSmallestRank);
+		Log.printLine("VMS Ranks: "+Ranks_Array);
+
 		
 		return best_vm;
 	        }

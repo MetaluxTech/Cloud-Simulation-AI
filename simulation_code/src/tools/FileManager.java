@@ -13,9 +13,10 @@ import java.util.Map;
 
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Log;
-import Costums.CustomCloudlet;
-import Costums.CustomDataCenter;
-import Costums.CustomVM;
+
+import Costums_elements.CustomCloudlet;
+import Costums_elements.CustomDataCenter;
+import Costums_elements.CustomVM;
 
 public class FileManager {
 	
@@ -52,7 +53,6 @@ public class FileManager {
 
 	        while ((line = br.readLine()) != null) {
 	            if (currentRow == rowID) {
-	            	Log.printLine(line);
 	                return line.split(",");
 	            }
 	            currentRow++;
