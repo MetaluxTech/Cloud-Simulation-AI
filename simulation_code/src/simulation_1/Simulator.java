@@ -41,6 +41,9 @@ public class Simulator {
 	public static void main(String[] args) {
 
 		try {
+			boolean save_trining = false;
+			boolean save_experiement = true;
+			boolean print_model_quality = true;
 			boolean use_randome_values = false;
 			String modelName = "FUNCTIONS";// GA or SNAKE or NONE or FUNCTIONS or New_Model
 
@@ -66,7 +69,7 @@ public class Simulator {
 			createDataCenters(numDatacenters, use_randome_values);
 			createVms(numVMs, broker1, use_randome_values);
 			for (int i = 1; i <= numCloudlets; i++) {
-				String[] rowData = Excel.LoadTaskData("/AI_code/dataset/predictedDataBase.csv",i);
+				String[] rowData = Excel.LoadTaskData("/AI_code/dataset/predictedDataBase.csv", i);
 				int task_size = Integer.parseInt(rowData[0]); // TaskFileSize
 				int task_out_size = Integer.parseInt(rowData[1]); // TaskOutputFileSize
 				int task_length = Integer.parseInt(rowData[2]); // TaskFileLength
@@ -121,24 +124,29 @@ public class Simulator {
 			double avgNegotiationTime = Results.calculateNegotiationTime(tasks_List);
 
 			// Save summary results to Excel
-			String Excel_name =  "results/"+ modelName + "_results_" + numCloudlets + ".csv";
-			if (numCloudlets == (50)) {
-				Excel_name = "results/" + modelName + "_results_050" + ".csv";
+
+			if (save_trining) {
+				String trainig_dataset_path = Excel.SaveTrainingDataSet("results/training_" + numCloudlets + ".csv",
+						tasks_List, geoDataCentersList, targetVms);
+				print(trainig_dataset_path);
+			}
+			if (save_experiement) {
+				String Excel_name = "experiement_result/" + modelName + "_results_" + numCloudlets + ".csv";
+				if (numCloudlets == (50)) {
+					Excel_name = "results/" + modelName + "_results_050" + ".csv";
+				}
+				String expeirment_dataset_path = Excel.SaveExperimentDataSet(Excel_name,
+						tasks_List.size(), simulationTime, avgCompleteTime, avgWaitingTime, avgThroughput,
+						avgSLAViolation,
+						avgNegotiationTime);
+				print(expeirment_dataset_path);
 			}
 
-			String trainig_dataset_path=Excel.SaveTrainingDataSet("results/training_"+numCloudlets+".csv", tasks_List, geoDataCentersList, targetVms);
-			String expeirment_dataset_path = Excel.SaveExperimentDataSet(Excel_name,
-					tasks_List.size(), simulationTime, avgCompleteTime, avgWaitingTime, avgThroughput, avgSLAViolation,
-					avgNegotiationTime);
-			print(expeirment_dataset_path);
-//			print(trainig_dataset_path);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
-
-	
 
 	/*
 	 * %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -156,6 +164,7 @@ public class Simulator {
 		print("last task getCloudletStatus: " + tasks_List.get(taskid).getCloudletStatus());
 		print("last task getCloudletStatusString: " + tasks_List.get(taskid).getCloudletStatusString());
 	}
+
 	private static void createDataCenters(int numDatacenters, boolean is_training) {
 		for (int i = 1; i <= numDatacenters; i++)
 
@@ -196,7 +205,7 @@ public class Simulator {
 					space_shared, 0.0);
 			vms_List.add(vm);
 
-//	              
+			//
 		}
 	}
 }
