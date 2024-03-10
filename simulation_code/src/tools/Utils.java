@@ -1,27 +1,17 @@
 package tools;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
-import org.cloudbus.cloudsim.Vm;
+import Costums.CustomCloudlet;
+import Costums.CustomDataCenter;
+import Costums.CustomVM;
 
-import Costums.GeoCloudlet;
-import Costums.GeoDatacenter;
-import Costums.MyVm;
-import simulation_1.Simulator;
-
-public class Tools {
+public class Utils {
 
 	public void print(String message) {
 		Log.printLine(message);
@@ -44,8 +34,8 @@ public class Tools {
 		return min + ((max - min) * RANDOM.nextDouble());
 	}
 
-	public static GeoDatacenter getDatacenterById(int dataCenterId, List<GeoDatacenter> datacentersList) {
-		for (GeoDatacenter dc : datacentersList) {
+	public static CustomDataCenter getDatacenterById(int dataCenterId, List<CustomDataCenter> datacentersList) {
+		for (CustomDataCenter dc : datacentersList) {
 			if (dc.getId() == dataCenterId) {
 				return dc;
 			}
@@ -53,24 +43,24 @@ public class Tools {
 		return null;
 	}
 
-	public static MyVm getVmWithLowestLoad(List<MyVm> vms) {
-		MyVm LowestLoadVm = vms.stream().min(Comparator.comparing(MyVm::getLoad)).orElse(null);
+	public static CustomVM getVmWithLowestLoad(List<CustomVM> vms) {
+		CustomVM LowestLoadVm = vms.stream().min(Comparator.comparing(CustomVM::getLoad)).orElse(null);
 
 		return LowestLoadVm;
 
 	}
 
-	public static GeoDatacenter getDataCenterWithLowestLoad(List<GeoDatacenter> dcs) {
+	public static CustomDataCenter getDataCenterWithLowestLoad(List<CustomDataCenter> dcs) {
 
-		GeoDatacenter LowestLoadDc = dcs.stream().min(Comparator.comparing(GeoDatacenter::getLoad)).orElse(null);
+		CustomDataCenter LowestLoadDc = dcs.stream().min(Comparator.comparing(CustomDataCenter::getLoad)).orElse(null);
 
 		return LowestLoadDc;
 
 	}
 
-	public static MyVm getVMById(int VmId, List<MyVm> vms) {
+	public static CustomVM getVMById(int VmId, List<CustomVM> vms) {
 
-		for (MyVm v : vms) {
+		for (CustomVM v : vms) {
 			if (v.getId() == VmId) {
 				return v;
 			}
@@ -78,7 +68,7 @@ public class Tools {
 		return null;
 	}
 
-	public static double calculateDistance(GeoCloudlet geotask, GeoDatacenter geoDC) {
+	public static double calculateDistance(CustomCloudlet geotask, CustomDataCenter geoDC) {
 		try {
 			double lat1 = geotask.getLatitude();
 			double lon1 = geotask.getLongitude();
@@ -108,10 +98,10 @@ public class Tools {
 		}
 	}
 
-	public static List<MyVm> extractDataCenterVms(List<MyVm> allVMs, Integer DataCenterId) {
-		List<MyVm> selectedVMs = new ArrayList<>();
+	public static List<CustomVM> extractDataCenterVms(List<CustomVM> allVMs, Integer DataCenterId) {
+		List<CustomVM> selectedVMs = new ArrayList<>();
 		List<Integer> dc_vms_ids = DCs_Caculations.DCsVmsMap.get(DataCenterId);
-		for (MyVm vm : allVMs) {
+		for (CustomVM vm : allVMs) {
 			if (dc_vms_ids.contains(vm.getId())) {
 				selectedVMs.add(vm);
 			}
@@ -135,17 +125,5 @@ public class Tools {
 		return Math.round(num * 100.0) / 100.0;
 	}
 
-	public static double getSimulationTime(List<GeoCloudlet> tasksList) {
-
-		double latestFinishTime = Double.MIN_VALUE; // Initialize with the smallest possible value
-
-		for (GeoCloudlet cloudlet : tasksList) {
-			double finishTime = cloudlet.getFinishTime();
-			if (finishTime > latestFinishTime) {
-				latestFinishTime = finishTime;
-			}
-		}
-		return Math.round(latestFinishTime * 1000.0) / 1000.0;
-	}
-
+	
 }

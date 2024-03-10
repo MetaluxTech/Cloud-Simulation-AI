@@ -7,13 +7,13 @@ import java.util.List;
 
 import org.cloudbus.cloudsim.Log;
 
-import Costums.GeoCloudlet;
-import Costums.GeoDatacenter;
+import Costums.CustomCloudlet;
+import Costums.CustomDataCenter;
 
 public class AI {
 
 	
-	public static GeoDatacenter PredictBestDataCenter(GeoCloudlet task, List<GeoDatacenter> DCList, String modelName) {
+	public static CustomDataCenter PredictBestDataCenter(CustomCloudlet task, List<CustomDataCenter> DCList, String modelName) {
 	    String datasetpath = "C:/Users/mohsal/Desktop/app/metalux/cloudsim/ga_lstm/AI_code/dataset/predictedDataBase.csv";
 
 	    int Predicted_DC_ID = -1;
@@ -46,7 +46,7 @@ public class AI {
 	                } else if (modelName.equals("New_Model")) {
 	                    Predicted_DC_ID = Integer.parseInt(rowData[8]);  //New Model predicted DataCenter
 	                }
-	                GeoDatacenter dc = Tools.getDatacenterById(Predicted_DC_ID, DCList);
+	                CustomDataCenter dc = Utils.getDatacenterById(Predicted_DC_ID, DCList);
 	                return dc;
 	            }
 	            currentRow++;

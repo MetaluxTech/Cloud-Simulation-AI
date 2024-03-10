@@ -12,10 +12,10 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.lists.VmList;
 
-public class MyVm extends Vm {
+public class CustomVM extends Vm {
 	  private double load;
 
-	  public MyVm(int id, int userId, double mips, int numberOfPes, int ram, long bw, long size, String vmm, CloudletScheduler cloudletScheduler, double load) {
+	  public CustomVM(int id, int userId, double mips, int numberOfPes, int ram, long bw, long size, String vmm, CloudletScheduler cloudletScheduler, double load) {
 	      super(id, userId, mips, numberOfPes, ram, bw, size, vmm, cloudletScheduler);
 	      this.load = load;
 	  }

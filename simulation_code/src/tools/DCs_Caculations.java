@@ -10,9 +10,9 @@ import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
 
-import Costums.GeoCloudlet;
-import Costums.GeoDatacenter;
-import Costums.MyVm;
+import Costums.CustomCloudlet;
+import Costums.CustomDataCenter;
+import Costums.CustomVM;
 import simulation_1.Simulator;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 public class DCs_Caculations {
-	 public static Map<GeoCloudlet,String > DCsOFunctions = new HashMap<>();
+	 public static Map<CustomCloudlet,String > DCsOFunctions = new HashMap<>();
 	 public static Map<Integer, List<Integer>> DCsVmsMap = Map.of(
               3, List.of(1, 2, 3 ),
               4, List.of(4, 5,6),
@@ -28,7 +28,7 @@ public class DCs_Caculations {
               
                );
        	
-	public static double calculateCET(GeoCloudlet cloudlet,GeoDatacenter dataCenter) // cost execution task
+	public static double calculateCET(CustomCloudlet cloudlet,CustomDataCenter dataCenter) // cost execution task
 	{
 		double cpuCost = dataCenter.getPublicCharacteristics().getCostPerMi();
         double ramCost = dataCenter.getPublicCharacteristics().getCostPerMem();
@@ -46,7 +46,7 @@ public class DCs_Caculations {
 	    //8000
 	}
 
-	public static double calculateNetworkDelay(GeoCloudlet cloudlet, MyVm vm) {  // task delay
+	public static double calculateNetworkDelay(CustomCloudlet cloudlet, CustomVM vm) {  // task delay
 	    // Task length in MI
 		
 	    double lt = cloudlet.getCloudletLength();
@@ -57,10 +57,10 @@ public class DCs_Caculations {
 	    //2
 	}
 	
-	public static double calculateLatency(GeoCloudlet cloudlet, GeoDatacenter dataCenter) {  // task latency
+	public static double calculateLatency(CustomCloudlet cloudlet, CustomDataCenter dataCenter) {  // task latency
 		
 		double n=5;// propogation time km per s
-		double distance=Tools.calculateDistance(cloudlet, dataCenter);
+		double distance=Utils.calculateDistance(cloudlet, dataCenter);
 		double latency=distance*n*2+cloudlet.getActualCPUTime();// Propagation time +processing time
 		latency= Math.round(latency * 100.0) / 100.0;
 		return latency/10000;
@@ -75,16 +75,16 @@ public class DCs_Caculations {
 		 return objectiveFunction;
 	}
 	
-	public static GeoDatacenter getBestDataCenter(GeoCloudlet cloudlet, List<GeoDatacenter> data_centers_list,List<MyVm> vms_list) {
+	public static CustomDataCenter getBestDataCenter(CustomCloudlet cloudlet, List<CustomDataCenter> data_centers_list,List<CustomVM> vms_list) {
 	    double MaxObjFunction = 99999999999999.0;
-	    List<MyVm> dc_vms=null;
+	    List<CustomVM> dc_vms=null;
 	    List<Double> OFunctions_array=new ArrayList<Double>();
-	    GeoDatacenter best_dc=null;
+	    CustomDataCenter best_dc=null;
 	    String Ofunction_string="";
-	    for (GeoDatacenter dc : data_centers_list) {
+	    for (CustomDataCenter dc : data_centers_list) {
 	    	double cet = calculateCET(cloudlet, dc);
-	        dc_vms =Tools.extractDataCenterVms(vms_list, dc.getId());
-	        MyVm vm=Tools.getVmWithLowestLoad(dc_vms);
+	        dc_vms =Utils.extractDataCenterVms(vms_list, dc.getId());
+	        CustomVM vm=Utils.getVmWithLowestLoad(dc_vms);
 	        double networkDelay = calculateNetworkDelay(cloudlet, vm);
 	        double networkLatency=calculateLatency(cloudlet, dc);
 	        double dcLoad = dc.getLoad();

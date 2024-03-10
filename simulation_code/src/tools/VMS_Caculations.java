@@ -10,18 +10,19 @@ import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
 
-import Costums.GeoCloudlet;
-import Costums.GeoDatacenter;
-import Costums.MyVm;
+import Costums.CustomCloudlet;
+import Costums.CustomDataCenter;
+import Costums.CustomVM;
 import simulation_1.Simulator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 
 public class VMS_Caculations {
 	
-	 public static double calculateTaskExcutionTime(MyVm vm,GeoCloudlet cloudlet,GeoDatacenter dataCenter)
+	 public static double calculateTaskExcutionTime(CustomVM vm,CustomCloudlet cloudlet,CustomDataCenter dataCenter)
 	 {
 		  double task_lenth = cloudlet.getCloudletLength();
 		    double process_speed=vm.getMips();
@@ -29,7 +30,7 @@ public class VMS_Caculations {
 		    
 		    return Math.round(task_executioin_time * 100.0) / 100.0; 
 	 }
-	 public static double calculateTaskExceutionCost(GeoCloudlet cloudlet,GeoDatacenter dataCenter) // cost execution task
+	 public static double calculateTaskExceutionCost(CustomCloudlet cloudlet,CustomDataCenter dataCenter) // cost execution task
 		{
 			double cpuCost = dataCenter.getPublicCharacteristics().getCostPerMi();
 	        double ramCost = dataCenter.getPublicCharacteristics().getCostPerMem();
@@ -46,7 +47,7 @@ public class VMS_Caculations {
 		    
 		    //8000
 		}
- 	 public static double calculateDataTransfareTime(GeoCloudlet cloudlet, MyVm vm)
+ 	 public static double calculateDataTransfareTime(CustomCloudlet cloudlet, CustomVM vm)
 	 {
 		  double task_lenth = cloudlet.getCloudletLength();
 		    double bw=vm.getBw();
@@ -54,7 +55,7 @@ public class VMS_Caculations {
 		    delayN=delayN*1.5;
 		    return Math.round(delayN * 100.0) / 100.0;
 	 }
-	 public static double calculateDataTransfareCost(GeoCloudlet cloudlet,GeoDatacenter dataCenter, MyVm vm)
+	 public static double calculateDataTransfareCost(CustomCloudlet cloudlet,CustomDataCenter dataCenter, CustomVM vm)
 	 {
 		 double dtt=calculateDataTransfareTime(cloudlet,vm);
 		 double band_cost = dataCenter.getPublicCharacteristics().getCostPerBw();
@@ -62,29 +63,33 @@ public class VMS_Caculations {
 		 return datatrnsfarecost;
 	       
 	 }
-	 public static double calculateHostCapacity(List<GeoCloudlet> host_tasks,GeoDatacenter dataCenter)
+	 public static double calculateHostCapacity(List<CustomCloudlet> host_tasks,CustomDataCenter dataCenter)
 	 {
 		 	return 1.0;
 		 
 	 }
 	 
-	 public static double FindRank(double tet, double tec, double dtt,double dtc,double hc) 
-	 {
-//		 f1 (v) = Min (p, TET, TEC, DTT, DTC, hostC)
-//		 f2 (v) = Sum (p, TET, TEC, DTT, DTC, hostC) 
-//		 rank (v) =f1 (v)*0.5 + f2 (v) *0.5 
-		 return 1.5;
-	 }
+	 public static double FindRank(double tet, double tec, double dtt, double dtc, double hc) {
+		  // Create an array of the values
+		  double[] values = {tet, tec, dtt, dtc, hc};
+		  Arrays.sort(values);
+		  double f1 = values[0];
+		  double f2 = tet + tec + dtt + dtc + hc;
+		  double rank = (f1 * 0.5 + f2 * 0.5);
+		  return rank;
+		}
 
-	public static MyVm getBestVM(GeoCloudlet cloudlet, List<GeoDatacenter> data_centers_list,List<MyVm> vms_list) 
+
+	public static CustomVM getBestVM(CustomCloudlet cloudlet, List<CustomDataCenter> data_centers_list,List<CustomVM> vms_list) 
 	{
-		List<MyVm>bestVmsList=null;
-		List<Double>Ranks_Array=null;
-	    double MaxObjFunction = 99999999999999.0;
-	    MyVm best_vm=null;
-	    for (MyVm vm : vms_list) {
-	    	int dc_id=Tools.findDatacenterIdForVm(vm.getId());
-	    	GeoDatacenter dc=Tools.getDatacenterById(dc_id, data_centers_list);
+		List<CustomVM>bestVmsList=new ArrayList<CustomVM>();
+		List<Double>Ranks_Array=new ArrayList<Double>();
+	    
+		double MAXRANK = 99999999999999.0;
+	    CustomVM best_vm=null;
+	    for (CustomVM vm : vms_list) {
+	    	int dc_id=Utils.findDatacenterIdForVm(vm.getId());
+	    	CustomDataCenter dc=Utils.getDatacenterById(dc_id, data_centers_list);
 	    	double tet = calculateTaskExcutionTime(vm,cloudlet, dc);
 	    	double tec = calculateTaskExceutionCost(cloudlet, dc);
 	    	double dtt = calculateDataTransfareTime(cloudlet, vm);

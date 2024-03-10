@@ -11,13 +11,12 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;
 
-public class GeoDatacenter extends Datacenter {
+public class CustomDataCenter extends Datacenter {
     private double latitude;
     private double longitude;
 	private double load;
-	private List<MyVm> vmList;
 
-    public GeoDatacenter(String name, DatacenterCharacteristics characteristics, VmAllocationPolicy vmAllocationPolicy, List<Storage> storageList, double schedulingInterval, double latitude, double longitude, double load) throws Exception {
+    public CustomDataCenter(String name, DatacenterCharacteristics characteristics, VmAllocationPolicy vmAllocationPolicy, List<Storage> storageList, double schedulingInterval, double latitude, double longitude, double load) throws Exception {
         super(name, characteristics, vmAllocationPolicy, storageList, schedulingInterval);
         this.latitude = latitude;
         this.longitude = longitude;
@@ -31,10 +30,10 @@ public class GeoDatacenter extends Datacenter {
         return longitude;
     }
   public double getLoad() {
-        return this.load ;
+        return Math.round(this.load  * 100.0) / 100.0;
     }
   public void setLoad(double load) {
-      this.load = Math.round(load * 100.0) / 100.0;
+      this.load = load;
   }
   
   public DatacenterCharacteristics getPublicCharacteristics() {

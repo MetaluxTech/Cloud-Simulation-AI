@@ -8,21 +8,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.Vm;
+import org.cloudbus.cloudsim.Log;
+import Costums.CustomCloudlet;
+import Costums.CustomDataCenter;
+import Costums.CustomVM;
 
-import Costums.GeoCloudlet;
-import Costums.GeoDatacenter;
-import Costums.MyVm;
-
-public class Excel {
+public class FileManager {
 	
 	public static String[] LoadTaskData(String prepredicted_dataset_path,int rowID) {
         Path projectpath = Paths.get(System.getProperty("user.dir")).getParent();
@@ -47,38 +42,35 @@ public class Excel {
 	}
 	
 	
+
+	public static String[] LoadCloudletsSpesification(String cloudlets_spesification_path,int rowID) {
+       
+        File file = new File(cloudlets_spesification_path);
+	    try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+	        String line;
+	        int currentRow = 0;
+
+	        while ((line = br.readLine()) != null) {
+	            if (currentRow == rowID) {
+	            	Log.printLine(line);
+	                return line.split(",");
+	            }
+	            currentRow++;
+	        }
+	    } catch (IOException e) {
+	        Log.printLine("error in get from: "+file.getAbsolutePath()+" ..........");
+	        e.printStackTrace();
+	    }
+
+	    return null; // Return null if rowID is not found
+	}
 	
-	public static String SaveSupressedTrainingDataSet(List<GeoCloudlet> taskList,String dataset_name ) {
-		   File file = new File(dataset_name);
-
-		    try {
-		        BufferedWriter writer = new BufferedWriter(new FileWriter(file)); 
-		        writer.write("TaskID,StartTime,TaskFileSize,TaskOutputFileSize,TaskFileLength,UserLatitude,UserLongitude");
-		        for (GeoCloudlet cloudlet : taskList) {
-		        	String data =
-		            			  
-		            		      cloudlet.getCloudletId() + "," +
-	                              cloudlet.getExecStartTime() + "," +
-		                          cloudlet.getCloudletFileSize() + "," +
-		                          cloudlet.getCloudletOutputSize() + "," +
-		                          cloudlet.getCloudletLength() + "," +
-		                          cloudlet.getLatitude() + "," +
-		                          cloudlet.getLongitude() + ","  ; 
-		            writer.write(data);
-		            writer.newLine();
-		        
-		        }
-		        writer.close();
-		        
-		    } catch (IOException e) {
-		        e.printStackTrace();
-		    }
-
-		    return file.getAbsolutePath();
-		}
+	
+	
+		
 		
 	
-	public static String SaveTrainingDataSet(String dataset_name,List<GeoCloudlet> geoCloudletsList, List<GeoDatacenter> dcs_list, List<MyVm> vms) {
+	public static String SaveTrainingDataSet(String dataset_name,List<CustomCloudlet> geoCloudletsList, List<CustomDataCenter> dcs_list, List<CustomVM> vms) {
 	    File file = new File(dataset_name); // Path to the CSV file
 
 	    try {
@@ -89,12 +81,12 @@ public class Excel {
 	        writer.newLine();
 
 	        // Write the data
-	        for (GeoCloudlet cloudlet : geoCloudletsList) {
+	        for (CustomCloudlet cloudlet : geoCloudletsList) {
 	        	int DataCenterId = cloudlet.getResourceId();
 	        	int VmId = cloudlet.getVmId();
-	            GeoDatacenter geodatacenter = Tools.getDatacenterById(DataCenterId, dcs_list);
-	            MyVm vm = Tools.getVMById(VmId, vms);
-	            double dis =Tools.calculateDistance(cloudlet, geodatacenter);
+	            CustomDataCenter geodatacenter = Utils.getDatacenterById(DataCenterId, dcs_list);
+	            CustomVM vm = Utils.getVMById(VmId, vms);
+	            double dis =Utils.calculateDistance(cloudlet, geodatacenter);
 	            DatacenterCharacteristics characteristics = geodatacenter.getPublicCharacteristics();
 	            double dataCenterLoad=geodatacenter.getLoad();
 	            double networkDelay=DCs_Caculations.calculateNetworkDelay(cloudlet,vm);
@@ -126,30 +118,76 @@ public class Excel {
 
 	        writer.close();
 	    } catch (IOException e) {
+	        Log.printLine("error in saving to: "+file.getAbsolutePath()+" ..........");
+
 	        e.printStackTrace();
 	    }
 
-	    // Return the absolute path of the file
-	    return file.getAbsolutePath();
+	    Log.printLine("saved to: "+file.getAbsolutePath());
+	    return null;
 	}
 
-	public static String SaveExperimentDataSet(String dataset_name, int numProcessedTasks, double simulationTime,
-	        double avgCompleteTime, double avgWaitingTime, double avgThroughput, double avgSLAViolation,
-	        double avgNegotiationTime) {
+	public static String SaveExperimentDataSet(String dataset_name,List<CustomCloudlet> tasksList) {
+		
 	    File file = new File(dataset_name);
+	    int numTasks=tasksList.size();
+	    Map<String, Double> simulationResults = Results.getSimulationTimingSpecifications(tasksList);		   
+	    String totalSimulationTime = String.valueOf(simulationResults.get("Total Simulation Time"));
+	    String avgCompleteTime = String.valueOf(simulationResults.get("Average Completion Time"));
+	    String avgWaitingTime = String.valueOf(simulationResults.get("Average Waiting Time"));
+	    String avgThroughput = String.valueOf(simulationResults.get("Average Throughput"));
+	    String avgSLAViolation = String.valueOf(simulationResults.get("Average SLA Violation"));
+	    String avgNegotiationTime = String.valueOf(simulationResults.get("Average Negotiation Time"));
 
 	    try {
 	        BufferedWriter writer = new BufferedWriter(new FileWriter(file)); 
 	        writer.write("Number of Processed Tasks,Total Simulation Time,Average Completion Time,Average Waiting Time, Average Throughput,Average SLA Violation,  Average Negotiation Time\n");
             writer.write(String.format("%d,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f\n",
-                                    numProcessedTasks, simulationTime, avgCompleteTime, avgWaitingTime, avgThroughput, avgSLAViolation, avgNegotiationTime));
+            		numTasks, totalSimulationTime, avgCompleteTime, avgWaitingTime, avgThroughput, avgSLAViolation, avgNegotiationTime));
      
 	        writer.close();
 	    } catch (IOException e) {
+	        Log.printLine("error in saving to: "+file.getAbsolutePath()+" ..........");
+
 	        e.printStackTrace();
 	    }
 
-	    return file.getAbsolutePath();
+	    Log.printLine("saved to "+file.getAbsolutePath());
+	    return null;
+	}
+
+	public static String SaveCloudletsSpecifications(String dataset_name,List<CustomCloudlet> tasksList) {
+	    File file = new File(dataset_name); // Path to the CSV file
+	    
+	    try {
+	        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+
+	        // Write the header
+	        writer.write("TaskID,StartTime,TaskFileSize,TaskOutputFileSize,TaskFileLength,UserLatitude,UserLongitude");
+	        writer.newLine();
+	        for (CustomCloudlet cloudlet : tasksList) {
+	        	String data =
+	            			  
+	            		      cloudlet.getCloudletId() + "," +
+                              cloudlet.getExecStartTime() + "," +
+	                          cloudlet.getCloudletFileSize() + "," +
+	                          cloudlet.getCloudletOutputSize() + "," +
+	                          cloudlet.getCloudletLength() + "," +
+	                          cloudlet.getLatitude() + "," +
+	                          cloudlet.getLongitude() + ","  ; 
+	            writer.write(data);
+	            writer.newLine();
+	        }
+
+	        writer.close();
+	    } catch (IOException e) {
+	        Log.printLine("error in saving to: "+file.getAbsolutePath()+" ..........");
+
+	        e.printStackTrace();
+	    }
+
+	    Log.printLine("saved to: "+file.getAbsolutePath());
+	    return null;
 	}
 
 
