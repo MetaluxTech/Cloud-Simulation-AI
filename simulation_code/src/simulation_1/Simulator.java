@@ -27,6 +27,7 @@ public class Simulator {
 		try {
 
 //		  create	simulation variables
+			boolean use_vm_schudeling = true;
 			boolean use_randome_values = false;
 			boolean save_trining = false;
 			boolean save_cloudlets_specifications = false;
@@ -38,7 +39,7 @@ public class Simulator {
 			int numUsers = 1;
 			int numDatacenters = 3;
 			int numVMs = 9;
-			int numCloudlets = 500;
+			int numCloudlets = 5;
 
 //			create simulation arrays
 			vmsList = new ArrayList<CustomVM>();
@@ -57,7 +58,7 @@ public class Simulator {
 			vmsList = ElementsCreation.createVms(numVMs, broker, use_randome_values);
 			
 			
-			tasksList = ElementsCreation.createCloudlets(numCloudlets, broker,modelName,datacentersList,vmsList, use_randome_values);
+			tasksList = ElementsCreation.createCloudlets(numCloudlets, broker,modelName,datacentersList,vmsList, use_randome_values,use_vm_schudeling);
 
 //			submit tasks and vms .....
 			broker.submitVmList(vmsList);

@@ -34,7 +34,7 @@ import tools.Utils;
 import tools.VMS_Caculations;
 
 public class ElementsCreation {
-	public static List<CustomCloudlet> createCloudlets(int numCloudlets, CustomBroker broker, String modelName, List<CustomDataCenter> datacentersList, List<CustomVM> vmsList, boolean use_random_values) {
+	public static List<CustomCloudlet> createCloudlets(int numCloudlets, CustomBroker broker, String modelName, List<CustomDataCenter> datacentersList, List<CustomVM> vmsList, boolean use_random_values, boolean use_vm_schudeling) {
 		// Initialize tasksList with an empty ArrayList
 		List<CustomCloudlet> tasksList = new ArrayList<>();
 		int task_id,task_size, task_out_size, task_length;
@@ -92,8 +92,14 @@ public class ElementsCreation {
 			
 			
 			datacenterVms=Utils.extractDataCenterVms(vmsList,best_dc.getId());
-//			best_vm=VMS_Caculations.getBestVMByRank(task, datacentersList, datacenterVms);
-			best_vm=Utils.getVmWithLowestLoad(datacenterVms);
+			
+			if (use_vm_schudeling)
+			{
+				best_vm=VMS_Caculations.getBestVMByRank(task, datacentersList, datacenterVms);
+			}
+			else {
+				best_vm=Utils.getVmWithLowestLoad(datacenterVms);
+			}
 			task.setVmId(best_vm.getId());
 			
 			best_vm.setLoad(best_vm.getLoad()+task_length/10);

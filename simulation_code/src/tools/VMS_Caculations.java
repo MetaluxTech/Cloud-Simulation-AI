@@ -24,35 +24,36 @@ public class VMS_Caculations {
 	
 	 public static double calculateTaskExcutionTime(CustomVM vm,CustomCloudlet cloudlet,CustomDataCenter dataCenter)
 	 {
-		  double task_lenth = cloudlet.getCloudletLength();
+		   double task_lenth = cloudlet.getCloudletLength();
 		    double process_speed=vm.getMips();
-		    double task_executioin_time = task_lenth /process_speed;
+		    double task_executioin_time = task_lenth / process_speed;
 		    
 		    return Math.round(task_executioin_time * 100.0) / 100.0; 
 	 }
 	 public static double calculateTaskExceutionCost(CustomCloudlet cloudlet,CustomDataCenter dataCenter) // cost execution task
-		{
-			double cpuCost = dataCenter.getPublicCharacteristics().getCostPerMi();
-	        double ramCost = dataCenter.getPublicCharacteristics().getCostPerMem();
-	        double storageCost = dataCenter.getPublicCharacteristics().getCostPerStorage();
-	        double bandwidthCost = dataCenter.getPublicCharacteristics().getCostPerBw();
-	       
+  	{
+//			double cpuCost = dataCenter.getPublicCharacteristics().getCostPerMi();
+//	        double ramCost = dataCenter.getPublicCharacteristics().getCostPerMem();
+//	        double storageCost = dataCenter.getPublicCharacteristics().getCostPerStorage();
+//	        double bandwidthCost = dataCenter.getPublicCharacteristics().getCostPerBw();
+//	       
 		    double exe = cloudlet.getActualCPUTime();
 		    double r = cloudlet.getCloudletFileSize();
 		    double st = cloudlet.getCloudletOutputSize();
 		    double f = cloudlet.getCloudletFileSize();
-		    double cet = (exe * cpuCost) + (r * ramCost) + (st * storageCost) + (f * bandwidthCost);
+		    double cet = (exe  ) + (r  ) + (st ) + (f );
 		    	cet=cet/100;
 		    return Math.round(cet * 100.0) / 100.0;
 		    
 		    //8000
 		}
- 	 public static double calculateDataTransfareTime(CustomCloudlet cloudlet, CustomVM vm)
+ 	 
+	 public static double calculateDataTransfareTime(CustomCloudlet cloudlet, CustomVM vm)
 	 {
-		  double task_lenth = cloudlet.getCloudletLength();
+		 double task_lenth = cloudlet.getCloudletLength();
+		 double task_out_size = cloudlet.getCloudletOutputSize();
 		    double bw=vm.getBw();
-		    double delayN = task_lenth /bw;
-		    delayN=delayN*1.5;
+		    double delayN = (task_lenth+task_out_size) /bw;
 		    return Math.round(delayN * 100.0) / 100.0;
 	 }
 	 public static double calculateDataTransfareCost(CustomCloudlet cloudlet,CustomDataCenter dataCenter, CustomVM vm)
@@ -65,7 +66,8 @@ public class VMS_Caculations {
 	 }
 	 public static double calculateHostCapacity(List<CustomCloudlet> host_tasks,CustomDataCenter dataCenter)
 	 {
-		 	return 5;
+//		 edit to be near to cloudlet capacity
+		 	return 5 ;
 		 
 	 }
 	 
@@ -77,7 +79,7 @@ public class VMS_Caculations {
 		  double f1 = values[0];
 		  double f2 = tet + tec + dtt + dtc + hc;
 		  double rank = (f1 * 0.5 + f2 * 0.5);
-//		  Log.printLine(" task#"+cloudlet.getCloudletId()+" VM#"+vm.getId()+"  f1: "+f1+"    f2: "+f2 +"    RANK: "+rank);
+		  Log.printLine(" task#"+cloudlet.getCloudletId()+" VM#"+vm.getId()+"  f1: "+f1+"    f2: "+f2 +"    RANK: "+rank);
 
 		  return rank;
 
@@ -94,6 +96,7 @@ public class VMS_Caculations {
 	    for (CustomVM vm : vms_list) {
 	    	int dc_id=Utils.findDatacenterIdForVm(vm.getId());
 	    	CustomDataCenter dc=Utils.getDatacenterById(dc_id, data_centers_list);
+	    	
 	    	double tet = calculateTaskExcutionTime(vm,cloudlet, dc);
 	    	double tec = calculateTaskExceutionCost(cloudlet, dc);
 	    	double dtt = calculateDataTransfareTime(cloudlet, vm);
@@ -110,7 +113,7 @@ public class VMS_Caculations {
 	    	    .orElse(-1);
 
 		best_vm=bestVmsList.get(indexOfSmallestRank);
-		Log.printLine("VMS Ranks: "+Ranks_Array);
+//		Log.printLine("VMS Ranks: "+Ranks_Array);
 
 		
 		return best_vm;
