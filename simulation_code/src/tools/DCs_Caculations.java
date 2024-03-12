@@ -22,9 +22,9 @@ import java.util.HashMap;
 public class DCs_Caculations {
 	 public static Map<CustomCloudlet,String > DCsOFunctions = new HashMap<>();
 	 public static Map<Integer, List<Integer>> DCsVmsMap = Map.of(
-              3, List.of(1, 2, 3 ),
-              4, List.of(4, 5,6),
-              5, List.of(7, 8, 9 )
+              3, List.of(1, 2, 3,4,5 ),
+              4, List.of(6,7,8,9,10),
+              5, List.of(11,12,13,14,15 )
               
                );
        	

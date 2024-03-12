@@ -9,6 +9,7 @@ import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Pe;
 import org.cloudbus.cloudsim.Storage;
 import org.cloudbus.cloudsim.VmAllocationPolicy;
@@ -35,7 +36,6 @@ import tools.VMS_Caculations;
 
 public class ElementsCreation {
 	public static List<CustomCloudlet> createCloudlets(int numCloudlets, CustomBroker broker, String modelName, List<CustomDataCenter> datacentersList, List<CustomVM> vmsList, boolean use_random_values, boolean use_vm_schudeling) {
-		// Initialize tasksList with an empty ArrayList
 		List<CustomCloudlet> tasksList = new ArrayList<>();
 		int task_id,task_size, task_out_size, task_length;
 		double taskLatit, taskLong;
@@ -90,15 +90,16 @@ public class ElementsCreation {
 					best_dc= null;
 				}
 			
-			
 			datacenterVms=Utils.extractDataCenterVms(vmsList,best_dc.getId());
-			
+			Displays.printListIds("DATACENTER#"+best_dc.getId()+" VMs ",datacenterVms);
 			if (use_vm_schudeling)
 			{
 				best_vm=VMS_Caculations.getBestVMByRank(task, datacentersList, datacenterVms);
 			}
 			else {
-				best_vm=Utils.getVmWithLowestLoad(datacenterVms);
+				best_vm=Utils.getLeastVm(datacenterVms);
+				
+
 			}
 			task.setVmId(best_vm.getId());
 			
@@ -112,19 +113,10 @@ public class ElementsCreation {
 		return tasksList;
 	}
 
-	public static CustomBroker createBroker(String broker_name) {
-		try {
-			CustomBroker b = new CustomBroker(broker_name);
-			return b;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-
-	}
-
+	
 	public static List<CustomVM> createVms(int numVMs, CustomBroker broker1, boolean use_randome_values) {
 		List<CustomVM> vmsList = new ArrayList<>();
+		double vm_load=0.0,vm_bwcost,vm_memcost,vm_storagecost,vm_processcost;
 		int vm_mips, vm_ram, vm_bandwidth;
 		long vm_storage;
 		for (int i = 1; i <= numVMs; i++) {
@@ -133,11 +125,20 @@ public class ElementsCreation {
 				vm_storage = Utils.getNextRandom(64, 256);
 				vm_ram = Utils.getNextRandom(8, 32);
 				vm_bandwidth = Utils.getNextRandom(10, 100);
+				vm_bwcost=Utils.getNextRandom(5,10);
+				vm_memcost=Utils.getNextRandom(5,10);
+				vm_storagecost=Utils.getNextRandom(5,10);
+				vm_processcost=Utils.getNextRandom(5,10);
 			} else {
-				vm_mips = 231; /// instructions per second
-				vm_storage = 100;
-				vm_ram = 16;
-				vm_bandwidth = 60;
+				vm_mips = 3+(i*2); /// instructions per second
+				vm_storage = 100+(i*2);
+				vm_ram = 16+(i*2);
+				vm_bandwidth = 60+(i*2);
+				
+				vm_bwcost=4+(i*2);
+				vm_memcost=2+(i*2);
+				vm_storagecost=3+(i*2);
+				vm_processcost=5+(i*2);
 			}
 
 			int vm_pesNum = 1; // num of cpus in the VM
@@ -145,7 +146,7 @@ public class ElementsCreation {
 			CloudletScheduler space_shared = new CloudletSchedulerSpaceShared();
 			CloudletScheduler time_shared = new CloudletSchedulerTimeShared();
 			CustomVM v = new CustomVM(i, broker1.getId(), vm_mips, vm_pesNum, vm_ram, vm_bandwidth, vm_storage, vm_monitor,
-					space_shared, 0.0);
+					space_shared, vm_load,vm_memcost,vm_storagecost,vm_bwcost,vm_processcost);
 			vmsList.add(v);
 
 		}
@@ -166,7 +167,7 @@ public class ElementsCreation {
 			List<Host> hostList = new ArrayList<Host>();
 			List<Pe> peList = new ArrayList<Pe>();
 			LinkedList<Storage> storageList = new LinkedList<Storage>();
-			double DcLatit, DcLongt;
+			double DcLatit, DcLongt,costPerBw,costPerMem,costPerStorage,costPerCpu;
 			int hostMips, hostRam;
 			long hostStorage, hostBw;
 
@@ -177,19 +178,25 @@ public class ElementsCreation {
 				hostMips = Utils.getNextRandom(5000, 15000); // miiliion instruction per sec
 				hostRam = Utils.getNextRandom(128, 256); // host memory (MB)
 				hostStorage = Utils.getNextRandom(1024, 64000);
-				; // host storage in ( GB )
 				hostBw = Utils.getNextRandom(250, 1000);
-				; // MBPs
-
+				 costPerCpu = Utils.getNextRandom(40, 60);// the cost of using processing in this resource
+				 costPerMem = Utils.getNextRandom(12, 24);// the cost of using processing in this resource
+				 costPerStorage = Utils.getNextRandom(15, 30);// the cost of using processing in this resource
+				 costPerBw = Utils.getNextRandom(16, 30);// the cost of using processing in this resource
+				
 			} else {
 
-				DcLatit = 67.22677605837688;
-				DcLongt = 76.5628888295758;
-				hostMips = 8000;
-				hostRam = 164;
-				hostStorage = 50000;
-				hostBw = 800;
-
+				DcLatit = 67.22677605837688+(i*4);
+				DcLongt = 76.5628888295758+(i*4);
+				hostMips = 8000+(i*4);
+				hostRam = 164+(i*4);
+				hostStorage = 50000+(i*4);
+				hostBw = 800+(i*4);
+				 costPerCpu = 40+(i*2); // the cost of using processing in this resource
+				 costPerMem = 5+(i*2); // the cost of using memory in this resource
+				 costPerStorage = 7+(i*2); // the cost of using storage in this// resource
+				 costPerBw = 10+(i*2); // the cost of using bw in this resource
+				
 			}
 
 //	  		create host
@@ -204,12 +211,8 @@ public class ElementsCreation {
 			String os = "Linux"; // operating system
 			String vmm = "Xen";
 			double time_zone = 10.0; // time zone this resource located
-			double cost = 40; // the cost of using processing in this resource
-			double costPerMem = 5; // the cost of using memory in this resource
-			double costPerStorage = 7; // the cost of using storage in this// resource
-			double costPerBw = 10; // the cost of using bw in this resource
 			DatacenterCharacteristics characteristics = new DatacenterCharacteristics(arch, os, vmm, hostList,
-					time_zone, cost, costPerMem, costPerStorage, costPerBw);
+					time_zone, costPerCpu, costPerMem, costPerStorage, costPerBw);
 
 			hostList.add(host1);
 			VmAllocationPolicy policy = new VmAllocationPolicySimple(hostList);
@@ -224,6 +227,16 @@ public class ElementsCreation {
 		}
 
 		return datacentersList;
+	}
+	public static CustomBroker createBroker(String broker_name) {
+		try {
+			CustomBroker b = new CustomBroker(broker_name);
+			return b;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
 	}
 
 }

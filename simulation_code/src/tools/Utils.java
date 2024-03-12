@@ -50,7 +50,11 @@ public class Utils {
 		return LowestLoadVm;
 
 	}
+	public static CustomVM getLeastVm(List<CustomVM> vms) {
+		CustomVM LowestLoadVm = vms.stream().min(Comparator.comparing(CustomVM::getMips)).orElse(null);
 
+		return LowestLoadVm;
+	}
 	public static CustomDataCenter getDataCenterWithLowestLoad(List<CustomDataCenter> dcs) {
 
 		CustomDataCenter LowestLoadDc = dcs.stream().min(Comparator.comparing(CustomDataCenter::getLoad)).orElse(null);

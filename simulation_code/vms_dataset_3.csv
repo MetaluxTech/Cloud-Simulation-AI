@@ -1,0 +1,4 @@
+TaskID,TaskFileSize,TaskOutputFileSize,TaskFileLength,UserLatitude,UserLongitude,VmID,VmProcessingSpeed,VmRam,VmBandwidth,VmStorageVmMemoryCost,VmStorageCost,VmBandwidthCost,VmProcessingCost
+1,67,17,63,41.86258179010275,2,153.0,23,90,102,10.0,5.0,8.0,
+2,64,17,71,-48.89096617208574,5,241.0,31,87,165,10.0,6.0,7.0,
+3,60,16,91,-75.79870825102775,5,241.0,31,87,165,10.0,6.0,7.0,

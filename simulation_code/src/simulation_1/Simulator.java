@@ -28,18 +28,19 @@ public class Simulator {
 
 //		  create	simulation variables
 			boolean use_vm_schudeling = true;
-			boolean use_randome_values = false;
+			boolean use_randome_values = true;
 			boolean save_trining = false;
+			boolean save_vm_scheduling = false;
 			boolean save_cloudlets_specifications = false;
 			boolean save_expereiment = false;
 			boolean print_model_quality = false;
-			boolean display_simulation_timing_spesifications = true;
+			boolean display_simulation_timing_spesifications = false;
 
-        	String modelName="FUNCTIONS";//GA or SNAKE or NONE or FUNCTIONS or New_Model
+        	String modelName="NONE";//GA or SNAKE or NONE or FUNCTIONS or New_Model
 			int numUsers = 1;
 			int numDatacenters = 3;
-			int numVMs = 9;
-			int numCloudlets = 5;
+			int numVMs = 15;
+			int numCloudlets = 10;
 
 //			create simulation arrays
 			vmsList = new ArrayList<CustomVM>();
@@ -75,14 +76,23 @@ public class Simulator {
 			}
 			// Save  to Excel file if you needed
 			if (save_trining) {
-				FileManager.SaveTrainingDataSet("training_" + numCloudlets + ".csv", tasksList, datacentersList,vmsList);
+				String dataset_name="training_" + numCloudlets + ".csv";
+				FileManager.SaveTrainingDataSet(dataset_name, tasksList, datacentersList,vmsList);
+			}
+			if (save_vm_scheduling) {
+				String dataset_name="vms_scheduling_dataset_" + numCloudlets + ".csv";
+				FileManager.SaveVmsSchedulingDataset(dataset_name, tasksList, datacentersList, vmsList);
 			}
 			if (save_cloudlets_specifications) {
-				FileManager.SaveCloudletsSpecifications("cloudlets_specifications_" + numCloudlets + ".csv", tasksList);
+				String dataset_name="cloudlets_specifications_" + numCloudlets + ".csv";
+				FileManager.SaveCloudletsSpecifications(dataset_name, tasksList);
 			}
 			if (save_expereiment) {
-				FileManager.SaveExperimentDataSet("experiement_result/" + modelName + "_results_" + numCloudlets + ".csv", tasksList);
+				String dataset_name="experiement_result_" + modelName + "_" + numCloudlets + ".csv";
+				FileManager.SaveExperimentDataSet(dataset_name, tasksList);
 			}
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,5 +1,6 @@
 package simulation_1;
 
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,8 +90,6 @@ public class Displays {
 		}
 	
 	  public static void printSimulationTimingSpecifications(Map<String, Double> simulationResults,int numTasks ) {
-
-		    // Retrieve a complete set of simulation results as a map
 		    
 		    
 		    
@@ -112,5 +111,32 @@ public class Displays {
 		    Log.printLine("");
 		}
 
-	  
+
+	public static void printListIds(String text, List<?> list) {
+	        List<Integer> ids = new ArrayList<>();
+	        try {
+	            // Determine the type of the first item in the list to decide which method to call
+	            Object firstItem = list.get(0);
+	            Class<?> itemClass = firstItem.getClass();
+	            Method getIdMethod;
+	
+	            // Check if the class is CustomCloudlet, which requires a different method
+	            if (itemClass.equals(CustomCloudlet.class)) {
+	                getIdMethod = itemClass.getMethod("getCloudletId");
+	            } else {
+	                // For other classes, use getId()
+	                getIdMethod = itemClass.getMethod("getId");
+	            }
+	
+	            for (Object item : list) {
+	                Integer id = (Integer) getIdMethod.invoke(item);
+	                ids.add(id);
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            // Handle the exception appropriately
+	        }
+	
+	        System.out.println(text+"List of IDs: " + ids);
+	    }
 }

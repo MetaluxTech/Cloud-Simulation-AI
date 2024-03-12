@@ -20,6 +20,89 @@ import Costums_elements.CustomVM;
 
 public class FileManager {
 	
+	public static String SaveVmsSchedulingDataset(String dataset_name,List<CustomCloudlet> geoCloudletsList, List<CustomDataCenter> dcs_list, List<CustomVM> vms) {
+	    File file = new File(dataset_name); // Path to the CSV file
+
+	    try {
+	        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+//	        ustomVM v = new CustomVM(i, broker1.getId(), vm_mips, vm_pesNum, vm_ram, vm_bandwidth, vm_storage, vm_monitor,
+//					space_shared, vm_load,vm_memcost,vm_storagecost,vm_bwcost,vm_processcost);
+//			vmsList.add(v);
+	        // Write the header
+	        writer.write(
+	        		"TaskID"
+	        		+ ",TaskFileSize,TaskOutputFileSize,TaskFileLength,UserLatitude,UserLongitude,"
+	        		+ "VmID,"
+	        		+ "VmProcessingSpeed,VmRam,VmBandwidth,VmStorage,VmMemoryCost,VmStorageCost,VmBandwidthCost,VmProcessingCost,"
+	        		);
+//	        		+ "DataCenterLatitude,"
+//	        		+ "DataCenterLongitude,DistanceFromDataCenter,DataCenterCpuCost,"
+//	        		+ "DataCenterRamCost,DataCenterStorageCost,DataCenterBwCost,"
+//	        		+ "DataCenterTotalLoad,NetworkDelay,CET,ObjectiveFunction,DataCenterID");
+//	        
+	        writer.newLine();
+
+	        // Write the data
+	        for (CustomCloudlet cloudlet : geoCloudletsList) {
+	        	int DataCenterId = cloudlet.getResourceId();
+	        	int VmId = cloudlet.getVmId();
+	            CustomDataCenter geodatacenter = Utils.getDatacenterById(DataCenterId, dcs_list);
+	            CustomVM vm = Utils.getVMById(VmId, vms);
+	            double dis =Utils.calculateDistance(cloudlet, geodatacenter);
+	            DatacenterCharacteristics characteristics = geodatacenter.getPublicCharacteristics();
+	            double dataCenterLoad=geodatacenter.getLoad();
+	            double dataCenterLatitude=geodatacenter.getLatitude();
+	            double dataCenterLongitude=geodatacenter.getLongitude();
+	            double networkDelay=DCs_Caculations.calculateNetworkDelay(cloudlet,vm);
+	            double networkLatency=DCs_Caculations.calculateLatency(cloudlet,geodatacenter);
+	            double CET=DCs_Caculations.calculateCET(cloudlet, geodatacenter);
+	            double ObjectiveFunction=DCs_Caculations.calculateObjectiveFunction(CET, networkDelay, dataCenterLoad,networkLatency);
+	            String data =
+	            			  
+	            		      cloudlet.getCloudletId() + "," +
+                              cloudlet.getCloudletFileSize() + "," +
+	                          cloudlet.getCloudletOutputSize() + "," +
+	                          cloudlet.getCloudletLength() + "," +
+	                          cloudlet.getLatitude() + "," +
+	                          cloudlet.getLongitude() + "," +
+	                          vm.getId() + "," +
+	                          vm.getMips() + "," +
+	                          vm.getRam() + "," +
+	                          vm.getBw() + "," +
+	                          vm.getSize() + "," +
+	                          vm.getramCost() + "," +
+	                          vm.getStorageCost() + "," +
+	                          vm.getBwCost() + "," +
+	                          vm.getcpuCost() + "," ;
+	            
+//	                          dataCenterLatitude + "," + 
+//	                          dataCenterLongitude + "," + 
+//	                          dis + "," +
+//	                          characteristics.getCostPerSecond() + "," +
+//	                          characteristics.getCostPerMem() + "," +
+//	                          characteristics.getCostPerStorage() + "," +
+//	                          characteristics.getCostPerBw() + "," +
+//	                          dataCenterLoad + "," + 
+//	                          networkDelay + "," + 
+//	                          CET+"," +
+//	                          ObjectiveFunction + "," +
+//	                          DataCenterId ; 
+	            writer.write(data);
+	            writer.newLine();
+	        }
+
+	        writer.close();
+	    } catch (IOException e) {
+	        Log.printLine("error in saving to: "+file.getAbsolutePath()+" ..........");
+
+	        e.printStackTrace();
+	    }
+
+	    Log.printLine("saved to: "+file.getAbsolutePath());
+	    return null;
+	}
+
+	
 	public static String[] LoadTaskData(String prepredicted_dataset_path,int rowID) {
         Path projectpath = Paths.get(System.getProperty("user.dir")).getParent();
 		
@@ -66,10 +149,6 @@ public class FileManager {
 	}
 	
 	
-	
-		
-		
-	
 	public static String SaveTrainingDataSet(String dataset_name,List<CustomCloudlet> geoCloudletsList, List<CustomDataCenter> dcs_list, List<CustomVM> vms) {
 	    File file = new File(dataset_name); // Path to the CSV file
 
@@ -77,7 +156,7 @@ public class FileManager {
 	        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 
 	        // Write the header
-	        writer.write("TaskID,StartTime,TaskFileSize,TaskOutputFileSize,TaskFileLength,UserLatitude,UserLongitude,DistanceFromDataCenter,DataCenterCpuCost,DataCenterRamCost,DataCenterStorageCost,DataCenterBwCost,DataCenterTotalLoad,NetworkDelay,CET,ObjectiveFunction,DataCenterID");
+	        writer.write("TaskID,StartTime,TaskFileSize,TaskOutputFileSize,TaskFileLength,UserLatitude,UserLongitude,DataCenterLatitude,DataCenterLongitude,DistanceFromDataCenter,DataCenterCpuCost,DataCenterRamCost,DataCenterStorageCost,DataCenterBwCost,DataCenterTotalLoad,NetworkDelay,CET,ObjectiveFunction,DataCenterID");
 	        writer.newLine();
 
 	        // Write the data
@@ -89,6 +168,8 @@ public class FileManager {
 	            double dis =Utils.calculateDistance(cloudlet, geodatacenter);
 	            DatacenterCharacteristics characteristics = geodatacenter.getPublicCharacteristics();
 	            double dataCenterLoad=geodatacenter.getLoad();
+	            double dataCenterLatitude=geodatacenter.getLatitude();
+	            double dataCenterLongitude=geodatacenter.getLongitude();
 	            double networkDelay=DCs_Caculations.calculateNetworkDelay(cloudlet,vm);
 	            double networkLatency=DCs_Caculations.calculateLatency(cloudlet,geodatacenter);
 	            double CET=DCs_Caculations.calculateCET(cloudlet, geodatacenter);
@@ -102,6 +183,8 @@ public class FileManager {
 	                          cloudlet.getCloudletLength() + "," +
 	                          cloudlet.getLatitude() + "," +
 	                          cloudlet.getLongitude() + "," +
+	                          dataCenterLatitude + "," + 
+	                          dataCenterLongitude + "," + 
 	                          dis + "," +
 	                          characteristics.getCostPerSecond() + "," +
 	                          characteristics.getCostPerMem() + "," +
