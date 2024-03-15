@@ -1,5 +1,4 @@
 package simulation_1;
-
 import java.awt.print.Printable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,12 +39,12 @@ public class Simulator {
     	
         try {
         	
-        	String modelName="NONE";//GA or SNAKE or NONE or FUNCTIONS or New_Model
+        	String modelName="FUNCTIONS";//GA or SNAKE or NONE or FUNCTIONS or New_Model
         	
             int numUsers =		 	1;
             int numDatacenters=		3;
             int numVMs=				9;
-            int numCloudlets=		400;
+            int numCloudlets=		2000;
             
             
             int best_dc_id=-1;
@@ -138,15 +137,15 @@ public class Simulator {
            
             		tasks_List.size(), simulationTime, avgCompleteTime, avgWaitingTime,
                     avgThroughput, avgSLAViolation, avgNegotiationTime);
-            print("number of Processed Tasks: "+numCloudlets);
-           	print("Total simulation Time: "+simulationTime);
-           	print("Average Complete Time: "+avgCompleteTime);
-           	print("Average Waiting Time: "+avgWaitingTime);
-            print("Average Throughput: "+avgThroughput);
-            print("Average SLA Violation: "+avgSLAViolation);
-            print("Average Negotiation Time: "+avgNegotiationTime);
-
-            print(ResultsFilePath);
+//            print("number of Processed Tasks: "+numCloudlets);
+//           	print("Total simulation Time: "+simulationTime);
+//           	print("Average Complete Time: "+avgCompleteTime);
+//           	print("Average Waiting Time: "+avgWaitingTime);
+//            print("Average Throughput: "+avgThroughput);
+//            print("Average SLA Violation: "+avgSLAViolation);
+//            print("Average Negotiation Time: "+avgNegotiationTime);
+            String excel_path=Excel.SaveResourcesToExcel("dataset.csv", tasks_List, geoDataCentersList,vms_List);
+            print(excel_path);
             } catch (Exception e) {
             e.printStackTrace();
         }

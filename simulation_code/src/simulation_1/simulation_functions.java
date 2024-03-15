@@ -49,11 +49,9 @@ public class simulation_functions {
 			int hostBw = 			800;  //MBPs
 			peList.add(new Pe(0, new PeProvisionerSimple(hostMips))); // need to store Pe id and MIPS Rating
 			VmScheduler schudler=			new VmSchedulerTimeShared(peList);
-			
-			
 			Host host1=new Host(hostId,new RamProvisionerSimple(hostRam),new BwProvisionerSimple(hostBw),hostStorage,peList,schudler);            
 			
-			
+	
 			
 			String arch =			 	"x86"; // system architecture
 			String os = 				"Linux"; // operating system
