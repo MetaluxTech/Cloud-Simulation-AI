@@ -1,6 +1,0 @@
-🤢 Convert DC load based on cloudlet size
-🤢 Calculate Results
-🤢 Compare Results
-🤢 Make LSTM Model more complicated
-🤢 Implement Negotiation time Equation
-😢 Delete cloudlet from DataCenter ID 
