@@ -1,9 +1,21 @@
 from random import randint
 from numpy import  double
+import numpy
 import pandas as pd
 
 from numpy import double
 from pandas import DataFrame
+import numpy as np
+def caculate_total_profit(df: pd.DataFrame,powerCost) -> double:
+    EC=calculate_execution_cost(df)
+    PC=calculate_power_consumption(df,1)
+    Pcost=PC*powerCost
+    req_time=df['getActualCPUTime'] # ليست موجودة في السموليشن يتم افتراضها نفسها وقت المعالجة للمهمة
+    exec_time=df['getActualCPUTime']
+    PEN = np.maximum(req_time - exec_time, 0)
+    tp=EC-Pcost-sum(PEN)
+    return tp
+
 
 def calculate_average_vms_utilizationte_avu(df: pd.DataFrame) -> double:
     cpu_utilization =        (df['getActualCPUTime'].sum() / df['VmProcessingSpeed'].sum())*100
@@ -13,6 +25,7 @@ def calculate_average_vms_utilizationte_avu(df: pd.DataFrame) -> double:
     
     avu = (cpu_utilization + memory_utilization + storage_utilization + bandwidth_utilization) / 4
     return avu
+
 
 def caculate_average_resourse_utilization(df: pd.DataFrame) -> double:
     cpu_utilization =        (df['getActualCPUTime'].sum() / df['datacenterCpu'].sum())*100
@@ -89,6 +102,7 @@ def calculate_power_consumption(df: pd.DataFrame, power_cons_per_sec: float) -> 
  
     return PCost
 
+
 df =pd.read_csv("evaluation_dataset.csv")
 secure_df = df[df['taskSecurityStatus'] == 'Trusted Data'].copy()
 
@@ -105,6 +119,7 @@ im_factor=calculate_impulance_factor(df)
 pt=calculate_processing_time(df)
 avu=calculate_average_vms_utilizationte_avu(df)
 aru=caculate_average_resourse_utilization(df)
+tp=caculate_total_profit(df,1)
 print("Withought Security Layer: \n")
 
 print(f"Average Waiting Time (AWT): {awt:.2f} seconds")
@@ -118,6 +133,7 @@ print(f"impulance factor (IF): {im_factor:.2f} ")
 print(f"Processing Time (PT): {pt:.2f} seconds ")
 print(f"Average VM Utilization (AVU): {avu:.2f} ")
 print(f"Average Resource Utilization (ARU): {aru:.2f}")
+print(f"total profit: {tp:.2f} $")
 
 
 secure_awt = calculate_awt(secure_df)
@@ -131,6 +147,7 @@ secure_im_factor=calculate_impulance_factor(secure_df)
 secure_pt=calculate_processing_time(secure_df)
 secure_avu = calculate_average_vms_utilizationte_avu(secure_df)
 secure_aru=caculate_average_resourse_utilization(secure_df)
+secure_tp=caculate_total_profit(secure_df,1)
 print("\nWith Security Layer: \n")
 
 print(f"secure Layer Average Waiting Time (AWT): {secure_awt:.2f} seconds")
@@ -144,3 +161,13 @@ print(f"secure Layer impulance factor (IF): {secure_im_factor:.2f} ")
 print(f"secure Layer Processing Time (PT): {secure_pt:.2f} seconds ")
 print(f"secure Layer Average VM Utilization (AVU): {secure_avu:.2f} ")
 print(f"secure Layer Average Resource Utilization (ARU): {secure_aru:.2f}")
+print(f"secure Layer total profit: {secure_tp:.2f} $")
+
+metrics = {
+    "Metric": ["AWT", "ACT", "TH", "EC", "PCost", "TCR", "SLAV", "IF", "PT", "AVU", "ARU", "TP"],
+    "Without Security Layer": [awt, act, th, total_ec, PCons, tcr, sla, im_factor, pt, avu, aru,tp],
+    "With Security Layer": [secure_awt, secure_act, secure_th, secure_total_ec, secure_PCons, secure_tcr, secure_sla, secure_im_factor, secure_pt, secure_avu, secure_aru,secure_tp]
+}
+
+metrics_df = pd.DataFrame(metrics)
+metrics_df.to_csv("calculated_metrics.csv", index=False)
