@@ -1,6 +1,0 @@
-Number of Processed Tasks,Total Simulation Time,Average Completion Time,Average Waiting Time, Average Throughput,Average SLA Violation,  Average Negotiation Time
-<<<<<<< HEAD:simulation_code/results/FUNCTIONS_results_400.csv
-400,5.27,0.11,2.40,75.90,0.03,1.19
-=======
-400,5.27,0.11,2.40,75.90,0.04,0.53
->>>>>>> 9f119cf339b78784fb1952a063a24d6ecd81701a:simulation_code/experiement_result/FUNCTIONS_results_400.csv
