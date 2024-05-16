@@ -22,6 +22,12 @@ ensemble_vms_model    =load("models/enesemble_vms_scheduling_84.joblib")
 
 df = pd.read_csv(df_path)  
 
+# datacenter prediction features ['TaskFileSize', 'TaskOutputFileSize', 'TaskFileLength', 'CpuTime','TotalLength','UserLatitude', 'UserLongitude']
+# Vms        prediction feaetures ['TaskFileSize', 'TaskOutputFileSize', 'TaskFileLength', 'CpuTime','TotalLength']
+
+
+
+
 def predict_datacenter_id(task_info,modelName):
     features = np.array([[task_info]]).reshape(1, 1, -1)
     return np.argmax(modelName.predict(features))+3
