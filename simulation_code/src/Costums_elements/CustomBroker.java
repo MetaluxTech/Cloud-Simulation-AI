@@ -12,6 +12,9 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.lists.VmList;
 
+import Security_Manager.Decryption;
+import Security_Manager.Encryption;
+import Security_Manager.Security;
 import tools.Utils;
 
 public class CustomBroker extends DatacenterBroker {
@@ -20,8 +23,28 @@ public class CustomBroker extends DatacenterBroker {
 		super(name);
 	}
 
-	  
-	
+//@Override
+//public void submitCloudletList(List<? extends Cloudlet> list) {
+//	for (Cloudlet task : list) {
+//		CustomCloudlet secure_task=(CustomCloudlet) task;
+//		String decrypted_data=Decryption.decryptData(secure_task.getTaskData(), "Decrypt-Task", Security.AES_KEY);
+//		secure_task.setTaskData(decrypted_data);
+//		 String[] parts = decrypted_data.split(",");  // Find last word after last comma
+//		 String attack_type=parts[parts.length-1];
+//		 if (attack_type.contains("normal")) {
+//			 secure_task.SetSecuityStatus("Trusted Data");
+//			
+//		 }
+//		 else{
+//			 secure_task.SetSecuityStatus("Malware Detected ("+attack_type+")");
+//				
+//		 }
+//	}
+//	  
+//	    
+//	getCloudletList().addAll(list);
+//}
+//	
 	@Override
 	public void processVmCreate(SimEvent ev) {
 		int[] data = (int[]) ev.getData();

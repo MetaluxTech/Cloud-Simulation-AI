@@ -75,7 +75,7 @@ public class DCs_Caculations {
 		 return objectiveFunction;
 	}
 	
-	public static CustomDataCenter getBestDataCenterByFunctions(CustomCloudlet cloudlet, List<CustomDataCenter> data_centers_list,List<CustomVM> vms_list) {
+	public static int getBestDataCenterByFunctions(CustomCloudlet cloudlet, List<CustomDataCenter> data_centers_list,List<CustomVM> vms_list) {
 	    double MaxObjFunction = 99999999999999.0;
 	    List<CustomVM> dc_vms=null;
 	    List<Double> OFunctions_array=new ArrayList<Double>();
@@ -104,7 +104,7 @@ public class DCs_Caculations {
 	  //the objective function is the biggest    
 	    
 //	    return Tools.getDataCenterWithLowestLoad(data_centers_list);
-	    return best_dc;//with lowest objective function
+	    return best_dc.getId();//with lowest objective function
 	}
 	
 

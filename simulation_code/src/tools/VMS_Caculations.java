@@ -9,12 +9,12 @@ import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
-
 import Costums_elements.CustomCloudlet;
 import Costums_elements.CustomDataCenter;
 import Costums_elements.CustomVM;
 import simulation_1.Simulator;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -70,14 +70,13 @@ public class VMS_Caculations {
 		  double f1 = values[0];
 		  double f2 =Math.round( ( tet + tec + dtt + dtc) * 100.0) / 100.0 ;
 		  double rank = Math.round((f1 * 0.5 + f2 * 0.5)* 100.0) / 100.0;
-		  Log.printLine(" task#"+cloudlet.getCloudletId()+" VM#"+vm.getId()+ " tet, dtt, dtc, tec (" + tet +") (" + dtt+") (" +  dtc +") (" +tec+") f1: "+f1+" f2: "+f2 +"  RANK: "+rank);
 		  
 		  return Math.round(rank * 100.0) / 100.0;
 
 		}
 
 
-	public static CustomVM getBestVMByRank(CustomCloudlet cloudlet, List<CustomDataCenter> data_centers_list,List<CustomVM> vms_list) 
+	public static int getBestVMIDByRank(CustomCloudlet cloudlet, List<CustomDataCenter> data_centers_list,List<CustomVM> vms_list) 
 	{
 		List<CustomVM>bestVmsList=new ArrayList<CustomVM>();
 		List<Double>Ranks_Array=new ArrayList<Double>();
@@ -101,11 +100,8 @@ public class VMS_Caculations {
 	    	    .min(Comparator.comparing(i -> Ranks_Array.get(i)))
 	    	    .orElse(-1);
 
-		best_vm=bestVmsList.get(indexOfSmallestRank);
-		Log.printLine("VMS Ranks: "+Ranks_Array + "least VM RANK: "+ best_vm.getId());
-
-		
-		return best_vm;
+	  
+		return bestVmsList.get(indexOfSmallestRank).getId();
 	        }
 	    
 	    

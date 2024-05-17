@@ -29,11 +29,11 @@ public class Displays {
 		 
 			Log.printLine("	 ========== OUTPUT ==========");
 			//titles column
-			Log.printLine("Cloudlet ID\tSTATUS\tData centerID\t VM ID \t Time \t Start Time\tFinish Time  distance(Km)   DcLoad");
+			Log.printLine("Cloudlet ID\tData centerID\t VM ID \t Time \t Start Time\tFinish Time  distance(Km)   DcLoad\tSTATUS");
 
 			DecimalFormat dft = new DecimalFormat("###.##");
 			for (CustomCloudlet cloudlet:geoCloudletsList) {
-				status=cloudlet.getCloudletStatusString().toUpperCase();
+				status=cloudlet.getSecurityStatus();
 				int DataCenterId =cloudlet.getResourceId();
 				VmId=cloudlet.getVmId();
 				int cloudlet_id= cloudlet.getCloudletId();
@@ -41,8 +41,8 @@ public class Displays {
 				double dis=Utils.calculateDistance(cloudlet,geodatacenter);				 
 				double load=geodatacenter.getLoad();				 
 							 
-				Log.printLine("\t" +cloudlet_id +"\t"
-								+status+"\t\t"						
+				Log.printLine("\t" +cloudlet_id +"\t\t"
+													
 								+DataCenterId+"\t "
 								+VmId+"\t"+
 							
@@ -50,7 +50,8 @@ public class Displays {
 								dft.format(cloudlet.getExecStartTime())+"\t"+
 								dft.format(cloudlet.getFinishTime())+"\t        "+
 								dis+"     "+
-								load
+								load+"\t\t"+
+								status	
 								
 							
 									);
@@ -139,4 +140,59 @@ public class Displays {
 	
 	        System.out.println(text+"List of IDs: " + ids);
 	    }
+	public static void displaymethods(CustomCloudlet task) {
+		List<String> spes = new ArrayList<>();
+		 Class<?> clazz = task.getClass();
+
+	     // Get all public methods of the class
+	     Method[] methods = clazz.getMethods();
+
+	     // Filter out getter methods
+	     for (Method method : methods) {
+	         if (method.getName().startsWith("get") && method.getParameterCount() == 0) {
+	             spes.add(method.getName());
+	         }
+	     }
+
+	     // Print the list of getter methods
+	     System.out.println(spes);
+	}
+    
 }
+//[getTaskData,
+// getSecurityStatus,
+// getLatitude,
+// getLongitude
+// , getCloudletId,
+// getActualCPUTime
+// , getResourceId,
+// getExecStartTime, 
+// getCloudletFileSize,
+// getCloudletOutputSize
+// , getUtilizationModelCpu,
+// getCloudletStatusString,
+// getCloudletTotalLength,
+// getCloudletFinishedSoFar
+// , getUtilizationModelBw, 
+// getUtilizationModelRam
+// , getRequiredFiles,
+// getVmId,
+// getStatus,
+// getUserId, 
+// getCloudletStatus,
+// getNumberOfPes,
+// getCloudletLength,
+// getReservationId, 
+// getClassType,
+// getCloudletHistory,
+// getWaitingTime,
+// getNetServiceLevel,
+// getSubmissionTime, 
+// getFinishTime,
+// getAllResourceName, 
+// getAllResourceId, 
+// getCostPerSec,
+// getWallClockTime,
+// getProcessingCost,
+// getClass
+// ]

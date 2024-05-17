@@ -26,15 +26,16 @@ import org.cloudbus.cloudsim.provisioners.BwProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.RamProvisionerSimple;
 
-import Costums.GeoCloudlet;
-import Costums.GeoDatacenter;
-import Costums.MyVm;
-import tools.Tools;
+import Costums_elements.CustomDataCenter;
+import Costums_elements.CustomCloudlet;
+import Costums_elements.CustomVM;
+import Costums_elements.CustomBroker;
+import tools.Utils;
 
 public class simulation_functions {
 
 	
-	  public static GeoDatacenter createDatacenter( String name, int hostId) {
+	  public static CustomDataCenter createDatacenter( String name, int hostId) {
 		  
 			List<Host> hostList = new ArrayList<Host>();
 			List<Pe> peList = new ArrayList<Pe>();
@@ -69,9 +70,9 @@ public class simulation_functions {
 			
 			
 			
-			GeoDatacenter datacenter = null;      	
+			CustomDataCenter datacenter = null;      	
 			try {
-				datacenter = new GeoDatacenter(name, characteristics, policy, storageList, 0,DcLatit,DcLongt,0.0);
+				datacenter = new CustomDataCenter(name, characteristics, policy, storageList, 0,DcLatit,DcLongt,0.0);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -79,7 +80,7 @@ public class simulation_functions {
 			return datacenter;
 		}
 
-	  public static void DisplaySimulationEvents(List<GeoCloudlet> geoCloudletsList, List<GeoDatacenter> dcs_list) {
+	  public static void DisplaySimulationEvents(List<CustomCloudlet> geoCloudletsList, List<CustomDataCenter> dcs_list) {
 			
 		  int size = geoCloudletsList.size();
 		  String status="SUCCESS";
@@ -91,14 +92,14 @@ public class simulation_functions {
 			Log.printLine("Cloudlet ID\tSTATUS\tData centerID\t VM ID \t Time \t Start Time\tFinish Time  distance(Km)   DcLoad");
 
 			DecimalFormat dft = new DecimalFormat("###.##");
-			for (GeoCloudlet cloudlet:geoCloudletsList) {
+			for (CustomCloudlet cloudlet:geoCloudletsList) {
 				status=cloudlet.getCloudletStatusString().toUpperCase();
 				int DataCenterId =cloudlet.getResourceId();
 				VmId=cloudlet.getVmId();
 				int cloudlet_id= cloudlet.getCloudletId();
-				GeoDatacenter geodatacenter=Tools.getDatacenterById(DataCenterId, dcs_list);
-				double dis=Tools.calculateDistance(cloudlet,geodatacenter);				 
-				double load=geodatacenter.getLoad();				 
+				CustomDataCenter CustomDataCenter=Utils.getDatacenterById(DataCenterId, dcs_list);
+				double dis=Utils.calculateDistance(cloudlet,CustomDataCenter);				 
+				double load=CustomDataCenter.getLoad();				 
 							 
 				Log.printLine("\t" +cloudlet_id +"\t"
 								+status+"\t\t"						
@@ -116,13 +117,13 @@ public class simulation_functions {
 				}			
 		}
 	  
-	  public static void printResourcesList(List<GeoDatacenter> geoDataCentersList, List<Host> hosts_list, List<MyVm> vms_List,List<GeoCloudlet> tasks_List)  {
+	  public static void printResourcesList(List<CustomDataCenter> CustomDataCentersList, List<Host> hosts_list, List<CustomVM> vms_List,List<CustomCloudlet> tasks_List)  {
 		    List<Integer> datacenterIds = new ArrayList<>();
 		    List<Integer> hostIds = new ArrayList<>();
 		    List<Integer> vmIds = new ArrayList<>();
 		    List<Integer> cloudletIds = new ArrayList<>();
 		   
-		    for (Datacenter dc : geoDataCentersList) {
+		    for (Datacenter dc : CustomDataCentersList) {
 		        datacenterIds.add(dc.getId());
 		        
 		    }
@@ -146,11 +147,11 @@ public class simulation_functions {
 		    
 		}
   
-	  public static void printOFunctions(Map<GeoCloudlet, String> DCsOFunctions) {
+	  public static void printOFunctions(Map<CustomCloudlet, String> DCsOFunctions) {
 		  System.out.printf("\n\n\n%-10s%-1s%-10s%-10s%-1s%n", "Cld_ID", "DC #3", "DC #4", "DC #5","DC #");
 
-		        for (Entry<GeoCloudlet, String> entry : DCsOFunctions.entrySet()) {
-		            GeoCloudlet cloudlet = entry.getKey();
+		        for (Entry<CustomCloudlet, String> entry : DCsOFunctions.entrySet()) {
+		            CustomCloudlet cloudlet = entry.getKey();
 		            String Ofunc_string = entry.getValue();
 
 		            System.out.printf("%-1s", cloudlet.getCloudletId());
