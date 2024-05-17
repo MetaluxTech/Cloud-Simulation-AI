@@ -22,16 +22,18 @@ import org.cloudbus.cloudsim.Log;
 import Costums_elements.CustomCloudlet;
 import Costums_elements.CustomDataCenter;
 import Costums_elements.CustomVM;
+import simulation_1.Simulator;
 
 public class FileManager {
 	
+	private static String dataset_path=Simulator.dataset_path;
 
 	
 	public static String[] LoadTaskData(String prepredicted_dataset_path,int rowID) {
-        Path projectpath = Paths.get(System.getProperty("user.dir")).getParent();
-        String datasetpath = projectpath + prepredicted_dataset_path;
+        
+        
 		
-	    try (BufferedReader br = new BufferedReader(new FileReader(datasetpath))) {
+	    try (BufferedReader br = new BufferedReader(new FileReader(prepredicted_dataset_path))) {
 	        String line;
 	        int currentRow = 0;
 
@@ -50,10 +52,8 @@ public class FileManager {
 	
 	
 	public static String loadSecurityHeader(String security_dataset) {
-	    Path projectpath = Paths.get(System.getProperty("user.dir")).getParent();
-	    String datasetpath = projectpath +"\\ga_lstm\\AI_code\\dataset\\"+ security_dataset;
-
-	    try (BufferedReader br = new BufferedReader(new FileReader(datasetpath))) {
+	   
+	    try (BufferedReader br = new BufferedReader(new FileReader(security_dataset))) {
 	        List<String> lines = br.lines().collect(Collectors.toList());
 	        int randomIndex = Utils.getNextRandom(0, lines.size() - 1);  // Ensure random index is within bounds
 	        return lines.get(randomIndex);

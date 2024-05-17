@@ -1,6 +1,6 @@
 package simulation_1;
 import java.awt.print.Printable;
-
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -27,10 +27,12 @@ import tools.Results;
 
 public class Simulator {
 
+	public static String dataset_path = Paths.get("").toAbsolutePath().getParent().resolve("AI_code/dataset/global_dataset.csv").toString();	
+
 	private static List<CustomDataCenter> datacentersList;
 	private static List<CustomVM> vmsList;
 	private static List<CustomCloudlet> tasksList;
-
+	
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 
@@ -42,7 +44,7 @@ public class Simulator {
 			boolean save_cloudlets_properties = false;
 			boolean save_training = false;
 			boolean save_vm_scheduling = false;
-			boolean save_expereiment = true;
+			boolean save_expereiment = false;
 			boolean print_model_quality = false;
 			boolean display_simulation_timing_spesifications = true;
 			boolean save_all_wanted_spec=false;
@@ -53,7 +55,6 @@ public class Simulator {
 			int numVMs = 15;
 			int numCloudlets = 50;
 			Security.GenerateAESKey(16);
-
 			
 			
 //			create simulation arrays
@@ -112,7 +113,6 @@ public class Simulator {
 				FileManager.SaveExperimentDataSet(dataset_name, tasksList);
 			}
 			if(save_all_wanted_spec) {
-				ArrayList<String> spes = new ArrayList<>(Arrays.asList("getCloudletId", "getActualCPUTime"));
 		        
 				FileManager.saveWantedDataSet("wanted_"+numCloudlets+".csv", tasksList,datacentersList,vmsList);
 				

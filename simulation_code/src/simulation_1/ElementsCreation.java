@@ -59,9 +59,8 @@ public class ElementsCreation {
 				taskLatit = Utils.generateRandomLatLon()[0];
 				taskLong = Utils.generateRandomLatLon()[1];
 			} else {
-				Path parentpath = Paths.get(System.getProperty("user.dir")).getParent();
-		        String fullPath = parentpath + "/ga_lstm/AI_code/dataset/global_dataset.csv";
-				String[] rowData = FileManager.LoadCloudletsSpesification(fullPath, i);
+				String dataset_path = Paths.get("").toAbsolutePath().getParent().resolve("AI_code/dataset/global_dataset.csv").toString();	
+				String[] rowData = FileManager.LoadCloudletsSpesification(dataset_path, i);
 				// shape the row of data
 //				 dataset cols=  0-TaskID 1-TaskFileSize	2-TaskOutputFileSize	3-TaskFileLength	4-CpuTime	5-TotalLength	6-UserLatitude 7-UserLongitude
 //            	8-DataCenterID 9-VmID 10-ENSEMBLE_predicted_DC 11-GA_predicted_DC 12-SNAKE_predicted_DC 13-SNAKE_predicted_VM	14-ENSEMBLE_predicted_VM
@@ -99,7 +98,7 @@ public class ElementsCreation {
 				best_datacenter_id = AI.PredictBestDataCenter(task, datacentersList, modelName);
 
 			} else {
-				best_dc = null;
+				best_datacenter_id = -1;
 			}
 
 			best_dc = Utils.getDatacenterById(best_datacenter_id, datacentersList);
@@ -133,8 +132,9 @@ public class ElementsCreation {
 
 			
 			best_dc.setLoad(best_dc.getLoad() + task_length / 10);
+			String sec_dataset_path=	Paths.get("").toAbsolutePath().getParent().resolve("AI_code/dataset/pure_security_dataset.csv").toString();	
 
-			String task_data = FileManager.loadSecurityHeader("TON_IoT_2000.csv");
+			String task_data = FileManager.loadSecurityHeader(sec_dataset_path);
 			task.setTaskData(task_data);
 //			Encryption.encryptData(task, "Encrypt-Task", Security.AES_KEY);
 			tasksList.add(task);

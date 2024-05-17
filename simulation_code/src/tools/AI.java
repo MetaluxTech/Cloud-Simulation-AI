@@ -11,13 +11,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.management.loading.PrivateClassLoader;
+
 import org.cloudbus.cloudsim.Log;
 
 import Costums_elements.CustomCloudlet;
 import Costums_elements.CustomDataCenter;
 import Costums_elements.CustomVM;
+import simulation_1.Simulator;
 
 public class AI {
+		private static String dataset_path=Simulator.dataset_path;
 
 	   public static int PredictDataCenterIDFromPython(String modelName,CustomCloudlet task) {
 	        String pythonScriptPath = "C:\\Users\\mohsal\\Desktop\\app\\metalux\\cloudsim\\ga_lstm\\AI_code\\predictDataCenterID.py"; // Assuming the script is in the same folder
@@ -63,12 +67,10 @@ public class AI {
 
  
 	   public static int PredictBestDataCenter(CustomCloudlet task, List<CustomDataCenter> DCList, String modelName) {
-		   	Path parentpath = Paths.get(System.getProperty("user.dir")).getParent();
-	        String fullPath = parentpath + "/ga_lstm/AI_code/dataset/global_dataset.csv";
-
+		  
 	    int Predicted_DC_ID = -1;
 
-	    try (BufferedReader br = new BufferedReader(new FileReader(fullPath))) {
+	    try (BufferedReader br = new BufferedReader(new FileReader(dataset_path))) {
 	        String line;
 	        int currentRow = 1;
 	       
@@ -117,12 +119,10 @@ public class AI {
 
 	   
 	   public static int PredictBestVM(CustomCloudlet task, List<CustomVM> VMsList, String modelName) {
-		   Path parentpath = Paths.get(System.getProperty("user.dir")).getParent();
-	        String fullPath = parentpath + "/ga_lstm/AI_code/dataset/global_dataset.csv";
-
+		  
 	    int Predicted_VM_ID = -1;
 
-	    try (BufferedReader br = new BufferedReader(new FileReader(fullPath))) {
+	    try (BufferedReader br = new BufferedReader(new FileReader(dataset_path))) {
 	        String line;
 	        int currentRow = 1;
 	       

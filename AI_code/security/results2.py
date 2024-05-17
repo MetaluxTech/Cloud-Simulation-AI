@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 # Read the CSV file
 
 df = pd.read_csv("cloudlets_security_2000.csv")
-encryption_time=0.0325 # 30 ms
-decryption_time=0.0157 # 10 ms
+encryption_time=0.0325 # =~ 30 ms
+decryption_time=0.0157 # =~ 10 ms
 
 task_status_counts = df["taskStatus"].value_counts()
 sum_execution_time = df["taskExecutionTime"].sum()

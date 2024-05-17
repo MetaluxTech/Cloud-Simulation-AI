@@ -1,0 +1,2 @@
+TaskID,TaskFileSize,TaskOutputFileSize,TaskFileLength,UserLatitude,UserLongitude,CpuTime,StartExecTime,getFinishTime,DataCenterID,VmID
+1,51,16,95,88.45520404230012,118.37869339184175,0.7421875,0.1,0.8421875,4,6

@@ -1,0 +1,2 @@
+TaskID,StartTime,TaskFileSize,TaskOutputFileSize,TaskFileLength,UserLatitude,UserLongitude,DataCenterLatitude,DataCenterLongitude,DistanceFromDataCenter,DataCenterCpuCost,DataCenterRamCost,DataCenterStorageCost,DataCenterBwCost,DataCenterTotalLoad,NetworkDelay,CET,ObjectiveFunction,DataCenterID
+1,0.1,51,16,95,88.45520404230012,118.37869339184175,88.28041384934173,126.63537310705584,32.0,45.0,21.0,24.0,26.0,9.0,1.44,27.81,17.89,4
