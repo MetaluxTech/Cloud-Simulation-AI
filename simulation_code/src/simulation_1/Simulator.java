@@ -1,14 +1,9 @@
 package simulation_1;
-import java.awt.print.Printable;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-
-import javax.tools.Tool;
 
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -17,11 +12,8 @@ import Costums_elements.CustomBroker;
 import Costums_elements.CustomCloudlet;
 import Costums_elements.CustomDataCenter;
 import Costums_elements.CustomVM;
-import Security_Manager.Decryption;
-import Security_Manager.Encryption;
 import Security_Manager.Security;
 import tools.AI;
-import tools.Evaluation;
 import tools.FileManager;
 import tools.Results;
 
@@ -48,7 +40,7 @@ public class Simulator {
 			boolean print_model_quality = false;
 			boolean display_simulation_timing_spesifications = true;
 			boolean save_all_wanted_spec=false;
-        	String modelName="ENSEMBLE";//GA or SNAKE or NONE or FUNCTIONS or New_Model or ENSEMBLE
+        	String modelName="GA";//GA or SNAKE or NONE or FUNCTIONS or New_Model or ENSEMBLE
         	String scheduling_model="ENSEMBLE"; // NONE or FUNCTIONS or SNAKE or ENSEMBLE
 			int numUsers = 1;
 			int numDatacenters = 3;
@@ -117,7 +109,10 @@ public class Simulator {
 				FileManager.saveWantedDataSet("wanted_"+numCloudlets+".csv", tasksList,datacentersList,vmsList);
 				
 			}
+			String pretrained_model_name="snake_model_95.keras";
+		int predicted_dc=AI.PredictDataCenterIDFromPython(tasksList.get(0),pretrained_model_name );
 		
+		Log.printLine("predicted dataceter for model (( "+pretrained_model_name+" )) :-> "+predicted_dc);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

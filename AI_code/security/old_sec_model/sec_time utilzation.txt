@@ -1,0 +1,23 @@
+encryption_time=0.0325 # =~ 30 ms
+decryption_time=0.0157 # =~ 10 ms
+total number of tasks 2000
+
+
+taskStatus
+Trusted Data    1299
+dos              101
+scanning         100
+backdoor          92
+ransomware        91
+injection         86
+xss               82
+password          80
+type               3
+Name: count, dtype: int64
+sum  trusterd data:  1299
+sum none trusterd data:  701
+Total encryption time:  65.0  s
+Total decryption time:  31.4  s
+Total Trusted Tasks Exce Time:  607.176050099  s
+Total Not Trusted Tasks Exce Time:  319.936088784  s
+Total Tasks Exce Time:  927.1121388830001  s

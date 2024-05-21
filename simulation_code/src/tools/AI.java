@@ -23,8 +23,8 @@ import simulation_1.Simulator;
 public class AI {
 		private static String dataset_path=Simulator.dataset_path;
 
-	   public static int PredictDataCenterIDFromPython(String modelName,CustomCloudlet task) {
-	        String pythonScriptPath = "C:\\Users\\mohsal\\Desktop\\app\\metalux\\cloudsim\\ga_lstm\\AI_code\\predictDataCenterID.py"; // Assuming the script is in the same folder
+	   public static int PredictDataCenterIDFromPython(CustomCloudlet task,String modelName) {
+	        String pythonScriptPath = "C:\\Users\\mohsal\\Desktop\\app\\metalux\\cloudsim\\ga_lstm\\AI_code\\simulation_predict.py"; // Assuming the script is in the same folder
 	        String pythonPath = "c:\\Users\\mohsal\\Desktop\\app\\metalux\\cloudsim\\ga_lstm\\AI_code\\.venv\\Scripts\\python.exe"; // Adjust for your Python interpreter path (if different)
 
 	        Path scriptPath = Paths.get(pythonScriptPath);
@@ -32,6 +32,13 @@ public class AI {
 	        try {
 //	        	TaskFileSize	TaskOutputFileSize	TaskFileLength	UserLatitude	UserLongitude	DataCenterID
 
+//	   features  0   TaskFileSize        2000 non-null   int64  
+//	        	 1   TaskOutputFileSize  2000 non-null   int64  
+//	        	 2   TaskFileLength      2000 non-null   int64  
+//	        	 3   CpuTime             2000 non-null   float64
+//	        	 4   TotalLength         2000 non-null   int64  
+//	        	 5   UserLatitude        2000 non-null   float64
+//	        	 6   UserLongitude       2000 non-null   float64    features to sent to Python to predict dc via model
 	            List<String> commandList = new ArrayList<>();
 	            commandList.add(pythonPath);
 	            commandList.add(scriptPath.toString());
@@ -39,6 +46,8 @@ public class AI {
 	            commandList.add(String.valueOf(task.getCloudletFileSize()));
 	            commandList.add(String.valueOf(task.getCloudletOutputSize()));
 	            commandList.add(String.valueOf(task.getCloudletLength()));
+	            commandList.add(String.valueOf(task.getActualCPUTime()));
+	            commandList.add(String.valueOf(task.getCloudletTotalLength()));
 	            commandList.add(String.valueOf(task.getLatitude()));
 	            commandList.add(String.valueOf(task.getLongitude()));
 
@@ -105,7 +114,6 @@ public class AI {
 	                } else if (modelName.equals("ENSEMBLE")) {
 	                    Predicted_DC_ID = Integer.parseInt(rowData[10]);  //New Model predicted DataCenter
 	                }
-	                CustomDataCenter dc = Utils.getDatacenterById(Predicted_DC_ID, DCList);
 	                return Predicted_DC_ID;
 	            }
 	            currentRow++;
