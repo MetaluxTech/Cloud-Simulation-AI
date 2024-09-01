@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 import Costums_elements.CustomBroker;
@@ -19,8 +18,7 @@ import tools.Results;
 
 public class Simulator {
 
-	public static String dataset_path = Paths.get("").toAbsolutePath().getParent().resolve("AI_code/dataset/global_dataset.csv").toString();	
-
+	public static String global_dataset_path = Paths.get("").toAbsolutePath().getParent().resolve("AI_code/dataset/global_dataset.csv").toString();	
 	private static List<CustomDataCenter> datacentersList;
 	private static List<CustomVM> vmsList;
 	private static List<CustomCloudlet> tasksList;
@@ -29,7 +27,6 @@ public class Simulator {
 	public static void main(String[] args) {
 
 		try {
-
 //		  create	simulation variables
 			boolean use_scheduling=true;
 			boolean use_randome_values = false;
@@ -40,13 +37,13 @@ public class Simulator {
 			boolean print_model_quality = false;
 			boolean display_simulation_timing_spesifications = true;
 			boolean save_all_wanted_spec=false;
-        	String modelName="GA";//GA or SNAKE or NONE or FUNCTIONS or New_Model or ENSEMBLE
-        	String scheduling_model="ENSEMBLE"; // NONE or FUNCTIONS or SNAKE or ENSEMBLE
+        	String modelName="GA";//GA or SNAKE or NONE or FUNCTIONS or ENSEMBLE
+        	String scheduling_model="FUNCTIONS"; // NONE or FUNCTIONS or SNAKE or ENSEMBLE
 			int numUsers = 1;
 			int numDatacenters = 3;
 			int numVMs = 15;
-			int numCloudlets = 50;
-			Security.GenerateAESKey(16);
+			int numCloudlets =150;
+			Security.GenerateAESKey(64);
 			
 			
 //			create simulation arrays
@@ -109,10 +106,7 @@ public class Simulator {
 				FileManager.saveWantedDataSet("wanted_"+numCloudlets+".csv", tasksList,datacentersList,vmsList);
 				
 			}
-			String pretrained_model_name="snake_model_95.keras";
-		int predicted_dc=AI.PredictDataCenterIDFromPython(tasksList.get(0),pretrained_model_name );
-		
-		Log.printLine("predicted dataceter for model (( "+pretrained_model_name+" )) :-> "+predicted_dc);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

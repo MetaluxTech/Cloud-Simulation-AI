@@ -61,9 +61,6 @@ public class ElementsCreation {
 			} else {
 				String dataset_path = Paths.get("").toAbsolutePath().getParent().resolve("AI_code/dataset/global_dataset.csv").toString();	
 				String[] rowData = FileManager.LoadCloudletsSpesification(dataset_path, i);
-				// shape the row of data
-//				 dataset cols=  0-TaskID 1-TaskFileSize	2-TaskOutputFileSize	3-TaskFileLength	4-CpuTime	5-TotalLength	6-UserLatitude 7-UserLongitude
-//            	8-DataCenterID 9-VmID 10-ENSEMBLE_predicted_DC 11-GA_predicted_DC 12-SNAKE_predicted_DC 13-SNAKE_predicted_VM	14-ENSEMBLE_predicted_VM
 
 				task_id = Integer.parseInt(rowData[0]); // task id
 				task_size = Integer.parseInt(rowData[1]);
@@ -85,17 +82,27 @@ public class ElementsCreation {
 				e.printStackTrace();
 			}
 
-			if (modelName == "FUNCTIONS") {
+			
+			if (use_random_values && (modelName == "SNAKE" || modelName == "GA" || modelName == "ENSEMBLE")) {
+				best_datacenter_id=AI.UseAiModelToPredictDataCenter(task, modelName);
+			}
+			else if (modelName == "NONE")
+			 
+			 {
+				best_datacenter_id = Utils.getNextRandom(3, datacentersList.size() + 2);}
+			
+			 else if (modelName == "FUNCTIONS") {
 				best_datacenter_id = DCs_Caculations.getBestDataCenterByFunctions(task, datacentersList, vmsList);
-			} else if (modelName == "NONE") {
-				best_datacenter_id = Utils.getNextRandom(3, datacentersList.size() + 2);
+			
 			} else if (modelName == "GA") {
-				best_datacenter_id = AI.PredictBestDataCenter(task, datacentersList, modelName);
-			} else if (modelName == "SNAKE") {
-				best_datacenter_id = AI.PredictBestDataCenter(task, datacentersList, modelName);
+				best_datacenter_id = AI.UseDataSetToGetBestDataCenter(task, datacentersList, modelName);
+			}
+			else if (modelName == "SNAKE") {
+				best_datacenter_id = AI.UseDataSetToGetBestDataCenter(task, datacentersList, modelName);
 
-			} else if (modelName == "ENSEMBLE") {
-				best_datacenter_id = AI.PredictBestDataCenter(task, datacentersList, modelName);
+			}
+			else if (modelName == "ENSEMBLE") {
+				best_datacenter_id = AI.UseDataSetToGetBestDataCenter(task, datacentersList, modelName);
 
 			} else {
 				best_datacenter_id = -1;
@@ -104,10 +111,14 @@ public class ElementsCreation {
 			best_dc = Utils.getDatacenterById(best_datacenter_id, datacentersList);
 			datacenterVms = Utils.extractDataCenterVms(vmsList, best_dc.getId());
 			
+			if (use_random_values && (scheduling_model == "SNAKE" || scheduling_model == "GA" || scheduling_model == "ENSEMBLE")) {
+
+				best_vm_id=AI.UseAiToPredictVmID(task, scheduling_model);
+				Log.printLine("got best vmid from ai "+best_vm_id);
+			}
 			
-			 if (scheduling_model=="NONE" ) {
+			else	 if (scheduling_model=="NONE" ) {
 				 best_vm_id=Utils.getLeastVm(datacenterVms).getId();
-//				 best_vm_id=Utils.getNextRandom(datacenterVms.get(0).getId(), datacenterVms.get(datacenterVms.size()-1).getId());
 				}
 				
 			else if (scheduling_model=="FUNCTIONS") {
@@ -116,15 +127,13 @@ public class ElementsCreation {
 
 			}
 			else if (scheduling_model=="SNAKE") {
-				best_vm_id = AI.PredictBestVM(task, datacenterVms,scheduling_model);
+				best_vm_id = AI.UseDataSetToGetBestVm(task, datacenterVms,scheduling_model);
 
 			}
 			else if (scheduling_model=="ENSEMBLE") {
-				best_vm_id = AI.PredictBestVM(task, datacenterVms,scheduling_model);
-//				Log.printLine("222 !!! "+schedulingMethod+"  "+best_vm_id+"  "+ task.getCloudletId());
+				best_vm_id = AI.UseDataSetToGetBestVm(task, datacenterVms,scheduling_model);
 
 			}
-			
 			
 			best_vm=Utils.getVMById(best_vm_id, vmsList);
 			task.setVmId(best_vm_id);

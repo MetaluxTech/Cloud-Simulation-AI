@@ -1,0 +1,11 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "python",
+          
+            "request": "launch",
+            "program": "external_interrupt_code_vms.py"
+        }
+    ]
+}

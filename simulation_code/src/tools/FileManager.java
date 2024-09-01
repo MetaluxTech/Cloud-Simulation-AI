@@ -26,7 +26,7 @@ import simulation_1.Simulator;
 
 public class FileManager {
 	
-	private static String dataset_path=Simulator.dataset_path;
+	private static String dataset_path=Simulator.global_dataset_path;
 
 	
 	public static String[] LoadTaskData(String prepredicted_dataset_path,int rowID) {

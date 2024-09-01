@@ -30,11 +30,13 @@ df = pd.read_csv(df_path)
 
 def predict_datacenter_id(task_info,modelName):
     features = np.array([[task_info]]).reshape(1, 1, -1)
-    return np.argmax(modelName.predict(features))+3
+    dc_id=np.argmax(modelName.predict(features))+3
+    return dc_id
 
 def predict_VM_id(task_info,modelName):
     features = np.array([[task_info]]).reshape(1, 1, -1)
-    return np.argmax(modelName.predict(features))
+    vm_id=np.argmax(modelName.predict(features))
+    return dc_id
 
 def SavePredictedDataBase(model_name,df, features_cols ):
     """Predicts datacenter IDs using Array operations."""
