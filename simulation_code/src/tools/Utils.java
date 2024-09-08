@@ -11,6 +11,7 @@ import org.cloudbus.cloudsim.Log;
 import Costums_elements.CustomCloudlet;
 import Costums_elements.CustomDataCenter;
 import Costums_elements.CustomVM;
+import simulation_1.Simulator;
 
 public class Utils {
 
@@ -131,4 +132,17 @@ public class Utils {
 	}
 
 	
+
+	public static void updateLoads(CustomCloudlet task, int dc_id, int vm_id) {
+		CustomVM vm = Utils.getVMById(vm_id, Simulator.vmsList);
+		CustomDataCenter dc = Utils.getDatacenterById(dc_id, Simulator.datacentersList);
+	
+		double loadIncrement = task.getCloudletLength() / 10.0;
+	
+		dc.setLoad(dc.getLoad() + loadIncrement);
+		vm.setLoad(vm.getLoad() + loadIncrement);
+	
+		task.setDataceterLoad(dc.getLoad());
+	}
+
 }

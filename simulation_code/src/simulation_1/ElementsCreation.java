@@ -39,23 +39,18 @@ import tools.Utils;
 import tools.VMS_Caculations;
 
 public class ElementsCreation {
-	public static List<CustomCloudlet> createCloudlets(int numCloudlets, CustomBroker broker, String modelName,
-			String scheduling_model, List<CustomDataCenter> datacentersList, List<CustomVM> vmsList, boolean use_random_values) {
+	public static List<CustomCloudlet> createCloudlets(int numCloudlets, CustomBroker broker) {
 		List<CustomCloudlet> tasksList = new ArrayList<>();
 		int task_id, task_size, task_out_size, task_length;
 		double taskLatit, taskLong;
-		int best_datacenter_id = -1;
-		int best_vm_id = -1;
-		CustomDataCenter best_dc = null;
-		CustomVM best_vm = null;
-		List<CustomVM> datacenterVms = new ArrayList<CustomVM>();
 		for (int i = 1; i <= numCloudlets; i++) {
 
-			if (use_random_values) {
+
+			if (Simulator.generate_new_requests) {
 				task_id = i;
-				task_size = Utils.getNextRandom(10, 100);
-				task_out_size = Utils.getNextRandom(10, 20);
-				task_length = Utils.getNextRandom(10, 100);
+				task_size = Utils.getNextRandom(5, 50);
+				task_out_size = Utils.getNextRandom(5, 10);
+				task_length = Utils.getNextRandom(5, 50);
 				taskLatit = Utils.generateRandomLatLon()[0];
 				taskLong = Utils.generateRandomLatLon()[1];
 			} else {
@@ -70,89 +65,22 @@ public class ElementsCreation {
 				taskLong = Double.parseDouble(rowData[7]); // UserLongitude
 				
 			}
-
 			CustomCloudlet task = new CustomCloudlet(task_id, task_length, 1, task_size, task_out_size,
 					new UtilizationModelFull(), new UtilizationModelFull(), new UtilizationModelFull(), taskLatit,
 					taskLong);
-
-			task.setUserId(broker.getId());
 			try {
 				task.setCloudletStatus(9); // Set your custom status
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
-			
-			if (use_random_values && (modelName == "SNAKE" || modelName == "GA" || modelName == "ENSEMBLE")) {
-				best_datacenter_id=AI.UseAiModelToPredictDataCenter(task, modelName);
-			}
-			else if (modelName == "NONE")
-			 
-			 {
-				best_datacenter_id = Utils.getNextRandom(3, datacentersList.size() + 2);}
-			
-			 else if (modelName == "FUNCTIONS") {
-				best_datacenter_id = DCs_Caculations.getBestDataCenterByFunctions(task, datacentersList, vmsList);
-			
-			} else if (modelName == "GA") {
-				best_datacenter_id = AI.UseDataSetToGetBestDataCenter(task, datacentersList, modelName);
-			}
-			else if (modelName == "SNAKE") {
-				best_datacenter_id = AI.UseDataSetToGetBestDataCenter(task, datacentersList, modelName);
-
-			}
-			else if (modelName == "ENSEMBLE") {
-				best_datacenter_id = AI.UseDataSetToGetBestDataCenter(task, datacentersList, modelName);
-
-			} else {
-				best_datacenter_id = -1;
-			}
-
-			best_dc = Utils.getDatacenterById(best_datacenter_id, datacentersList);
-			datacenterVms = Utils.extractDataCenterVms(vmsList, best_dc.getId());
-			
-			if (use_random_values && (scheduling_model == "SNAKE" || scheduling_model == "GA" || scheduling_model == "ENSEMBLE")) {
-
-				best_vm_id=AI.UseAiToPredictVmID(task, scheduling_model);
-				Log.printLine("got best vmid from ai "+best_vm_id);
-			}
-			
-			else	 if (scheduling_model=="NONE" ) {
-				 best_vm_id=Utils.getLeastVm(datacenterVms).getId();
-				}
-				
-			else if (scheduling_model=="FUNCTIONS") {
-				best_vm_id = VMS_Caculations.getBestVMIDByRank(task, datacentersList, datacenterVms);
-
-
-			}
-			else if (scheduling_model=="SNAKE") {
-				best_vm_id = AI.UseDataSetToGetBestVm(task, datacenterVms,scheduling_model);
-
-			}
-			else if (scheduling_model=="ENSEMBLE") {
-				best_vm_id = AI.UseDataSetToGetBestVm(task, datacenterVms,scheduling_model);
-
-			}
-			
-			best_vm=Utils.getVMById(best_vm_id, vmsList);
-			task.setVmId(best_vm_id);
-			best_vm.setLoad(best_vm.getLoad() + task_length / 10);
-
-			
-			best_dc.setLoad(best_dc.getLoad() + task_length / 10);
-			String sec_dataset_path=	Paths.get("").toAbsolutePath().getParent().resolve("AI_code/dataset/security_dataset.csv").toString();	
-
-			String task_data = FileManager.loadSecurityHeader(sec_dataset_path);
-			task.setTaskData(task_data);
-//			Encryption.encryptData(task, "Encrypt-Task", Security.AES_KEY);
-			tasksList.add(task);
-//			Log.printLine("TASK#" + task_id + " ");
-//			Log.printLine("task data: " + task_data);
-//			Log.printLine("task encrypted Data: " + task.getTaskData());
+			task.setUserId(broker.getId());
+			tasksList.add(task); // Add the task to the list
 		}
-		return tasksList;
+
+		return tasksList; // Return the list of tasks
 	}
+
 
 	public static List<CustomVM> createVms(int numVMs, CustomBroker broker1, boolean use_randome_values) {
 		List<CustomVM> vmsList = new ArrayList<>();
@@ -184,7 +112,7 @@ public class ElementsCreation {
 			int vm_pesNum = 1; // num of cpus in the VM
 			String vm_monitor = "xen";
 			CloudletScheduler space_shared = new CloudletSchedulerSpaceShared();
-			CloudletScheduler time_shared = new CloudletSchedulerTimeShared();
+			new CloudletSchedulerTimeShared();
 			CustomVM v = new CustomVM(i, broker1.getId(), vm_mips, vm_pesNum, vm_ram, vm_bandwidth, vm_storage,
 					vm_monitor, space_shared, vm_load, vm_memcost, vm_storagecost, vm_bwcost, vm_processcost);
 			vmsList.add(v);

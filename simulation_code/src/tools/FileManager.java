@@ -26,7 +26,7 @@ import simulation_1.Simulator;
 
 public class FileManager {
 	
-	private static String dataset_path=Simulator.global_dataset_path;
+	private static String dataset_path= Paths.get("").toAbsolutePath().getParent().resolve("AI_code/dataset/global_dataset.csv").toString();	
 
 	
 	public static String[] LoadTaskData(String prepredicted_dataset_path,int rowID) {
@@ -239,6 +239,41 @@ public class FileManager {
 	    }
 
 	    Log.printLine("saved to: "+file.getAbsolutePath());
+	    return null;
+	}
+	public static String saveNewRequestsDataset(String dataset_name,List<CustomCloudlet> tasksList) {
+	    File file = new File(dataset_name); // Path to the CSV file
+	    
+	    try {
+	        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+
+	        // Write the header
+	        writer.write("TaskID,TaskFileSize,TaskOutputFileSize,TaskFileLength,CpuTime,TotalLength,UserLatitude,UserLongitude");
+	        writer.newLine();
+	        for (CustomCloudlet cloudlet : tasksList) {
+	        	String data =
+	            			  
+	            		      cloudlet.getCloudletId()				 + "," +
+        		    		  cloudlet.getCloudletFileSize() 		+ "," +
+	                          cloudlet.getCloudletOutputSize() 		+ "," +
+	                          cloudlet.getCloudletLength() 			+ "," +
+	                          Utils.getNextdouble(0,15) 			+ "," +
+	                          cloudlet.getCloudletTotalLength()			+ "," +
+		                          
+	                          cloudlet.getLatitude() 				+ "," +
+	                          cloudlet.getLongitude();
+	                          
+	            writer.write(data);
+	            writer.newLine();
+	        }
+
+	        writer.close();
+	    } catch (IOException e) {
+	        Log.printLine("error in saving to: "+file.getAbsolutePath()+" ..........");
+
+	        e.printStackTrace();
+	    }
+
 	    return null;
 	}
 

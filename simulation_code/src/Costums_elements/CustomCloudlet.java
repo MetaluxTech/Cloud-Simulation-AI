@@ -4,6 +4,8 @@ import org.cloudbus.cloudsim.UtilizationModel;
 
 public class CustomCloudlet extends Cloudlet {
     private double latitude;
+    private double dataceterLoad;
+
     private double longitude;
     private String task_data;
     private String task_status;
@@ -20,6 +22,14 @@ public class CustomCloudlet extends Cloudlet {
         this.task_status=task_status;
     }
 
+
+    public double getDataceterLoad() {
+        return dataceterLoad;
+    }
+
+    public void setDataceterLoad(double load) {
+        this.dataceterLoad = load;
+    }
     public double getLatitude() {
         return latitude;
     }

@@ -4,230 +4,221 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import javax.management.loading.PrivateClassLoader;
-
+import java.util.Map;
 import org.cloudbus.cloudsim.Log;
 
 import Costums_elements.CustomCloudlet;
-import Costums_elements.CustomDataCenter;
-import Costums_elements.CustomVM;
 import simulation_1.Simulator;
 
 public class AI {
-		private static String dataset_path=Simulator.global_dataset_path;
-		private static 	 String AI_Dcs_script_path = Paths.get("").toAbsolutePath().getParent().resolve("AI_code\\external_interrupt_code_dcs.py").toString();	
-		private static 	 String AI_vms_script_path = Paths.get("").toAbsolutePath().getParent().resolve("AI_code\\external_interrupt_code_vms.py").toString();	
-		private static String venv_python_exe_path=Paths.get("").toAbsolutePath().getParent().resolve("AI_code\\.venv\\Scripts\\python.exe").toString();	
-		
-	
-	   public static int UseDataSetToGetBestDataCenter(CustomCloudlet task, List<CustomDataCenter> DCList, String modelName) {
-		  
-	    int Predicted_DC_ID = -1;
 
-	    try (BufferedReader br = new BufferedReader(new FileReader(dataset_path))) {
+	private static String pretraineddataset_path = Paths.get("").toAbsolutePath().getParent()
+			.resolve("AI_code/dataset/global_dataset.csv").toString();
+	private static String newreqests_datset_path = Paths.get("").toAbsolutePath().getParent()
+			.resolve("AI_code/dataset/new_requests_dataset.csv").toString();
+	private static Map<Integer, List<Integer>> DCsVmsMap = DCs_Caculations.DCsVmsMap;
 
-				
+	public static int[] getBestDC_VM_forNewRequest(String DC_MODEL, String VM_MODEL, CustomCloudlet task) {
+		int dc_id = -1;
+		int vm_id = -1;
 
-	        String line;
-	        int currentRow = 1;
-	       
+		try (BufferedReader br = new BufferedReader(new FileReader(newreqests_datset_path))) {
+			String line;
+			int currentRow = 1;
 
-	        while ((line = br.readLine()) != null) {
-	            // Skip the first row (headers)
-	            if (currentRow == 1) {
-	                currentRow++;
-	                continue;
-	            }
+			while ((line = br.readLine()) != null) {
+				if (currentRow == 1) {
+					currentRow++;
+					continue;
+				}
+				// dataset columns = 0-TaskID 1-TaskFileSize 2-TaskOutputFileSize
+				// 3-TaskFileLength 4-CpuTime 5-TotalLength
+				// 6-UserLatitude 7-UserLongitude
+				// 8-GA_predicted_DC 9-SNAKE_predicted_DC 10-ENSEMBLE_predicted_DC
+				// 11-ENSEMBLE_predicted_VM 12-SNAKE_predicted_VM
 
-	            String[] rowData = line.split(",");
-	            Boolean findit= (
-	                    Double.parseDouble(rowData[7]) == task.getLongitude()) ;
-	           
-	            // Assuming Latitude and Longitude are doubles
-	            if (
-//	 dataset cols=  0-TaskID 1-TaskFileSize	2-TaskOutputFileSize	3-TaskFileLength	4-CpuTime	5-TotalLength	6-UserLatitude 7-UserLongitude
-//	            	8-DataCenterID 9-VmID 10-ENSEMBLE_predicted_DC 11-GA_predicted_DC 12-SNAKE_predicted_DC 13-SNAKE_predicted_VM	14-ENSEMBLE_predicted_VM
+				String[] rowData = line.split(",");
+				if (Math.round(Double.parseDouble(rowData[6]) * 10000000)
+						/ 10000000.0 == Math.round(task.getLatitude() * 10000000) / 10000000.0
+						&& Math.round(Double.parseDouble(rowData[7]) * 10000000)
+								/ 10000000.0 == Math.round(task.getLongitude() * 10000000) / 10000000.0) {
 
-	                    Integer.parseInt(rowData[1]) == task.getCloudletFileSize() &&
-	                    Integer.parseInt(rowData[2]) == task.getCloudletOutputSize() &&
-                		Integer.parseInt(rowData[3]) == task.getCloudletLength() &&
-        				Double.parseDouble(rowData[6]) == task.getLatitude() &&
-	                    Double.parseDouble(rowData[7]) == task.getLongitude()) {
-	             	                // Return the predicted data center ID (assuming it's in the 6th column, adjust if needed)
-	            	
-	                if (modelName.equals("GA")) {
-	                    Predicted_DC_ID = Integer.parseInt(rowData[11]);  //GA predicted DataCenter
-	                } else if (modelName.equals("SNAKE")) {
-	                    Predicted_DC_ID = Integer.parseInt(rowData[12]);  //SNAKE predicted DataCenter
-	                } else if (modelName.equals("ENSEMBLE")) {
-	                    Predicted_DC_ID = Integer.parseInt(rowData[10]);  //New Model predicted DataCenter
-	                }
-	                return Predicted_DC_ID;
-	            }
-	            currentRow++;
-	        }
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
+					if (DC_MODEL.equals("FUNCTIONS")) {
+						dc_id = DCs_Caculations.getBestDataCenterByFunctions(task, Simulator.datacentersList,
+								Simulator.vmsList);
+					} else if (DC_MODEL.equals("NONE")) {
+						dc_id = Utils.getNextRandom(3, Simulator.numDatacenters + 2);
+					} else if (DC_MODEL.equals("GA")) {
+						dc_id = Integer.parseInt(rowData[8]);
+					} else if (DC_MODEL.equals("SNAKE")) {
+						dc_id = Integer.parseInt(rowData[9]);
+					} else if (DC_MODEL.equals("ENSEMBLE")) {
+						dc_id = Integer.parseInt(rowData[10]);
+					}
 
-	    return -1; // Return null if task info is not found in the CSV file
-	}
-
-	   public static int UseDataSetToGetBestVm(CustomCloudlet task, List<CustomVM> VMsList, String modelName) {
-		  
-	    int Predicted_VM_ID = -1;
-
-	    try (BufferedReader br = new BufferedReader(new FileReader(dataset_path))) {
-	        String line;
-	        int currentRow = 1;
-	       
-
-	        while ((line = br.readLine()) != null) {
-	            // Skip the first row (headers)
-	            if (currentRow <= 1) {
-	                currentRow++;
-	                continue;
-	            }
-
-	            String[] rowData = line.split(",");
-	            if (
-//	            		 dataset cols=  0-TaskID 1-TaskFileSize	2-TaskOutputFileSize	3-TaskFileLength	4-CpuTime	5-TotalLength	6-UserLatitude 7-UserLongitude
-//	            		            	8-DataCenterID 9-VmID 10-ENSEMBLE_predicted_DC 11-GA_predicted_DC 12-SNAKE_predicted_DC 13-SNAKE_predicted_VM	14-ENSEMBLE_predicted_VM
-
-	            		Integer.parseInt(rowData[1]) == task.getCloudletFileSize() &&
-	                    Integer.parseInt(rowData[2]) == task.getCloudletOutputSize() &&
-                		Integer.parseInt(rowData[3]) == task.getCloudletLength() &&
-        				Double.parseDouble(rowData[6]) == task.getLatitude() &&
-	                    Double.parseDouble(rowData[7]) == task.getLongitude()) {
-	            	
-
-	                if (modelName.equals("SNAKE")) {
-	                    Predicted_VM_ID = Integer.parseInt(rowData[13]);  //SNAKE-LSTM predicted VM
-
-		                
-		                return Predicted_VM_ID;
-	                } else if (modelName.equals("ENSEMBLE")) {
-	                    Predicted_VM_ID = Integer.parseInt(rowData[14]);   //ENSEMBLE predicted VM
-
-		                return Predicted_VM_ID;
-
-	            }
-	            currentRow++;
-	        }
-	    } 
-	    }
-	    catch (IOException e) {
-	        e.printStackTrace();
-	    }
-
-	    return -1; // Return null if task info is not found in the CSV file
-	}
-
-	 
-	   public static int UseAiModelToPredictDataCenter(CustomCloudlet task,String modelName) {
-
-	        Path scriptPath = Paths.get(AI_Dcs_script_path);
-			
-			modelName=getModelNameOnDisk(modelName, true);
-
-	        try {
-
-	            List<String> commandList = new ArrayList<>();
-	            commandList.add(venv_python_exe_path);
-	            commandList.add(scriptPath.toString());
-	            commandList.add(modelName); // Add any additional arguments
-	            commandList.add(String.valueOf(task.getCloudletFileSize()));
-	            commandList.add(String.valueOf(task.getCloudletOutputSize()));
-	            commandList.add(String.valueOf(task.getCloudletLength()));
-	            commandList.add(String.valueOf(task.getActualCPUTime()));
-	            commandList.add(String.valueOf(task.getCloudletTotalLength()));
-	            commandList.add(String.valueOf(task.getLatitude()));
-	            commandList.add(String.valueOf(task.getLongitude()));
-	            
-	            ProcessBuilder builder = new ProcessBuilder(commandList);
-	            Process process = builder.start();
-	            process.waitFor(10, TimeUnit.SECONDS);
-
-	            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-	            String line;
-	            StringBuilder output = new StringBuilder();
-	            while ((line   = reader.readLine()) != null) {
-	                output.append(line).append("\n");
-	            }
-
-	            int datacenterID = Integer.parseInt(output.toString().trim());
-	            reader.close();
-	            return datacenterID;
-
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            System.err.println("Error running Python script:");
-	            System.err.println(e.getMessage());
-	            return -1; // Or throw an exception if preferred
-	        }
-	    }
-
-	   
-	   
-	   public static int UseAiToPredictVmID(CustomCloudlet task,String modelName) {
-
-	        Path scriptPath = Paths.get(AI_vms_script_path);
-	        modelName=getModelNameOnDisk(modelName, false);
-	        try {
-	            List<String> commandList = new ArrayList<>();
-	            commandList.add(venv_python_exe_path);
-	            commandList.add(scriptPath.toString());
-	            commandList.add(modelName); // Add any additional arguments
-	            commandList.add(String.valueOf(task.getCloudletFileSize()));
-	            commandList.add(String.valueOf(task.getCloudletOutputSize()));
-	            commandList.add(String.valueOf(task.getCloudletLength()));
-	            commandList.add(String.valueOf(task.getActualCPUTime()));
-	            commandList.add(String.valueOf(task.getCloudletTotalLength()));
-	            
-	            ProcessBuilder builder = new ProcessBuilder(commandList);
-	            Process process = builder.start();
-	            process.waitFor(10, TimeUnit.SECONDS);
-
-	            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-	            String line;
-	            StringBuilder output = new StringBuilder();
-	            while ((line   = reader.readLine()) != null) {
-	                output.append(line).append("\n");
-	            }
-	            Log.printLine("commands list"+commandList.toString());
-
-	            int vm_id = Integer.parseInt(output.toString().trim());
-	            reader.close();
-	            return vm_id;
-
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	            System.err.println("Error running Python script:");
-	            System.err.println(e.getMessage());
-	            return -1; // Or throw an exception if preferred
-	        }
-	    }
-
-	   
-		private static String  getModelNameOnDisk(String modelname,boolean for_Dcs) {
-			if (for_Dcs) {
-			if (modelname=="SNAKE") return "snake_model_95.keras";
-			if (modelname=="GA") return "ga_model_82.keras";
-			if (modelname=="ENSEMBLE") return "ensemble_model_84.joblib";
+					if (DC_MODEL.equals("FUNCTIONS")) {
+						vm_id = VMS_Caculations.getBestVMIDByRank(task, Simulator.datacentersList, Simulator.vmsList);
+					} else if (DC_MODEL.equals("NONE")) {
+						vm_id = Utils.getLeastVm(Utils.extractDataCenterVms(Simulator.vmsList, dc_id)).getId();
+					} else if (VM_MODEL.equals("ENSEMBLE")) {
+						vm_id = Integer.parseInt(rowData[11]);
+					} else if (VM_MODEL.equals("SNAKE")) {
+						vm_id = Integer.parseInt(rowData[12]);
+					}
+					Log.printLine("VMID "+vm_id+ " dcID "+dc_id);
+					if (!DCsVmsMap.get(dc_id).contains(vm_id)) {
+						List<Integer> availableVms = DCsVmsMap.get(dc_id);
+						if (availableVms != null && !availableVms.isEmpty()) {
+							vm_id = availableVms.get(0);
+						}
+					}
+					if (dc_id == -1 || vm_id == -1) {
+						throw new IllegalStateException("No available datacenter or VM found for task at latitude: "
+								+ task.getLatitude() + ", longitude: " + task.getLongitude());
+					}
+					return new int[] { dc_id, vm_id };
+				}
+				currentRow++;
 			}
-	
-			
-			if (modelname=="SNAKE") return "snake_vms_scheduling_99.keras";
-			if (modelname=="ENSEMBLE") return "ensemble_vms_scheduling_84.joblib";
-			
-			
-			return "no model selected";
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+
+		return new int[] { -1, -1 };
+	}
+
+	public static int[] getBestDC_VM_forPretrainedRequests(String DC_MODEL, String VM_MODEL, CustomCloudlet task) {
+		int dc_id = -1;
+		int vm_id = -1;
+
+		try (BufferedReader br = new BufferedReader(new FileReader(pretraineddataset_path))) {
+			String line;
+			int currentRow = 1;
+
+			while ((line = br.readLine()) != null) {
+				if (currentRow == 1) {
+					currentRow++;
+					continue;
+				}
+				// dataset columns = 0-TaskID 1-TaskFileSize 2-TaskOutputFileSize
+				// 3-TaskFileLength 4-CpuTime 5-TotalLength
+				// 6-UserLatitude 7-UserLongitude
+				// 8-GA_predicted_DC 9-SNAKE_predicted_DC 10-ENSEMBLE_predicted_DC
+				// 11-ENSEMBLE_predicted_VM 12-SNAKE_predicted_VM
+
+				String[] rowData = line.split(",");
+
+				if (Math.round(Double.parseDouble(rowData[6]) * 10000000)
+						/ 10000000.0 == Math.round(task.getLatitude() * 10000000) / 10000000.0
+						&& Math.round(Double.parseDouble(rowData[7]) * 10000000)
+								/ 10000000.0 == Math.round(task.getLongitude() * 10000000) / 10000000.0) {
+
+					if (DC_MODEL.equals("FUNCTIONS")) {
+						dc_id = DCs_Caculations.getBestDataCenterByFunctions(task, Simulator.datacentersList,
+								Simulator.vmsList);
+					} else if (DC_MODEL.equals("NONE"))
+
+					{
+						dc_id = Utils.getNextRandom(3, Simulator.numDatacenters + 2);
+					} else if (DC_MODEL.equals("GA")) {
+
+						dc_id = Integer.parseInt(rowData[8]);
+					} else if (DC_MODEL.equals("SNAKE")) {
+						dc_id = Integer.parseInt(rowData[9]);
+					} else if (DC_MODEL.equals("ENSEMBLE")) {
+						dc_id = Integer.parseInt(rowData[10]);
+					}
+
+					if (DC_MODEL.equals("FUNCTIONS")) {
+						vm_id = VMS_Caculations.getBestVMIDByRank(task, Simulator.datacentersList, Simulator.vmsList);
+					} else if (DC_MODEL.equals("NONE")) {
+						vm_id = Utils.getLeastVm(Utils.extractDataCenterVms(Simulator.vmsList, dc_id)).getId();
+					} else if (VM_MODEL.equals("ENSEMBLE")) {
+						vm_id = Integer.parseInt(rowData[11]);
+					} else if (VM_MODEL.equals("SNAKE")) {
+						vm_id = Integer.parseInt(rowData[12]);
+					}
+
+					if (!DCsVmsMap.get(dc_id).contains(vm_id)) {
+						List<Integer> availableVms = DCsVmsMap.get(dc_id);
+						if (availableVms != null && !availableVms.isEmpty()) {
+							vm_id = availableVms.get(0);
+						}
+					}
+					return new int[] { dc_id, vm_id };
+				}
+				currentRow++;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return new int[] { -1, -1 };
+	}
+
+	public static void runScript() {
+		Log.printLine("Generating new requests. This process may take a while ...");
+		String script1_path = Paths.get("").toAbsolutePath().getParent().resolve("AI_code\\simulator_predict_dcs.py")
+				.toString();
+		String script2_path = Paths.get("").toAbsolutePath().getParent().resolve("AI_code\\simulator_predict_vms.py")
+				.toString();
+		String venv_python_exe_path = Paths.get("").toAbsolutePath().getParent()
+				.resolve("AI_code\\.venv\\Scripts\\python.exe").toString();
+
+		try {
+			Log.printLine("Starting execution of script 1: " + script1_path);
+			ProcessBuilder pb1 = new ProcessBuilder(venv_python_exe_path, script1_path);
+			pb1.start();
+			Log.printLine("Starting execution of script 2: " + script1_path);
+			ProcessBuilder pb2 = new ProcessBuilder(venv_python_exe_path, script2_path);
+			pb2.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void runScript2() {
+		Log.printLine("Generating new requests. This process may take a while ...");
+		String script1_path = Paths.get("").toAbsolutePath().getParent().resolve("AI_code\\simulator_predict_dcs.py")
+				.toString();
+		String script2_path = Paths.get("").toAbsolutePath().getParent().resolve("AI_code\\simulator_predict_vms.py")
+				.toString();
+		String venv_python_exe_path = Paths.get("").toAbsolutePath().getParent()
+				.resolve("AI_code\\.venv\\Scripts\\python.exe").toString();
+
+		try {
+			Log.printLine("Starting execution of script 1: " + script1_path);
+			ProcessBuilder pb1 = new ProcessBuilder(venv_python_exe_path, script1_path);
+			pb1.redirectErrorStream(true);
+			Process p1 = pb1.start();
+
+			BufferedReader reader1 = new BufferedReader(new InputStreamReader(p1.getInputStream()));
+			String line1;
+			while ((line1 = reader1.readLine()) != null) {
+				Log.printLine(" output: " + line1);
+			}
+
+			int exitCode1 = p1.waitFor();
+			Log.printLine("Script 1/2 completed with exit code: " + exitCode1);
+
+			Log.printLine("Starting execution of script 2: " + script2_path);
+			ProcessBuilder pb2 = new ProcessBuilder(venv_python_exe_path, script2_path);
+			pb2.redirectErrorStream(true);
+			Process p2 = pb2.start();
+
+			BufferedReader reader2 = new BufferedReader(new InputStreamReader(p2.getInputStream()));
+			String line2;
+			while ((line2 = reader2.readLine()) != null) {
+				Log.printLine(" output: " + line2);
+			}
+
+			int exitCode2 = p2.waitFor();
+			Log.printLine("Script 2/2 completed with exit code: " + exitCode2);
+		} catch (IOException | InterruptedException e) {
+			Log.printLine("Error occurred while running scripts: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
 }

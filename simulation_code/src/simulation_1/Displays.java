@@ -29,10 +29,12 @@ public class Displays {
 		 
 			Log.printLine("	 ========== OUTPUT ==========");
 			//titles column
-			Log.printLine("Cloudlet ID\tData centerID\t VM ID \t Time \t Start Time\tFinish Time  distance(Km)   DcLoad\tSTATUS");
+			Log.printLine("Cloudlet ID\tData centerID\t VM ID \t Time \t Start Time\tFinish Time  distance(Km)   DcLoad");
 
 			DecimalFormat dft = new DecimalFormat("###.##");
+			int i=-1;
 			for (CustomCloudlet cloudlet:geoCloudletsList) {
+				i++;
 				status=cloudlet.getSecurityStatus();
 				int DataCenterId =cloudlet.getResourceId();
 				VmId=cloudlet.getVmId();
@@ -50,9 +52,7 @@ public class Displays {
 								dft.format(cloudlet.getExecStartTime())+"\t"+
 								dft.format(cloudlet.getFinishTime())+"\t        "+
 								dis+"     "+
-								load+"\t\t"+
-								status	
-								
+								cloudlet.getDataceterLoad()
 							
 									);
 				

@@ -1,5 +1,4 @@
 package simulation_1;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -12,24 +11,37 @@ import Costums_elements.CustomCloudlet;
 import Costums_elements.CustomDataCenter;
 import Costums_elements.CustomVM;
 import Security_Manager.Security;
-import tools.AI;
 import tools.FileManager;
+import tools.RequestsHandler;
 import tools.Results;
 
 public class Simulator {
 
-	public static String global_dataset_path = Paths.get("").toAbsolutePath().getParent().resolve("AI_code/dataset/global_dataset.csv").toString();	
-	private static List<CustomDataCenter> datacentersList;
-	private static List<CustomVM> vmsList;
-	private static List<CustomCloudlet> tasksList;
 	
-	@SuppressWarnings("unused")
+	public static boolean generate_new_requests = true;
+//	public static boolean enable_security_layer = false;
+	
+	public static String DC_MODEL="GA";		//GA or SNAKE or NONE or FUNCTIONS or ENSEMBLE
+	public static String VM_MODEL="ENSEMBLE"; // NONE or FUNCTIONS or SNAKE or ENSEMBLE
+	
+	public static int numUsers = 1;
+	public static int numDatacenters = 3;
+	public static int numVMs = 15;
+	public static int numCloudlets =888;
+
+	
+
+	public static List<CustomDataCenter> datacentersList;
+	public static List<CustomVM> vmsList;
+	public static List<CustomCloudlet> tasksList;
+	public static List<Double> loadMontor=new ArrayList<Double>();
+	
+
 	public static void main(String[] args) {
 
 		try {
 //		  create	simulation variables
-			boolean use_scheduling=true;
-			boolean use_randome_values = false;
+			
 			boolean save_cloudlets_properties = false;
 			boolean save_training = false;
 			boolean save_vm_scheduling = false;
@@ -37,13 +49,10 @@ public class Simulator {
 			boolean print_model_quality = false;
 			boolean display_simulation_timing_spesifications = true;
 			boolean save_all_wanted_spec=false;
-        	String modelName="GA";//GA or SNAKE or NONE or FUNCTIONS or ENSEMBLE
-        	String scheduling_model="FUNCTIONS"; // NONE or FUNCTIONS or SNAKE or ENSEMBLE
-			int numUsers = 1;
-			int numDatacenters = 3;
-			int numVMs = 15;
-			int numCloudlets =150;
-			Security.GenerateAESKey(64);
+			
+
+			
+			Security.GenerateAESKey(64);//CHARECTER_LENGTH
 			
 			
 //			create simulation arrays
@@ -58,11 +67,11 @@ public class Simulator {
 
 //			create datacenters brokeres Cloudlets and vms 
 			broker = ElementsCreation.createBroker("broker1");
-			datacentersList = ElementsCreation.createDatacenters(numDatacenters, use_randome_values);
-			vmsList = ElementsCreation.createVms(numVMs, broker, use_randome_values);
-			tasksList = ElementsCreation.createCloudlets(numCloudlets, broker,modelName,scheduling_model,datacentersList,vmsList, use_randome_values);
-			
-//			submit tasks and vms .....
+			datacentersList = ElementsCreation.createDatacenters(numDatacenters, generate_new_requests);
+			vmsList = ElementsCreation.createVms(numVMs, broker, generate_new_requests);
+			tasksList = ElementsCreation.createCloudlets(numCloudlets, broker);
+			RequestsHandler.handleCloudlets(tasksList);
+			//			submit tasks and vms .....
 			broker.submitVmList(vmsList);
 			broker.submitCloudletList(tasksList);
 			
@@ -91,8 +100,8 @@ public class Simulator {
 				FileManager.SaveCloudletsSpecifications(dataset_name, tasksList);
 			}
 			if (save_expereiment) {
-				String model_name=modelName;
-				if (use_scheduling)model_name=scheduling_model;
+				String model_name=DC_MODEL;
+				if (VM_MODEL!="NONE")model_name=VM_MODEL;
 				
 				
 				String dataset_name="experiement_result/" + model_name + "_" + numCloudlets + ".csv";
