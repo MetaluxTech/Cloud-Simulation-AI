@@ -22,12 +22,12 @@ public class Simulator {
 //	public static boolean enable_security_layer = false;
 	
 	public static String DC_MODEL="GA";		//GA or SNAKE or NONE or FUNCTIONS or ENSEMBLE
-	public static String VM_MODEL="ENSEMBLE"; // NONE or FUNCTIONS or SNAKE or ENSEMBLE
+	public static String VM_MODEL="NONE"; // NONE or FUNCTIONS or SNAKE or ENSEMBLE
 	
 	public static int numUsers = 1;
 	public static int numDatacenters = 3;
 	public static int numVMs = 15;
-	public static int numCloudlets =888;
+	public static int numCloudlets =100;
 
 	
 
