@@ -131,17 +131,17 @@ public class Utils {
 		return Math.round(num * 100.0) / 100.0;
 	}
 
-	
+
 
 	public static void updateLoads(CustomCloudlet task, int dc_id, int vm_id) {
 		CustomVM vm = Utils.getVMById(vm_id, Simulator.vmsList);
 		CustomDataCenter dc = Utils.getDatacenterById(dc_id, Simulator.datacentersList);
-	
+
 		double loadIncrement = task.getCloudletLength() / 10.0;
-	
+
 		dc.setLoad(dc.getLoad() + loadIncrement);
 		vm.setLoad(vm.getLoad() + loadIncrement);
-	
+
 		task.setDataceterLoad(dc.getLoad());
 	}
 

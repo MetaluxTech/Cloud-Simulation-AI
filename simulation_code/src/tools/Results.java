@@ -23,7 +23,7 @@ public class Results {
         // Calculate the average completion time for all cloudlets
         double totalCompleteTime = 0.0;
         for (CustomCloudlet cloudlet : tasksList) {
-        	 
+
             totalCompleteTime += (cloudlet.getActualCPUTime());
         }
         return roun3DecimalValues(totalCompleteTime / tasksList.size());
@@ -49,14 +49,14 @@ public class Results {
     }
 
     public static double calculateNegotiationTime(List<CustomCloudlet> tasksList) {
-    	
+
         double negotiationTime=calculateWaitingTime(tasksList)/10;
         negotiationTime=Utils.getNextdouble(negotiationTime,negotiationTime+1);
         return roun3DecimalValues(negotiationTime );
-    
-    
+
+
     }
-   
+
     private static double roun3DecimalValues(double value) {
         return Math.round(value * 1000.0) / 1000.0;
     }
@@ -73,7 +73,7 @@ public class Results {
 		return Math.round(latestFinishTime * 1000.0) / 1000.0;
 	}
     public static Map<String, Double> getSimulationTimingSpecifications(List<CustomCloudlet> tasksList) {
-        
+
     	double totalSimulationTime = caculateTotalSimulationTime(tasksList);
     	double avgCompleteTime = calculateAverageCompleteTime(tasksList);
         double avgWaitingTime = calculateWaitingTime(tasksList);

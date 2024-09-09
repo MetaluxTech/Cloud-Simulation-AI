@@ -1,17 +1,7 @@
 package Costums_elements;
 
-import java.util.Map;
-
-import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.CloudletScheduler;
-import org.cloudbus.cloudsim.Datacenter;
-import org.cloudbus.cloudsim.DatacenterBroker;
-import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.core.CloudSimTags;
-import org.cloudbus.cloudsim.core.SimEntity;
-import org.cloudbus.cloudsim.lists.VmList;
 
 public class CustomVM extends Vm {
 	private double load;
@@ -40,7 +30,7 @@ public class CustomVM extends Vm {
 	public void setLoad(double load) {
 		this.load = Math.round(load * 100.0) / 100.0;
 	}
-	
+
 
     public double getramCost() {
         return ramCost;
@@ -73,5 +63,5 @@ public class CustomVM extends Vm {
     public void setcpuCost(double processCost) {
         this.cpuCost = processCost;
     }
-	
+
 }

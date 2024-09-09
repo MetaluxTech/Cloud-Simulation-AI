@@ -1,6 +1,5 @@
 package simulation_1;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -11,9 +10,9 @@ import org.cloudbus.cloudsim.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.Host;
-import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Pe;
 import org.cloudbus.cloudsim.Storage;
+import org.cloudbus.cloudsim.UtilizationModelFull;
 import org.cloudbus.cloudsim.VmAllocationPolicy;
 import org.cloudbus.cloudsim.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.VmScheduler;
@@ -26,17 +25,8 @@ import Costums_elements.CustomBroker;
 import Costums_elements.CustomCloudlet;
 import Costums_elements.CustomDataCenter;
 import Costums_elements.CustomVM;
-import Security_Manager.Encryption;
-import Security_Manager.Security;
-
-import org.cloudbus.cloudsim.UtilizationModel;
-import org.cloudbus.cloudsim.UtilizationModelFull;
-
-import tools.AI;
-import tools.DCs_Caculations;
 import tools.FileManager;
 import tools.Utils;
-import tools.VMS_Caculations;
 
 public class ElementsCreation {
 	public static List<CustomCloudlet> createCloudlets(int numCloudlets, CustomBroker broker) {
@@ -54,7 +44,7 @@ public class ElementsCreation {
 				taskLatit = Utils.generateRandomLatLon()[0];
 				taskLong = Utils.generateRandomLatLon()[1];
 			} else {
-				String dataset_path = Paths.get("").toAbsolutePath().getParent().resolve("AI_code/dataset/global_dataset.csv").toString();	
+				String dataset_path = Paths.get("").toAbsolutePath().getParent().resolve("AI_code/dataset/global_dataset.csv").toString();
 				String[] rowData = FileManager.LoadCloudletsSpesification(dataset_path, i);
 
 				task_id = Integer.parseInt(rowData[0]); // task id
@@ -63,7 +53,7 @@ public class ElementsCreation {
 				task_length = Integer.parseInt(rowData[3]); // TaskFileLength
 				taskLatit = Double.parseDouble(rowData[6]); // UserLatitude
 				taskLong = Double.parseDouble(rowData[7]); // UserLongitude
-				
+
 			}
 			CustomCloudlet task = new CustomCloudlet(task_id, task_length, 1, task_size, task_out_size,
 					new UtilizationModelFull(), new UtilizationModelFull(), new UtilizationModelFull(), taskLatit,
@@ -132,9 +122,9 @@ public class ElementsCreation {
 			hostId = i;
 
 //			inite host variables
-			List<Host> hostList = new ArrayList<Host>();
-			List<Pe> peList = new ArrayList<Pe>();
-			LinkedList<Storage> storageList = new LinkedList<Storage>();
+			List<Host> hostList = new ArrayList<>();
+			List<Pe> peList = new ArrayList<>();
+			LinkedList<Storage> storageList = new LinkedList<>();
 			double DcLatit, DcLongt, costPerBw, costPerMem, costPerStorage, costPerCpu;
 			int hostMips, hostRam;
 			long hostStorage, hostBw;

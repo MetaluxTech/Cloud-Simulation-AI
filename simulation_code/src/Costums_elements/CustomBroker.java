@@ -1,9 +1,5 @@
 package Costums_elements;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.DatacenterBroker;
 import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
@@ -12,9 +8,6 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEvent;
 import org.cloudbus.cloudsim.lists.VmList;
 
-import Security_Manager.Decryption;
-import Security_Manager.Encryption;
-import Security_Manager.Security;
 import tools.Utils;
 
 public class CustomBroker extends DatacenterBroker {
@@ -33,18 +26,18 @@ public class CustomBroker extends DatacenterBroker {
 //		 String attack_type=parts[parts.length-1];
 //		 if (attack_type.contains("normal")) {
 //			 secure_task.SetSecuityStatus("Trusted Data");
-//			
+//
 //		 }
 //		 else{
 //			 secure_task.SetSecuityStatus("Malware Detected ("+attack_type+")");
-//				
+//
 //		 }
 //	}
-//	  
-//	    
+//
+//
 //	getCloudletList().addAll(list);
 //}
-//	
+//
 	@Override
 	public void processVmCreate(SimEvent ev) {
 		int[] data = (int[]) ev.getData();
@@ -92,11 +85,11 @@ public class CustomBroker extends DatacenterBroker {
 
 	@Override
 	public void createVmsInDatacenter(int datacenterId) {
-		
+
 		// send as much vms as possible for this datacenter before trying the next one
 		int requestedVms = 0;
 
-		
+
 		String datacenterName = CloudSim.getEntityName(datacenterId);
 		for (Vm vm : getVmList()) {
 			datacenterId=Utils.findDatacenterIdForVm(vm.getId());

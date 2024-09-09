@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.Host;
@@ -18,18 +19,18 @@ import tools.Utils;
 
 public class Displays {
 
-	
-	
+
+
 	  public static void printSimulationSubmittingEvents(List<CustomCloudlet> geoCloudletsList, List<CustomDataCenter> dcs_list) {
-			
+
 		  int size = geoCloudletsList.size();
 		  String status="SUCCESS";
 		  int VmId=0;
 		  Log.printLine("\n recived cloudlets  size= "+size );
-		 
+
 			Log.printLine("	 ========== OUTPUT ==========");
 			//titles column
-			Log.printLine("Cloudlet ID\tData centerID\t VM ID \t Time \t Start Time\tFinish Time  distance(Km)   DcLoad");
+			Log.printLine("Cloudlet ID\tData centerID\t VM ID \t Time \t Start Time\tFinish Time  distance(Km)   DcLoad \t Security Status");
 
 			DecimalFormat dft = new DecimalFormat("###.##");
 			int i=-1;
@@ -40,35 +41,36 @@ public class Displays {
 				VmId=cloudlet.getVmId();
 				int cloudlet_id= cloudlet.getCloudletId();
 				CustomDataCenter geodatacenter=Utils.getDatacenterById(DataCenterId, dcs_list);
-				double dis=Utils.calculateDistance(cloudlet,geodatacenter);				 
-				double load=geodatacenter.getLoad();				 
-							 
+				double dis=Utils.calculateDistance(cloudlet,geodatacenter);
+				double load=geodatacenter.getLoad();
+
 				Log.printLine("\t" +cloudlet_id +"\t\t"
-													
+
 								+DataCenterId+"\t "
 								+VmId+"\t"+
-							
+
 								dft.format(cloudlet.getActualCPUTime()) +"\t\t"+
 								dft.format(cloudlet.getExecStartTime())+"\t"+
 								dft.format(cloudlet.getFinishTime())+"\t        "+
 								dis+"     "+
-								cloudlet.getDataceterLoad()
-							
+								cloudlet.getDataceterLoad()+"\t \t"+
+								status
+
 									);
-				
-				}	
+
+				}
 			Log.printLine("");
 		}
-	  
+
 	  public static void PrintSimulationElemntsIDs(List<CustomDataCenter> geoDataCentersList, List<Host> hosts_list, List<CustomVM> vms_List,List<CustomCloudlet> tasks_List)  {
 		    List<Integer> datacenterIds = new ArrayList<>();
 		    List<Integer> hostIds = new ArrayList<>();
 		    List<Integer> vmIds = new ArrayList<>();
 		    List<Integer> cloudletIds = new ArrayList<>();
-		   
+
 		    for (Datacenter dc : geoDataCentersList) {
 		        datacenterIds.add(dc.getId());
-		        
+
 		    }
 		    for (Host host : hosts_list) {
 		        hostIds.add(host.getId());
@@ -81,19 +83,19 @@ public class Displays {
 		        cloudletIds.add(cloudlet.getCloudletId());
 		    }
 
-		   
+
 		    System.out.println("List of IDs for all resources:");
 		    System.out.println("Datacenter IDs: " + datacenterIds);
 		    System.out.println("Host IDs: " + hostIds);
 		    System.out.println("VM IDs: " + vmIds);
 		    System.out.println("Cloudlet IDs: " + cloudletIds +"\n\n");
-		    
+
 		}
-	
+
 	  public static void printSimulationTimingSpecifications(Map<String, Double> simulationResults,int numTasks ) {
-		    
-		    
-		    
+
+
+
 		    String totalSimulationTimeStr = String.valueOf(simulationResults.get("Total Simulation Time"));
 		    String avgCompleteTimeStr = String.valueOf(simulationResults.get("Average Completion Time"));
 		    String avgWaitingTimeStr = String.valueOf(simulationResults.get("Average Waiting Time"));
@@ -120,7 +122,7 @@ public class Displays {
 	            Object firstItem = list.get(0);
 	            Class<?> itemClass = firstItem.getClass();
 	            Method getIdMethod;
-	
+
 	            // Check if the class is CustomCloudlet, which requires a different method
 	            if (itemClass.equals(CustomCloudlet.class)) {
 	                getIdMethod = itemClass.getMethod("getCloudletId");
@@ -128,7 +130,7 @@ public class Displays {
 	                // For other classes, use getId()
 	                getIdMethod = itemClass.getMethod("getId");
 	            }
-	
+
 	            for (Object item : list) {
 	                Integer id = (Integer) getIdMethod.invoke(item);
 	                ids.add(id);
@@ -137,7 +139,7 @@ public class Displays {
 	            e.printStackTrace();
 	            // Handle the exception appropriately
 	        }
-	
+
 	        System.out.println(text+"List of IDs: " + ids);
 	    }
 	public static void displaymethods(CustomCloudlet task) {
@@ -157,7 +159,7 @@ public class Displays {
 	     // Print the list of getter methods
 	     System.out.println(spes);
 	}
-    
+
 }
 //[getTaskData,
 // getSecurityStatus,
@@ -166,31 +168,31 @@ public class Displays {
 // , getCloudletId,
 // getActualCPUTime
 // , getResourceId,
-// getExecStartTime, 
+// getExecStartTime,
 // getCloudletFileSize,
 // getCloudletOutputSize
 // , getUtilizationModelCpu,
 // getCloudletStatusString,
 // getCloudletTotalLength,
 // getCloudletFinishedSoFar
-// , getUtilizationModelBw, 
+// , getUtilizationModelBw,
 // getUtilizationModelRam
 // , getRequiredFiles,
 // getVmId,
 // getStatus,
-// getUserId, 
+// getUserId,
 // getCloudletStatus,
 // getNumberOfPes,
 // getCloudletLength,
-// getReservationId, 
+// getReservationId,
 // getClassType,
 // getCloudletHistory,
 // getWaitingTime,
 // getNetServiceLevel,
-// getSubmissionTime, 
+// getSubmissionTime,
 // getFinishTime,
-// getAllResourceName, 
-// getAllResourceId, 
+// getAllResourceName,
+// getAllResourceId,
 // getCostPerSec,
 // getWallClockTime,
 // getProcessingCost,

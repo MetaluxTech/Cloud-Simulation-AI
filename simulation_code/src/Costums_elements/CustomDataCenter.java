@@ -3,13 +3,8 @@ import java.util.List;
 
 import org.cloudbus.cloudsim.Datacenter;
 import org.cloudbus.cloudsim.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Storage;
-import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.VmAllocationPolicy;
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.core.CloudSimTags;
-import org.cloudbus.cloudsim.core.SimEvent;
 
 public class CustomDataCenter extends Datacenter {
     private double latitude;
@@ -35,10 +30,10 @@ public class CustomDataCenter extends Datacenter {
   public void setLoad(double load) {
       this.load = load;
   }
-  
+
   public DatacenterCharacteristics getPublicCharacteristics() {
 		return getCharacteristics();
 	}
-  
-  
+
+
 }

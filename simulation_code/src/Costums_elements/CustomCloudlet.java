@@ -10,9 +10,9 @@ public class CustomCloudlet extends Cloudlet {
     private String task_data;
     private String task_status;
 
-    public CustomCloudlet(int cloudletId, long cloudletLength, 
-    		int pesNumber, long cloudletFileSize, long cloudletOutputSize, 
-    		UtilizationModel utilizationModelCpu, UtilizationModel utilizationModelRam, 
+    public CustomCloudlet(int cloudletId, long cloudletLength,
+    		int pesNumber, long cloudletFileSize, long cloudletOutputSize,
+    		UtilizationModel utilizationModelCpu, UtilizationModel utilizationModelRam,
     		UtilizationModel utilizationModelBw,
     		double latitude, double longitude) {
         super(cloudletId, cloudletLength, pesNumber, cloudletFileSize, cloudletOutputSize, utilizationModelCpu, utilizationModelRam, utilizationModelBw);
@@ -37,7 +37,7 @@ public class CustomCloudlet extends Cloudlet {
     public double getLongitude() {
         return longitude;
     }
-    
+
     public String getTaskData() {
         return task_data;
     }

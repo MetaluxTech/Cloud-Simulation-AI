@@ -12,7 +12,7 @@ public class Evaluation {
 	            double startTime = cloudlet.getExecStartTime();
 	            double submissionTime = cloudlet.getSubmissionTime();
 	            double waitingTime = startTime - submissionTime;
-	            
+
 	            totalWaitingTime += waitingTime;
 	        }
 	        return totalWaitingTime / cloudlets.size();
@@ -21,6 +21,6 @@ public class Evaluation {
 	public static void printEvaluationParameters(List<CustomCloudlet> tasksList) {
 		double av_wt=calculateAverageWaitingTime(tasksList);
 		Log.printLine("average Waiting Time : "+av_wt);
-		
+
 	}
 }

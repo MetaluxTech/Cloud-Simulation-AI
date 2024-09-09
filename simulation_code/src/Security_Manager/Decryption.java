@@ -8,13 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import Costums_elements.CustomCloudlet;
-
 public class Decryption {
 	public static String decryptData(String data, String method, String aes_key) {
-		
-		
-		
+
+
+
 	    String pythonScriptPath = "C:\\Users\\mohsal\\Desktop\\app\\metalux\\cloudsim\\ga_lstm\\AI_code\\security\\simulation_connection.py"; // Assuming the script is in the same folder
 	    String pythonPath = "c:\\Users\\mohsal\\Desktop\\app\\metalux\\cloudsim\\ga_lstm\\AI_code\\.venv\\Scripts\\python.exe"; // Adjust for your Python interpreter path (if different)
 
@@ -26,7 +24,9 @@ public class Decryption {
 	        commandList.add(scriptPath.toString());
 	        commandList.add(method); // The string to encrypt
 	        commandList.add(data); // The string to encrypt
-	        if (aes_key != null)commandList.add(aes_key);
+	        if (aes_key != null) {
+				commandList.add(aes_key);
+			}
 	        ProcessBuilder builder = new ProcessBuilder(commandList);
 	        Process process = builder.start();
 	        process.waitFor(10, TimeUnit.SECONDS);
