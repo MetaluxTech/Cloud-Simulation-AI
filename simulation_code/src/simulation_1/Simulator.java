@@ -21,8 +21,8 @@ public class Simulator {
 	public static boolean generate_new_requests = false;
 	public static boolean enable_security_layer = true;
 
-	public static String DC_MODEL="NONE";		//GA or SNAKE or NONE or FUNCTIONS or ENSEMBLE
-	public static String VM_MODEL="NONE"; // NONE or FUNCTIONS or SNAKE or ENSEMBLE
+	public static String DC_MODEL="SNAKE";		//GA or SNAKE or NONE or FUNCTIONS or ENSEMBLE
+	public static String VM_MODEL="ENSEMBLE"; // NONE or FUNCTIONS or SNAKE or ENSEMBLE
 
 	public static int numUsers = 1;
 	public static int numDatacenters = 3;
