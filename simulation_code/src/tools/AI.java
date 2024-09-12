@@ -58,17 +58,24 @@ public class AI {
 					} else if (DC_MODEL.equals("ENSEMBLE")) {
 						dc_id = Integer.parseInt(rowData[10]);
 					}
+					 else {
+							throw new IllegalArgumentException( " DC_MODEL name '"+DC_MODEL+"' is not valid name choose one of these models ( GA - SNAKE - NONE - FUNCTIONS - ENSEMBLE )   " );
+						}
 
-					if (DC_MODEL.equals("FUNCTIONS")) {
-						vm_id = VMS_Caculations.getBestVMIDByRank(task, Simulator.datacentersList, Simulator.vmsList);
-					} else if (DC_MODEL.equals("NONE")) {
+					if (VM_MODEL.equals("FUNCTIONS")) {
+						vm_id = VMS_Caculations.getBestVMIDByRank(task, Simulator.datacentersList, Utils.extractDataCenterVms(Simulator.vmsList,dc_id));
+					} else if (VM_MODEL.equals("NONE")) {
 						vm_id = Utils.getLeastVm(Utils.extractDataCenterVms(Simulator.vmsList, dc_id)).getId();
 					} else if (VM_MODEL.equals("ENSEMBLE")) {
 						vm_id = Integer.parseInt(rowData[11]);
 					} else if (VM_MODEL.equals("SNAKE")) {
 						vm_id = Integer.parseInt(rowData[12]);
 					}
-					Log.printLine("VMID "+vm_id+ " dcID "+dc_id);
+					else {
+						throw new IllegalArgumentException( " VM_MODEL name '"+VM_MODEL+"' is not valid name choose one of these models (  SNAKE - NONE - FUNCTIONS - ENSEMBLE )   " );
+
+					}
+
 					if (!DCsVmsMap.get(dc_id).contains(vm_id)) {
 						List<Integer> availableVms = DCsVmsMap.get(dc_id);
 						if (availableVms != null && !availableVms.isEmpty()) {
@@ -130,16 +137,21 @@ public class AI {
 						dc_id = Integer.parseInt(rowData[9]);
 					} else if (DC_MODEL.equals("ENSEMBLE")) {
 						dc_id = Integer.parseInt(rowData[10]);
+					} else {
+						throw new IllegalArgumentException( " DC_MODEL name '"+DC_MODEL+"' is not valid name choose one of these models ( GA - SNAKE - NONE - FUNCTIONS - ENSEMBLE )   " );
 					}
 
-					if (DC_MODEL.equals("FUNCTIONS")) {
-						vm_id = VMS_Caculations.getBestVMIDByRank(task, Simulator.datacentersList, Simulator.vmsList);
-					} else if (DC_MODEL.equals("NONE")) {
+					if (VM_MODEL.equals("FUNCTIONS")) {
+						vm_id = VMS_Caculations.getBestVMIDByRank(task, Simulator.datacentersList, Utils.extractDataCenterVms(Simulator.vmsList,dc_id));
+					} else if (VM_MODEL.equals("NONE")) {
 						vm_id = Utils.getLeastVm(Utils.extractDataCenterVms(Simulator.vmsList, dc_id)).getId();
 					} else if (VM_MODEL.equals("ENSEMBLE")) {
 						vm_id = Integer.parseInt(rowData[11]);
 					} else if (VM_MODEL.equals("SNAKE")) {
 						vm_id = Integer.parseInt(rowData[12]);
+					}else {
+						throw new IllegalArgumentException( " VM_MODEL name '"+VM_MODEL+"' is not valid name choose one of these models (  SNAKE - NONE - FUNCTIONS - ENSEMBLE )   " );
+
 					}
 
 					if (!DCsVmsMap.get(dc_id).contains(vm_id)) {

@@ -48,12 +48,12 @@ public class RequestsHandler {
 	}
 
 	private static void handle_new_requests(List<CustomCloudlet> tasksList) {
-
+		int dc_id=-1,vm_id=-1;
 		// Implementation for handling new requests
 		for (CustomCloudlet task : tasksList) {
 			int[] bestDcVm = AI.getBestDC_VM_forNewRequest(Simulator.DC_MODEL, Simulator.VM_MODEL, task);
-			int dc_id = bestDcVm[0];
-			int vm_id = bestDcVm[1];
+			 dc_id = bestDcVm[0];
+			 vm_id = bestDcVm[1];
 
 			if (dc_id != -1 && vm_id != -1) {
 
@@ -68,10 +68,12 @@ public class RequestsHandler {
 
 
 	private static void handle_pretrained_requests(List<CustomCloudlet> tasksList) {
+		int dc_id=-1,vm_id=-1;
+
          for (CustomCloudlet task : tasksList) {
                 int[] bestDcVm = AI.getBestDC_VM_forPretrainedRequests(Simulator.DC_MODEL, Simulator.VM_MODEL, task);
-                int dc_id = bestDcVm[0];
-                int vm_id = bestDcVm[1];
+                 dc_id = bestDcVm[0];
+                 vm_id = bestDcVm[1];
 
                 if (dc_id != -1 && vm_id != -1) {
                     task.setVmId(vm_id);
